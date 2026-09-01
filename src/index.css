@@ -1,0 +1,62 @@
+@import './styles/theme.css';
+@import './styles/range.css';
+@import './styles/gameify.css';
+@import './styles/levels.css';
+@import "tailwindcss";
+
+@theme {
+   --color-theme-text: var(--text-color);
+   --color-theme-secondary: var(--text-secondary);
+   --color-theme-bg: var(--bkg-color);
+   --grid-template-columns-14: repeat(14, minmax(0, 1fr));
+   --max-width-32: 8rem;
+   --transition-duration-0: 0ms;
+}
+
+body,
+html {
+    font-size: 16px;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+h1 {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Maybe make these components instead? */
+.input {
+    @apply border border-theme-text rounded-lg px-2 text-lg z-0;
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+
+.select-wrap{
+    @apply relative;
+    &:after{
+        content: '▾';
+        @apply absolute w-4 h-4 top-1/2 transform -translate-y-1/2 right-1 -mt-1 pointer-events-none text-theme-text text-sm;
+    }
+}
+
+/* make component here */
+.btn {
+    @apply rounded-lg px-5 py-3  font-bold text-black;
+    &:active{
+        color: var(--bkg-color);
+        background: var(--text-color);
+    }
+}
+
+.card {
+    @apply rounded-lg border-2 border-solid p-4;
+    border-color: var(--text-color);
+}
+
+label {
+    @apply block text-sm;
+}
+
+svg rect[data-note] {
+    @apply cursor-pointer select-none transition-all duration-200;
+}
