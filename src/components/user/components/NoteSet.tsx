@@ -1,0 +1,181 @@
+/**
+ *
+ * NoteSet, cadence and key are related through tonality.
+ * When the cadence changes from major to minor, the choices for noteSet also change.
+ * When the key changes, the selections in noteset also change with regards to the key, ie, Diatonic + Eb + Ab change to Diatonice + E + A
+ *
+ *
+ */
+
+export function NoteSet() {
+  return (
+    <>
+      <label htmlFor="NoteSet">Note Set:</label>
+      <div className="select-wrap">
+        <select
+          name="set-select"
+          id="NoteSet"
+          className="w-full input note-sets"
+        >
+          <option
+            value="[0,7]"
+            data-template="Perfect 5th"
+            data-tonality="major"
+          >
+            Perfect 5th
+          </option>
+          <option value="[0,4,7]" data-template="Triad" data-tonality="major">
+            Triad
+          </option>
+          <option
+            value="[0,2,4,5,7]"
+            data-template="1 2 3 4 5"
+            data-tonality="major"
+          >
+            1 2 3 4 5
+          </option>
+          <option
+            value="[0,2,4,5,7,9]"
+            data-template="1 2 3 4 5 6"
+            data-tonality="major"
+          >
+            1 2 3 4 5 6
+          </option>
+          <option
+            value="[0,2,4,5,7,9,11]"
+            selected
+            data-template="Diatonic Scale (Ionian)"
+            data-tonality="major"
+          >
+            Diatonic Scale (Ionian)
+          </option>
+          <option
+            value="[0,2,4,5,7,9,10,11]"
+            data-template="Diatonic + {10}"
+            data-tonality="major"
+          >
+            Diatonic + Bb
+          </option>
+          <option
+            value="[0,2,3,4,5,7,9,10,11]"
+            data-template="Diatonic + {10} + {3}"
+            data-tonality="major"
+          >
+            Diatonic + Bb + Eb
+          </option>
+          <option
+            value="[0,2,3,4,5,7,8,9,10,11]"
+            data-template="Diatonic + {10} + {3} + {8}"
+            data-tonality="major"
+          >
+            Diatonic + Bb + Eb + Ab
+          </option>
+          <option
+            value="[0,1,2,3,4,5,7,8,9,10,11]"
+            data-template="Diatonic + {10} + {3} + {8} + {1}"
+            data-tonality="major"
+          >
+            Diatonic + Bb + Eb + Ab + Db
+          </option>
+          <option
+            value="[0,1,2,3,4,5,6,7,8,9,10,11]"
+            data-template="Chromatic"
+            data-tonality="major"
+          >
+            Chromatic
+          </option>
+          <option value="[]" data-template="Custom" data-tonality="major">
+            Custom
+          </option>
+        </select>
+      </div>
+      <select className="hidden note-sets" id="InactiveSet">
+        <option value="[0,7]" data-template="Perfect 5th" data-tonality="minor">
+          Perfect 5th
+        </option>
+        <option value="[0,3,7]" data-template="Triad" data-tonality="minor">
+          Triad
+        </option>
+        <option
+          value="[0,2,3,5,7]"
+          data-template="1 2 3 4 5"
+          data-tonality="minor"
+        >
+          1 2 3 4 5
+        </option>
+        <option
+          value="[0,2,3,5,7,8]"
+          data-template="1 2 3 4 5 6"
+          data-tonality="minor"
+        >
+          1 2 3 4 5 6
+        </option>
+        <option
+          value="[0,2,3,5,7,8,10]"
+          selected
+          data-template="Diatonic Scale (Aeolian)"
+          data-tonality="minor"
+        >
+          Diatonic Scale (Aeolian)
+        </option>
+        <option
+          value="[0,2,3,5,7,8,10,11]"
+          selected
+          data-template="Diatonic + {11}"
+          data-tonality="minor"
+        >
+          Diatonic + B
+        </option>
+        <option
+          value="[0,2,3,4,5,7,8,10,11]"
+          data-template="Diatonic + {11} + {4}"
+          data-tonality="minor"
+        >
+          Diatonic + B + E
+        </option>
+        <option
+          value="[0,2,3,4,5,7,8,9,10,11]"
+          data-template="Diatonic + {11} + {4} + {9}"
+          data-tonality="minor"
+        >
+          Diatonic + B + E + A
+        </option>
+        <option
+          value="[0,2,3,4,5,6,7,8,9,10,11]"
+          data-template="Diatonic + {11} + {4} + {9} + {6}"
+          data-tonality="minor"
+        >
+          Diatonic + B + E + A + Gb
+        </option>
+        <option
+          value="[0,1,2,3,4,5,6,7,8,9,10,11]"
+          data-template="Chromatic"
+          data-tonality="minor"
+        >
+          Chromatic
+        </option>
+        <option value="[]" data-template="Custom" data-tonality="minor">
+          Custom
+        </option>
+      </select>
+      <div id="CustomNoteSet">
+        <div className="grid items-center justify-center gap-2 mt-2 grid-cols-14">
+          {/* <%- include('_note-select.ejs', { index: 0, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 2, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 4, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 5, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 7, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 9, gradient: 'from-blue-600 to-blue-700' }) %>
+        <%- include('_note-select.ejs', { index: 11, gradient: 'from-blue-600 to-blue-700' }) %> */}
+          <div></div>
+          {/* <%- include('_note-select.ejs', { index: 1, gradient: 'from-yellow-500 to-yellow-600' }) %>
+        <%- include('_note-select.ejs', { index: 3, gradient: 'from-yellow-500 to-yellow-600' }) %>
+        <div class="col-span-2"></div>
+        <%- include('_note-select.ejs', { index: 6, gradient: 'from-yellow-500 to-yellow-600' }) %>
+        <%- include('_note-select.ejs', { index: 8, gradient: 'from-yellow-500 to-yellow-600' }) %>
+        <%- include('_note-select.ejs', { index: 10, gradient: 'from-yellow-500 to-yellow-600' }) %> */}
+        </div>
+      </div>
+    </>
+  );
+}
