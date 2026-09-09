@@ -1,5 +1,5 @@
-import { useEartrainerStore } from "../../../store/store";
-import type { KeyCenterType } from "../../../store/store";
+import { useEartrainerStore } from "@/store/store";
+import type { KeyCenterType } from "@/store/store";
 
 type DropdownType = {
   value: KeyCenterType;
@@ -22,6 +22,7 @@ const keyCenterDropDown: DropdownType[] = [
 ];
 
 export function KeyCenter() {
+  const keyCenter = useEartrainerStore((state) => state.keyCenter);
   const setKeyCenter = useEartrainerStore((state) => state.setKeyCenter);
 
   return (
@@ -29,7 +30,7 @@ export function KeyCenter() {
       <p>Key*:</p>
       <select
         onChange={(e) => setKeyCenter(e.target.value as KeyCenterType)}
-        defaultValue={"C"}
+        value={keyCenter}
       >
         {keyCenterDropDown.map((key) => (
           <option key={key.value} value={key.value}>

@@ -1,4 +1,4 @@
-import { useEartrainerStore } from "../../../store/store";
+import { useEartrainerStore } from "@/store/store";
 
 export function RandomizeBox() {
   const isRandomizeToggled = useEartrainerStore(
