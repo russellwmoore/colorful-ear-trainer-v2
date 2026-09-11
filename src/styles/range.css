@@ -8,11 +8,11 @@
 }
 
 .noUi-connect {
-    @apply !bg-gradient-to-r !from-blue-500 !to-blue-400;
+    @apply bg-linear-to-r! from-blue-500! to-blue-400!;
 }
 
 .noUi-handle {
-    @apply !bg-theme-text !cursor-move;
+    @apply bg-theme-text! cursor-move!;
 }
 
 .noUi-handle,
@@ -30,7 +30,7 @@
 }
 .noUi-tooltip {
     bottom: -160% !important;
-    @apply !px-2 !py-1;
+    @apply px-2! py-1!;
     background: var(--bkg-color)!important;
     color: var(--text-color)!important;
 }

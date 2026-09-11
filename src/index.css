@@ -2,9 +2,12 @@
 @import './styles/range.css';
 @import './styles/gameify.css';
 @import './styles/levels.css';
+@import './styles/quantity.css';
 @import "tailwindcss";
 
-@theme {
+/* inline: these values reference runtime vars set in theme.css (body/.light-theme/.dark-theme),
+   not literals Tailwind can resolve at build time — plain @theme silently drops them from :root */
+@theme inline {
    --color-theme-text: var(--text-color);
    --color-theme-secondary: var(--text-secondary);
    --color-theme-bg: var(--bkg-color);
@@ -53,9 +56,6 @@ h1 {
     border-color: var(--text-color);
 }
 
-label {
-    @apply block text-sm;
-}
 
 svg rect[data-note] {
     @apply cursor-pointer select-none transition-all duration-200;

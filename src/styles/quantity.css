@@ -22,6 +22,6 @@ input[type=number] {
 .time-input{
   @apply border-t border-b border-theme-text leading-8;
   input {
-    @apply appearance-none border-0 flex-grow bg-theme-bg text-theme-text h-8 w-auto py-0 px-2 text-center flex-shrink min-w-0;
+    @apply appearance-none border-0 bg-theme-bg text-theme-text h-8 py-0 px-2 text-center;
   }
 }
