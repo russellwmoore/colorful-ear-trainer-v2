@@ -6,6 +6,8 @@ import { CadenceEveryInput } from "./components/quantities/CadenceEveryInput";
 import { RandomizeBox } from "./components/RandomizeBox";
 import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
 import { OctaveInput } from "./components/quantities/OctaveInput";
+import { CadenceTempoInput } from "./components/quantities/CadenceTempoInput";
+import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
 
 export function User() {
   return (
@@ -13,7 +15,6 @@ export function User() {
       <div className="card order-1 md:order-2 overflow-auto flex-auto">
         {/* TODO: level info */}
         {/* <%- include('_level-info.ejs') %> */}
-
         <div id="UserCard">
           <h2 className="-mt-4 -ml-4 -mr-4 bg-theme-text text-theme-bg font-bold px-4 py-2 text-lg">
             Set Options:
@@ -32,7 +33,9 @@ export function User() {
             <div className="col-span-3">
               <NoteQuantitiesInput />
             </div>
-            {/* TODO Time input */}
+            <div className="col-span-3">
+              <TotalTimeInput />
+            </div>
             <div className="col-span-3">
               <TimePerNoteInput />
             </div>
@@ -50,10 +53,7 @@ export function User() {
           </div>
         </div>
         <div className="-ml-4 -mr-4 -mb-4 p-4 mt-4 border-t-2 border-theme-text">
-          <label htmlFor="Bpm">Cadence Tempo:</label>
-          {/* <%- include('_qty.ejs', { id: 'BPM', name: 'bpm', min: 1, max: 400, value: 60, step: 1, inputclass: 'min-w-[3ch]' }) %> */}
-          {/* TODO: quantity BPM */}
-          <div className="text-xs text-theme-secondary">beats per minute</div>
+          <CadenceTempoInput />
         </div>
       </div>
     </div>
