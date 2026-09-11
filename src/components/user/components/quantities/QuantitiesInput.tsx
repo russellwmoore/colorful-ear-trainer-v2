@@ -25,24 +25,26 @@ export function QuantitiesInput({
       <div className="mt-1 flex items-center max-w-full">
         <button
           type="button"
-          className="rounded-sm w-8 h-8 p-0 flex flex-none justify-center items-center border border-theme-text text-theme-text bg-theme-bg active:text-theme-bg active:bg-theme-text"
+          className="incrementer"
           aria-label="Decrease Quantity"
           onClick={onDecrement}
         >
           –
         </button>
-        <input
-          value={value}
-          min={min}
-          max={max}
-          step={step}
-          className="appearance-none grow min-w-0 bg-theme-bg text-theme-text h-8 border-0 py-0 px-2 text-center border-t border-b border-theme-text"
-          inputMode="decimal"
-          // TODO: add general onChange to be passed from wrapper
-        />
+        <div className="time-input grow min-w-0">
+          <input
+            value={value}
+            min={min}
+            max={max}
+            step={step}
+            className="grow min-w-0 w-full"
+            inputMode="decimal"
+            // TODO: add general onChange to be passed from wrapper
+          />
+        </div>
         <button
           type="button"
-          className="rounded-sm w-8 h-8 p-0 flex flex-none justify-center items-center border border-theme-text text-theme-text bg-theme-bg active:text-theme-bg active:bg-theme-text"
+          className="incrementer"
           data-increment=""
           aria-label="Increase Quantity"
           onClick={onIncrement}

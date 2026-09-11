@@ -11,7 +11,7 @@ export function RandomizeBox() {
   return (
     <div className="col-span-1">
       <label htmlFor="RandomKey" className="text-xs text-theme-text">
-        Randomize*
+        Randomize
       </label>
       <label className="toggle inline-block my-1">
         <input

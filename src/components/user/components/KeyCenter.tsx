@@ -27,7 +27,7 @@ export function KeyCenter() {
 
   return (
     <div>
-      <p>Key*:</p>
+      <p>Key:</p>
       <select
         onChange={(e) => setKeyCenter(e.target.value as KeyCenterType)}
         value={keyCenter}

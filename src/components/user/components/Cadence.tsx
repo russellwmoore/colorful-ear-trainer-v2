@@ -5,7 +5,7 @@ export function Cadence() {
   const setCadence = useEartrainerStore((state) => state.setCadence);
   return (
     <>
-      <label htmlFor="Tonality">Cadence*:</label>
+      <p>Cadence</p>
       <div className="select-wrap">
         <select
           name="tonality"
@@ -15,9 +15,7 @@ export function Cadence() {
           value={cadence}
         >
           <optgroup label="Major">
-            <option value="major,1451" selected>
-              I IV V I
-            </option>
+            <option value="major,1451">I IV V I</option>
             <option value="major,1251">I ii7 V7 I</option>
             <option value="major,1441">I IV iv I</option>
           </optgroup>

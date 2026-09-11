@@ -10,12 +10,12 @@
 export function NoteSet() {
   return (
     <>
-      <label htmlFor="NoteSet">Note Set:</label>
+      <p>Note Set:</p>
       <div className="select-wrap">
         <select
           name="set-select"
           id="NoteSet"
-          className="w-full input note-sets"
+          className="w-full input note-sets text-sm"
         >
           <option
             value="[0,7]"
@@ -43,7 +43,7 @@ export function NoteSet() {
           </option>
           <option
             value="[0,2,4,5,7,9,11]"
-            selected
+            // selected
             data-template="Diatonic Scale (Ionian)"
             data-tonality="major"
           >
@@ -112,7 +112,7 @@ export function NoteSet() {
         </option>
         <option
           value="[0,2,3,5,7,8,10]"
-          selected
+          // selected
           data-template="Diatonic Scale (Aeolian)"
           data-tonality="minor"
         >
@@ -120,7 +120,7 @@ export function NoteSet() {
         </option>
         <option
           value="[0,2,3,5,7,8,10,11]"
-          selected
+          // selected
           data-template="Diatonic + {11}"
           data-tonality="minor"
         >
