@@ -42,6 +42,7 @@ export type EarTrainerState = {
   setCadenceTempo: (newCadence: number) => void;
   totalTime: number;
   setTotalTime: (newTime: number) => void;
+  octaveRange: [number, number];
 };
 
 export const useEartrainerStore = create<EarTrainerState>()(
@@ -78,6 +79,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
       totalTime: 300,
       setTotalTime: (newTotalTime: number) =>
         set({ totalTime: newTotalTime }, false, "setTotalTime"),
+      octaveRange: [4, 5],
     }),
     { name: "EarTrainerStore", enabled: true },
   ),
