@@ -1,5 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
-import type { KeyCenterType } from "@/store/store";
+import type { KeyCenterType } from "@/utils/noteNames";
 
 type DropdownType = {
   value: KeyCenterType;

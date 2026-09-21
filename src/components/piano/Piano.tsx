@@ -1,30 +1,14 @@
-import * as Tone from "tone";
 import { pianoKeysInit } from "./pianoKeys";
 import { useState } from "react";
 import { useKeyBoardEvents } from "../hooks/useKeyBoardEvents";
+import { useEartrainerStore } from "@/store/store";
 const OCTAVE = 4;
-// TODO: the note lengths seem short and cut off before natural decay
-const synth = new Tone.Sampler({
-  urls: {
-    C2: `C2.mp3`,
-    G2: `G2.mp3`,
-    C3: `C3.mp3`,
-    G3: `G3.mp3`,
-    C4: `C4.mp3`,
-    G4: `G4.mp3`,
-    Bb4: `Bb4.mp3`,
-    G5: `G5.mp3`,
-  },
-  baseUrl: "samples/",
-}).toDestination();
-synth.release = 3;
 
 const GOLD = "rgba(251, 191, 36, 1)";
 
 export function Piano() {
-  //create a synth and connect it to the main output (your speakers)
-
   const [pianoKeys, setPianoKeys] = useState(pianoKeysInit);
+  const synth = useEartrainerStore((state) => state.synth);
 
   useKeyBoardEvents();
 
@@ -77,7 +61,7 @@ export function Piano() {
             fill={key.fill}
             data-key={key["data-key"]}
             data-note={key["data-note"]}
-            onClick={handleClick}
+            onMouseDown={handleClick}
           ></rect>
         ))}
       </svg>
