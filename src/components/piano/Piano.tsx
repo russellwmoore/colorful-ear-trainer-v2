@@ -1,4 +1,3 @@
-// import * as Tone from "tone";
 import { pianoKeysInit } from "./pianoKeys";
 import { useState } from "react";
 import { useKeyBoardEvents } from "../hooks/useKeyBoardEvents";
