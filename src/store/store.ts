@@ -138,13 +138,10 @@ export const useEartrainerStore = create<EarTrainerState>()(
           );
           time += durationWithTempo;
           if (i === array.length - 1) {
-            const id = setTimeout(
-              () => {
-                setIsCurrentlyPlaying(false);
-                return clearTimeout(id);
-              },
-              time * 1000 + now,
-            );
+            const id = setTimeout(() => {
+              setIsCurrentlyPlaying(false);
+              return clearTimeout(id);
+            }, time * 1000);
           }
         });
       },
