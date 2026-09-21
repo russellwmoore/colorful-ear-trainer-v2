@@ -1,4 +1,21 @@
-import { useEartrainerStore, type CadenceType } from "@/store/store";
+import { useEartrainerStore } from "@/store/store";
+import {
+  CADENCE_REGISTRY_MAP,
+  type CadenceType,
+  type CadenceInfo,
+  isCadenceType,
+} from "@/utils/cadences";
+
+// Object.entries widens keys to string, so casting here for typescript help later
+const cadenceEntries = Object.entries(CADENCE_REGISTRY_MAP) as [
+  CadenceType,
+  CadenceInfo,
+][];
+
+const groups = [
+  { label: "Major", quality: "major" },
+  { label: "Minor", quality: "minor" },
+] as const;
 
 export function Cadence() {
   const cadence = useEartrainerStore((state) => state.cadence);
@@ -11,18 +28,23 @@ export function Cadence() {
           name="tonality"
           id="Tonality"
           className="input w-full"
-          onChange={(e) => setCadence(e.target.value as CadenceType)}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (isCadenceType(v)) setCadence(v);
+          }}
           value={cadence}
         >
-          <optgroup label="Major">
-            <option value="major,1451">I IV V I</option>
-            <option value="major,1251">I ii7 V7 I</option>
-            <option value="major,1441">I IV iv I</option>
-          </optgroup>
-          <optgroup label="Minor">
-            <option value="minor,1451">i iv v i</option>
-            <option value="minor,14571">i iv V7 i</option>
-          </optgroup>
+          {groups.map(({ label, quality }) => (
+            <optgroup key={quality} label={label}>
+              {cadenceEntries
+                .filter(([, info]) => info.quality === quality)
+                .map(([key, info]) => (
+                  <option key={key} value={key}>
+                    {info.label}
+                  </option>
+                ))}
+            </optgroup>
+          ))}
         </select>
       </div>
     </>

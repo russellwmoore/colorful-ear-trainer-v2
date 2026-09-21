@@ -1,9 +1,12 @@
+import { PlayButton } from "./PlayButton";
+
 export function Game() {
   return (
     <>
       {/* TODO: Game area logic */}
       {/* <game-area id="Gameify" className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative"> */}
 
+      <PlayButton />
       <div className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative">
         <div className="flex flex-col items-center justify-center">
           {/* TODO: Countdown Timer Logic */}
@@ -47,7 +50,7 @@ export function Game() {
           {/* </stopwatch-timer> */}
         </div>
         <div className="z-10 flex flex-col items-center justify-center">
-          <div className="w-full flex flex-col bg-gradient-to-r pt-1 rounded-lg border-2 border-white text-white">
+          <div className="w-full flex flex-col bg-linear-to-r pt-1 rounded-lg border-2 border-white text-white">
             <div className="text-lg md:text-xl">Streak:</div>
             <div data-streak className="font-bold text-xl md:text-4xl">
               0
@@ -63,7 +66,7 @@ export function Game() {
           </div>
         </div>
         <div className="z-10 flex flex-col items-center justify-center w-full">
-          <div className="w-full bg-gradient-to-r text-white pt-1 rounded-lg border-2 border-white">
+          <div className="w-full bg-linear-to-r text-white pt-1 rounded-lg border-2 border-white">
             <div className="text-lg md:text-xl">Score:</div>
             <div className="flex flex-row justify-center font-bold text-xl md:text-4xl">
               <span data-correct>0</span>/<span data-total>0</span>
@@ -78,10 +81,10 @@ export function Game() {
             </div>
           </div>
         </div>
-        <div className="rounded-lg overflow-hidden absolute progress top-0 left-0 right-0 h-full bg-gradient-to-r from-red-700 to-red-900 z-0">
+        <div className="rounded-lg overflow-hidden absolute progress top-0 left-0 right-0 h-full bg-linear-to-r from-red-700 to-red-900 z-0">
           <div
             data-gradient
-            className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-400"
+            className="h-full bg-linear-to-r from-blue-500 to-blue-400 transition-all duration-400"
           ></div>
         </div>
       </div>
