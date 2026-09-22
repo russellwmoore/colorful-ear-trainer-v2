@@ -8,6 +8,7 @@ import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
 import { OctaveInput } from "./components/quantities/OctaveInput";
 import { CadenceTempoInput } from "./components/quantities/CadenceTempoInput";
 import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
+import { RangeInput } from "./components/quantities/RangeInput";
 
 export function User() {
   return (
@@ -46,9 +47,7 @@ export function User() {
               <OctaveInput />
             </div>
             <div className="col-span-full">
-              {/* <label htmlFor="NoteRange">Range (Octaves):</label> */}
-              <div id="NoteRange" /*name="range"*/></div>
-              {/* TODO: investigate NoteRange */}
+              <RangeInput />
             </div>
           </div>
         </div>

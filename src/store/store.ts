@@ -33,7 +33,9 @@ export type EarTrainerState = {
   setCadenceTempo: (newCadence: number) => void;
   totalTime: number;
   setTotalTime: (newTime: number) => void;
-  octaveRange: [number, number];
+  // readonly type is here to satisfy the library that handles the octave slider 🤮
+  octaveRange: readonly number[];
+  setOctaveRange: (newOctaveRange: readonly number[]) => void;
   synth: typeof synth;
   playCadence: () => Promise<void>;
   isPlayingCadence: boolean;
@@ -78,6 +80,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
         setTotalTime: (newTotalTime: number) =>
           set({ totalTime: newTotalTime }, undefined, "setTotalTime"),
         octaveRange: [4, 5],
+        setOctaveRange: (newOctaveRange: readonly number[]) => {
+          set({ octaveRange: newOctaveRange }, undefined, "setOctaveRange");
+        },
         synth,
         isPlayingCadence: false,
         setIsPlayingCadence: (isPlaying: boolean) => {
