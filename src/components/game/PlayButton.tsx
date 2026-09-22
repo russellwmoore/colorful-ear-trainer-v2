@@ -17,7 +17,9 @@ export function PlayButton() {
         <button
           id="PlayCadence"
           className="btn bg-linear-to-r from-blue-300 to-blue-200 whitespace-nowrap"
-          onClick={handlePlayCadence}
+          onClick={() => {
+            void handlePlayCadence();
+          }}
         >
           {isPlayingCadence ? "Playing..." : "Replay Cadence"}
         </button>
