@@ -41,7 +41,7 @@ export function Piano() {
       }),
     );
     fillWithInitColors();
-    synth.triggerAttackRelease(`${note}${OCTAVE}}`, "4n");
+    synth.triggerAttackRelease(`${note}${OCTAVE}}`, "2n");
   };
 
   return (
