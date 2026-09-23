@@ -1,53 +1,48 @@
 import { pianoKeysInit } from "./pianoKeys";
-import { useState } from "react";
 import { useKeyBoardEvents } from "../hooks/useKeyBoardEvents";
 import { useEartrainerStore } from "@/store/store";
-const OCTAVE = 4;
 
+// TODO: consolidate and determine where to put these variables
+const OCTAVE = 4;
 const GOLD = "rgba(251, 191, 36, 1)";
+const WHITE = "transparent";
+const BLACK = "var(--text-color)";
 
 export function Piano() {
-  const [pianoKeys, setPianoKeys] = useState(pianoKeysInit);
   const synth = useEartrainerStore((state) => state.synth);
 
   useKeyBoardEvents();
 
-  const fillWithInitColors = () => {
-    setTimeout(() => {
-      setPianoKeys((prev) =>
-        prev.map((key) => {
-          if (key["data-key"] === "white") {
-            key.fill = "transparent";
-          } else {
-            key.fill = "var(--text-color)";
-          }
-          return key;
-        }),
-      );
-    }, 300);
+  const handlePointerDown = (e: React.PointerEvent<SVGRectElement>) => {
+    const target = e.currentTarget; // target that owns the event listener
+    const note = target.dataset.note?.split(",")[0];
+    if (!note) return;
+
+    target.setPointerCapture(e.pointerId);
+    synth.triggerAttackRelease(`${note}${OCTAVE}`, "2n");
+    target.setAttribute("fill", GOLD);
   };
 
-  // this handleClick currently handles the non-gameplay click to play + color fills.
-  // Will most likely need to incorporate store for some of this functionality.
-  const handleClick = (e: React.MouseEvent<SVGRectElement>) => {
-    const note = (e.target as SVGRectElement).dataset.note?.split(",")[0];
-    setPianoKeys((prev) =>
-      prev.map((key) => {
-        const noteForKey = key["data-note"].split(",")[0];
-        if (note === noteForKey) {
-          key.fill = GOLD;
-        }
-        return key;
-      }),
-    );
-    fillWithInitColors();
-    synth.triggerAttackRelease(`${note}${OCTAVE}}`, "2n");
+  const handlePointerUpOrLeave = (e: React.PointerEvent<SVGRectElement>) => {
+    const target = e.currentTarget;
+    try {
+      target.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      // Fallback if already released
+      console.error(err);
+    }
+
+    const defaultColor = target.dataset.key === "black" ? BLACK : WHITE;
+    const id = setTimeout(() => {
+      target.setAttribute("fill", defaultColor);
+      clearTimeout(id);
+    }, 150);
   };
 
   return (
     <div id="Piano" className="flex-auto min-h-0">
       <svg viewBox="0 0 170 142">
-        {pianoKeys.map((key) => (
+        {pianoKeysInit.map((key) => (
           <rect
             key={key["data-note"]}
             x={key.x}
@@ -61,7 +56,9 @@ export function Piano() {
             fill={key.fill}
             data-key={key["data-key"]}
             data-note={key["data-note"]}
-            onMouseDown={handleClick}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUpOrLeave}
+            onPointerLeave={handlePointerUpOrLeave}
           ></rect>
         ))}
       </svg>
