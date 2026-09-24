@@ -13,7 +13,7 @@ export function Game() {
           {/* <countdown-timer id="Countdown" className="block w-full h-full max-w-32"> */}
           <div
             data-face
-            className="relative overflow-hidden z-10 rounded-full w-full bg-fail aspect-w-1 aspect-h-1"
+            className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-w-1 aspect-h-1"
           >
             <div className="rounded-full flex flex-col justify-center items-center border-2 border-white">
               <span data-time className="text-xl md:text-4xl font-bold">
@@ -22,7 +22,7 @@ export function Game() {
               <span className="text-sm hidden md:block">remaining</span>
               <span className="text-sm md:hidden">left</span>
               <div
-                className="absolute bg-success left-0 bottom-0 right-0 h-full z-[-1]"
+                className="absolute bg-linear-to-b from-green-500 to-green-600 left-0 bottom-0 right-0 h-full z-[-1]"
                 data-bg
               ></div>
             </div>
@@ -34,7 +34,7 @@ export function Game() {
           {/* <stopwatch-timer id="Stopwatch" className="block w-full h-full max-w-32"> */}
           <div
             data-face
-            className="relative overflow-hidden z-10 rounded-full w-full bg-fail aspect-w-1 aspect-h-1"
+            className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-w-1 aspect-h-1"
           >
             <div className="rounded-full flex flex-col justify-center items-center border-2 border-white">
               <div data-time className="text-xl md:text-4xl font-bold">

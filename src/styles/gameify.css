@@ -1,9 +1,0 @@
-/* Pasting in this CSS file, will likely change CSS strategy to be more React-centric */
-
-.bg-success {
-    @apply bg-linear-to-b from-green-500 to-green-600;
-}
-
-.bg-fail {
-    @apply bg-linear-to-b from-red-500 to-red-600;
-}
