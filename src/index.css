@@ -54,15 +54,6 @@
    --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-h1 {
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-svg rect[data-note] {
-    @apply cursor-pointer select-none transition-all duration-200;
-}
-
 :root {
    --background: #efefef;
    --foreground: #121212;
@@ -80,7 +71,7 @@ svg rect[data-note] {
    --accent-foreground: oklch(0.205 0 0);
    --destructive: oklch(0.577 0.245 27.325);
    --border: oklch(0.922 0 0);
-   --input: oklch(0.922 0 0);
+   --input: #aaa;
    --ring: oklch(0.708 0 0);
    --chart-1: oklch(0.87 0 0);
    --chart-2: oklch(0.556 0 0);

@@ -133,6 +133,7 @@ export function Piano() {
               fill={key.fill}
               data-key={key["data-key"]}
               data-note={key["data-note"]}
+              className="cursor-pointer select-none transition-all duration-200"
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUpOrLeave}
               onPointerLeave={handlePointerUpOrLeave}
