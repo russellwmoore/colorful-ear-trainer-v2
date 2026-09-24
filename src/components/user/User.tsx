@@ -12,7 +12,7 @@ import { RangeInput } from "./components/quantities/RangeInput";
 
 export function User() {
   return (
-    <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-(--fullHeight) overflow-auto">
+    <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-app overflow-auto">
       <div className="card order-1 md:order-2 overflow-auto flex-auto">
         {/* TODO: level info */}
         {/* <%- include('_level-info.ejs') %> */}
