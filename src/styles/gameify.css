@@ -7,7 +7,3 @@
 .bg-fail {
     @apply bg-linear-to-b from-red-500 to-red-600;
 }
-
-.bg-green-gradient {
-    @apply bg-linear-to-r from-green-300 to-green-200;
-}

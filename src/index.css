@@ -1,5 +1,4 @@
 @import './styles/gameify.css';
-@import './styles/quantity.css';
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -58,31 +57,6 @@
 h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-/* Maybe make these components instead? */
-.input {
-    @apply border border-foreground rounded-lg px-2 text-lg z-0 bg-background text-foreground;
-}
-
-.select-wrap{
-    @apply relative;
-    &:after{
-        content: '▾';
-        @apply absolute w-4 h-4 top-1/2 -translate-y-1/2 right-1 -mt-1 pointer-events-none text-foreground text-sm;
-    }
-}
-
-/* make component here */
-.btn {
-    @apply rounded-lg px-5 py-3  font-bold text-black;
-    &:active{
-        @apply text-background bg-foreground;
-    }
-}
-
-.card {
-    @apply rounded-lg border-2 border-solid border-foreground p-4;
 }
 
 svg rect[data-note] {

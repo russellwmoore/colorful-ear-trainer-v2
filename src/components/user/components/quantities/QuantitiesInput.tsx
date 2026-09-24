@@ -1,3 +1,5 @@
+import { Stepper, StepperInput } from "./Stepper";
+
 type QuantitiesInputProps = {
   label: string;
   subLabel: string;
@@ -20,39 +22,20 @@ export function QuantitiesInput({
   step,
 }: QuantitiesInputProps) {
   return (
-    <div>
-      <p className="text-sm">{label}</p>
-      <div className="mt-1 flex items-center max-w-full">
-        <button
-          type="button"
-          className="incrementer"
-          aria-label="Decrease Quantity"
-          onClick={onDecrement}
-        >
-          –
-        </button>
-        <div className="time-input grow min-w-0">
-          <input
-            value={value}
-            min={min}
-            max={max}
-            step={step}
-            className="grow min-w-0 w-full"
-            inputMode="decimal"
-            // TODO: add general onChange to be passed from wrapper
-          />
-        </div>
-        <button
-          type="button"
-          className="incrementer"
-          data-increment=""
-          aria-label="Increase Quantity"
-          onClick={onIncrement}
-        >
-          +
-        </button>
-      </div>
-      <p className="text-xs text-muted-foreground">{subLabel}</p>
-    </div>
+    <Stepper
+      label={label}
+      subLabel={subLabel}
+      onIncrement={onIncrement}
+      onDecrement={onDecrement}
+    >
+      <StepperInput
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        inputMode="decimal"
+        // TODO: add general onChange to be passed from wrapper
+      />
+    </Stepper>
   );
 }

@@ -1,4 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
+import { Button } from "@/components/ui/button";
 
 export function PlayButton() {
   const handlePlayCadence = useEartrainerStore((state) => state.playCadence);
@@ -7,28 +8,22 @@ export function PlayButton() {
   );
   return (
     <div className="flex flex-col flex-none">
-      <button
-        id="Play"
-        className="btn bg-linear-to-r bg-green-gradient text-xl"
-      >
+      <Button id="Play" variant="play" className="text-xl">
         PLAY
-      </button>
+      </Button>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        <button
+        <Button
           id="PlayCadence"
-          className="btn bg-linear-to-r from-blue-300 to-blue-200 whitespace-nowrap"
+          className="whitespace-nowrap"
           onClick={() => {
             void handlePlayCadence();
           }}
         >
           {isPlayingCadence ? "Playing..." : "Replay Cadence"}
-        </button>
-        <button
-          id="PlayNotes"
-          className="btn bg-linear-to-r from-blue-300 to-blue-200 whitespace-nowrap"
-        >
+        </Button>
+        <Button id="PlayNotes" className="whitespace-nowrap">
           Replay Notes
-        </button>
+        </Button>
       </div>
     </div>
   );
