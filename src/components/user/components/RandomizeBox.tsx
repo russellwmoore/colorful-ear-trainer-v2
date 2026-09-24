@@ -10,7 +10,7 @@ export function RandomizeBox() {
 
   return (
     <div className="col-span-1">
-      <label htmlFor="RandomKey" className="text-xs text-theme-text">
+      <label htmlFor="RandomKey" className="text-xs text-foreground">
         Randomize
       </label>
       <label className="toggle inline-block my-1">

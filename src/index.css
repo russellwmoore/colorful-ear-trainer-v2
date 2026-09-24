@@ -1,4 +1,3 @@
-@import './styles/theme.css';
 @import './styles/gameify.css';
 @import './styles/quantity.css';
 @import "tailwindcss";
@@ -6,19 +5,17 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/jetbrains-mono";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* inline: these values reference runtime vars set in theme.css (body/.light-theme/.dark-theme),
-   not literals Tailwind can resolve at build time — plain @theme silently drops them from :root */
+/* inline: these values reference the runtime vars in :root/.dark below, not literals
+   Tailwind can resolve at build time — plain @theme silently drops them from :root */
 @theme inline {
-   --color-theme-text: var(--text-color);
-   --color-theme-secondary: var(--text-secondary);
-   --color-theme-bg: var(--bkg-color);
    --grid-template-columns-14: repeat(14, minmax(0, 1fr));
    --max-width-32: 8rem;
    --transition-duration-0: 0ms;
    --font-heading: var(--font-mono);
    --font-mono: 'JetBrains Mono Variable', monospace;
+   --font-sans: 'Helvetica Neue', Helvetica, sans-serif;
    --color-sidebar-ring: var(--sidebar-ring);
    --color-sidebar-border: var(--sidebar-border);
    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -59,12 +56,6 @@
    --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body,
-html {
-    font-size: 16px;
-    font-family: 'Helvetica Neue', Helvetica, sans-serif;
-}
-
 h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -72,16 +63,14 @@ h1 {
 
 /* Maybe make these components instead? */
 .input {
-    @apply border border-theme-text rounded-lg px-2 text-lg z-0;
-    background: var(--bkg-color);
-    color: var(--text-color);
+    @apply border border-foreground rounded-lg px-2 text-lg z-0 bg-background text-foreground;
 }
 
 .select-wrap{
     @apply relative;
     &:after{
         content: '▾';
-        @apply absolute w-4 h-4 top-1/2 transform -translate-y-1/2 right-1 -mt-1 pointer-events-none text-theme-text text-sm;
+        @apply absolute w-4 h-4 top-1/2 transform -translate-y-1/2 right-1 -mt-1 pointer-events-none text-foreground text-sm;
     }
 }
 
@@ -89,14 +78,12 @@ h1 {
 .btn {
     @apply rounded-lg px-5 py-3  font-bold text-black;
     &:active{
-        color: var(--bkg-color);
-        background: var(--text-color);
+        @apply text-background bg-foreground;
     }
 }
 
 .card {
-    @apply rounded-lg border-2 border-solid p-4;
-    border-color: var(--text-color);
+    @apply rounded-lg border-2 border-solid border-foreground p-4;
 }
 
 svg rect[data-note] {
@@ -104,8 +91,8 @@ svg rect[data-note] {
 }
 
 :root {
-   --background: oklch(1 0 0);
-   --foreground: oklch(0.145 0 0);
+   --background: #efefef;
+   --foreground: #121212;
    --card: oklch(1 0 0);
    --card-foreground: oklch(0.145 0 0);
    --popover: oklch(1 0 0);
@@ -115,7 +102,7 @@ svg rect[data-note] {
    --secondary: oklch(0.97 0 0);
    --secondary-foreground: oklch(0.205 0 0);
    --muted: oklch(0.97 0 0);
-   --muted-foreground: oklch(0.556 0 0);
+   --muted-foreground: #888;
    --accent: oklch(0.97 0 0);
    --accent-foreground: oklch(0.205 0 0);
    --destructive: oklch(0.577 0.245 27.325);
@@ -139,8 +126,8 @@ svg rect[data-note] {
 }
 
 .dark {
-   --background: oklch(0.145 0 0);
-   --foreground: oklch(0.985 0 0);
+   --background: #121212;
+   --foreground: #fff;
    --card: oklch(0.205 0 0);
    --card-foreground: oklch(0.985 0 0);
    --popover: oklch(0.205 0 0);
@@ -150,7 +137,7 @@ svg rect[data-note] {
    --secondary: oklch(0.269 0 0);
    --secondary-foreground: oklch(0.985 0 0);
    --muted: oklch(0.269 0 0);
-   --muted-foreground: oklch(0.708 0 0);
+   --muted-foreground: #999;
    --accent: oklch(0.269 0 0);
    --accent-foreground: oklch(0.985 0 0);
    --destructive: oklch(0.704 0.191 22.216);
@@ -180,6 +167,6 @@ svg rect[data-note] {
     @apply bg-background text-foreground;
    }
   html {
-    @apply font-mono;
+    @apply font-sans;
    }
 }

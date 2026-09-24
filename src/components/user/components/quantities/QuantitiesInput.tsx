@@ -52,7 +52,7 @@ export function QuantitiesInput({
           +
         </button>
       </div>
-      <p className="text-xs text-theme-secondary">{subLabel}</p>
+      <p className="text-xs text-muted-foreground">{subLabel}</p>
     </div>
   );
 }

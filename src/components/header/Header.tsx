@@ -1,7 +1,11 @@
+import { useTheme } from "@/hooks/useTheme";
+
 // TODO: Everything for header
 export function Header() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <header className="z-20 sticky top-0 h-16 w-full bg-theme-bg lg:bg-transparent border-b-2 border-theme-text">
+    <header className="z-20 sticky top-0 h-16 w-full bg-background lg:bg-transparent border-b-2 border-foreground">
       <div className="max-w-screen-2xl flex md:grid md:grid-cols-4 md:gap-4 px-4 h-full mx-auto">
         <div className="items-center flex">
           <div
@@ -53,7 +57,7 @@ export function Header() {
         <div className="flex items-center justify-end grow">
           <div className="mr-4">
             {/* <modal-toggle aria-controls="Instructions"> */}
-            <button className="w-12 h-12 rounded-full md:rounded-lg md:w-auto md:px-4 md:font-bold bg-linear-to-r from-yellow-600 to-yellow-400 text-theme-bg">
+            <button className="w-12 h-12 rounded-full md:rounded-lg md:w-auto md:px-4 md:font-bold bg-linear-to-r from-yellow-600 to-yellow-400 text-background">
               <span className="md:hidden text-xl">?</span>
               <span className="hidden md:block">Instructions</span>
             </button>
@@ -61,7 +65,13 @@ export function Header() {
           </div>
           <div className="flex flex-col">
             <div className="dark-button">
-              <input type="checkbox" id="DarkMode" name="darkmode" />
+              <input
+                type="checkbox"
+                id="DarkMode"
+                name="darkmode"
+                checked={theme === "dark"}
+                onChange={toggleTheme}
+              />
               <label htmlFor="DarkMode" aria-label="Dark Mode Toggler"></label>
             </div>
           </div>

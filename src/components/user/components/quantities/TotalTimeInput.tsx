@@ -122,7 +122,7 @@ export function TotalTimeInput() {
           +
         </button>
       </div>
-      <p className="text-xs text-theme-secondary">in minutes</p>
+      <p className="text-xs text-muted-foreground">in minutes</p>
     </div>
   );
 }

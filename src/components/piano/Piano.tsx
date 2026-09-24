@@ -7,7 +7,7 @@ import { useRef, useEffect } from "react";
 const OCTAVE = 4;
 const GOLD = "rgba(251, 191, 36, 1)";
 const WHITE = "transparent";
-const BLACK = "var(--text-color)";
+const BLACK = "var(--foreground)";
 
 const KEY_MAP: Record<string, string> = {
   a: "C",
