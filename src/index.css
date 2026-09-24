@@ -1,7 +1,5 @@
 @import './styles/theme.css';
-@import './styles/range.css';
 @import './styles/gameify.css';
-@import './styles/levels.css';
 @import './styles/quantity.css';
 @import "tailwindcss";
 @import "tw-animate-css";
