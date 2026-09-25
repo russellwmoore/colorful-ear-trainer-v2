@@ -12,16 +12,16 @@ import { RangeInput } from "./components/quantities/RangeInput";
 
 export function User() {
   return (
-    <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-(--fullHeight) overflow-auto">
-      <div className="card order-1 md:order-2 overflow-auto flex-auto">
+    <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-app overflow-auto">
+      <div className="rounded-lg border-2 border-foreground p-4 order-1 md:order-2 overflow-auto flex-auto">
         {/* TODO: level info */}
         {/* <%- include('_level-info.ejs') %> */}
         <div id="UserCard">
-          <h2 className="-mt-4 -ml-4 -mr-4 bg-theme-text text-theme-bg font-bold px-4 py-2 text-lg">
+          <h2 className="-mt-4 -ml-4 -mr-4 bg-foreground text-background font-bold px-4 py-2 text-lg">
             Set Options:
           </h2>
           <div className="grid grid-cols-6 gap-y-4 gap-x-3 mb-4 mt-4">
-            <div className="col-span-4 border-theme-text border rounded-lg p-2 grid grid-cols-2 gap-2">
+            <div className="col-span-4 border-foreground border rounded-lg p-2 grid grid-cols-2 gap-2">
               <KeyCenter />
               <RandomizeBox />
             </div>
@@ -51,7 +51,7 @@ export function User() {
             </div>
           </div>
         </div>
-        <div className="-ml-4 -mr-4 -mb-4 p-4 mt-4 border-t-2 border-theme-text">
+        <div className="-ml-4 -mr-4 -mb-4 p-4 mt-4 border-t-2 border-foreground">
           <CadenceTempoInput />
         </div>
       </div>

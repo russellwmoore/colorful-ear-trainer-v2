@@ -7,7 +7,7 @@ import { useRef, useEffect } from "react";
 const OCTAVE = 4;
 const GOLD = "rgba(251, 191, 36, 1)";
 const WHITE = "transparent";
-const BLACK = "var(--text-color)";
+const BLACK = "var(--foreground)";
 
 const KEY_MAP: Record<string, string> = {
   a: "C",
@@ -111,7 +111,7 @@ export function Piano() {
 
   return (
     <div id="Piano" className="flex-auto min-h-0">
-      <svg viewBox="0 0 170 142">
+      <svg viewBox="0 0 170 142" preserveAspectRatio="xMidYMin meet" className="size-full">
         {pianoKeysInit.map((key) => {
           const noteName = key["data-note"].split(",")[0];
           return (
@@ -133,6 +133,7 @@ export function Piano() {
               fill={key.fill}
               data-key={key["data-key"]}
               data-note={key["data-note"]}
+              className="cursor-pointer select-none transition-all duration-200"
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUpOrLeave}
               onPointerLeave={handlePointerUpOrLeave}

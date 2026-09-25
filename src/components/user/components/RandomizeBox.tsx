@@ -1,4 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
+import { Switch } from "@/components/ui/switch";
 
 export function RandomizeBox() {
   const isRandomizeToggled = useEartrainerStore(
@@ -10,15 +11,14 @@ export function RandomizeBox() {
 
   return (
     <div className="col-span-1">
-      <label htmlFor="RandomKey" className="text-xs text-theme-text">
+      <label className="flex items-center gap-1 text-xs text-foreground">
         Randomize
-      </label>
-      <label className="toggle inline-block my-1">
-        <input
+        <Switch
           name="randomkey"
-          type="checkbox"
-          onChange={randomizeKeyCenter}
+          size="sm"
+          className="my-1"
           checked={isRandomizeToggled}
+          onCheckedChange={randomizeKeyCenter}
         />
       </label>
     </div>

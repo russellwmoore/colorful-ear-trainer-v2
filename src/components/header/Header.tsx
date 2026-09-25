@@ -1,12 +1,17 @@
+import { useTheme } from "@/hooks/useTheme";
+import { Switch } from "@/components/ui/switch";
+
 // TODO: Everything for header
 export function Header() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <header className="z-20 sticky top-0 h-16 w-full bg-theme-bg lg:bg-transparent border-b-2 border-theme-text">
+    <header className="z-20 sticky top-0 h-16 w-full bg-background lg:bg-transparent border-b-2 border-foreground">
       <div className="max-w-screen-2xl flex md:grid md:grid-cols-4 md:gap-4 px-4 h-full mx-auto">
         <div className="items-center flex">
           <div
             id="Mode"
-            className="mode-toggle relative rounded-lg overflow-hidden grid grid-cols-2 w-full h-12 font-bold mr-4"
+            className="group relative rounded-lg overflow-hidden grid grid-cols-2 w-full h-12 font-bold mr-4"
           >
             <div className="z-10">
               <input
@@ -15,7 +20,7 @@ export function Header() {
                 value="practice"
                 id="TogglePractice"
                 className="hidden"
-                // checked
+                defaultChecked
               />
               <label
                 htmlFor="TogglePractice"
@@ -41,29 +46,32 @@ export function Header() {
             </div>
             <div
               data-animated-label
-              className="animated-toggle absolute w-1/2 h-full top-0 bottom-0 left-0 bg-linear-to-r from-yellow-600 to-yellow-400"
+              className="absolute w-1/2 h-full top-0 bottom-0 left-0 bg-linear-to-r from-yellow-600 to-yellow-400 transition-transform group-has-[#TogglePlay:checked]:translate-x-full"
             ></div>
           </div>
         </div>
         <div className="md:text-center items-center md:justify-center hidden md:flex grow col-span-2">
-          <h1 className="text-2xl font-bold tracking-wider bg-linear-to-r from-yellow-500 via-blue-300 to-purple-400">
+          <h1 className="text-2xl font-bold tracking-wider bg-linear-to-r from-yellow-500 via-blue-300 to-purple-400 bg-clip-text text-transparent">
             Colorful Ear Trainer
           </h1>
         </div>
         <div className="flex items-center justify-end grow">
           <div className="mr-4">
             {/* <modal-toggle aria-controls="Instructions"> */}
-            <button className="w-12 h-12 rounded-full md:rounded-lg md:w-auto md:px-4 md:font-bold bg-linear-to-r from-yellow-600 to-yellow-400 text-theme-bg">
+            <button className="w-12 h-12 rounded-full md:rounded-lg md:w-auto md:px-4 md:font-bold bg-linear-to-r from-yellow-600 to-yellow-400 text-background">
               <span className="md:hidden text-xl">?</span>
               <span className="hidden md:block">Instructions</span>
             </button>
             {/* </modal-toggle> */}
           </div>
           <div className="flex flex-col">
-            <div className="dark-button">
-              <input type="checkbox" id="DarkMode" name="darkmode" />
-              <label htmlFor="DarkMode" aria-label="Dark Mode Toggler"></label>
-            </div>
+            <Switch
+              id="DarkMode"
+              name="darkmode"
+              aria-label="Dark mode"
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+            />
           </div>
         </div>
       </div>

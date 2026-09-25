@@ -1,3 +1,5 @@
+import { NativeSelect } from "@/components/ui/native-select";
+
 /**
  *
  * NoteSet, cadence and key are related through tonality.
@@ -11,84 +13,78 @@ export function NoteSet() {
   return (
     <>
       <p>Note Set:</p>
-      <div className="select-wrap">
-        <select
-          name="set-select"
-          id="NoteSet"
-          className="w-full input note-sets text-sm"
+      <NativeSelect
+        name="set-select"
+        id="NoteSet"
+        className="note-sets text-lg"
+      >
+        <option value="[0,7]" data-template="Perfect 5th" data-tonality="major">
+          Perfect 5th
+        </option>
+        <option value="[0,4,7]" data-template="Triad" data-tonality="major">
+          Triad
+        </option>
+        <option
+          value="[0,2,4,5,7]"
+          data-template="1 2 3 4 5"
+          data-tonality="major"
         >
-          <option
-            value="[0,7]"
-            data-template="Perfect 5th"
-            data-tonality="major"
-          >
-            Perfect 5th
-          </option>
-          <option value="[0,4,7]" data-template="Triad" data-tonality="major">
-            Triad
-          </option>
-          <option
-            value="[0,2,4,5,7]"
-            data-template="1 2 3 4 5"
-            data-tonality="major"
-          >
-            1 2 3 4 5
-          </option>
-          <option
-            value="[0,2,4,5,7,9]"
-            data-template="1 2 3 4 5 6"
-            data-tonality="major"
-          >
-            1 2 3 4 5 6
-          </option>
-          <option
-            value="[0,2,4,5,7,9,11]"
-            // selected
-            data-template="Diatonic Scale (Ionian)"
-            data-tonality="major"
-          >
-            Diatonic Scale (Ionian)
-          </option>
-          <option
-            value="[0,2,4,5,7,9,10,11]"
-            data-template="Diatonic + {10}"
-            data-tonality="major"
-          >
-            Diatonic + Bb
-          </option>
-          <option
-            value="[0,2,3,4,5,7,9,10,11]"
-            data-template="Diatonic + {10} + {3}"
-            data-tonality="major"
-          >
-            Diatonic + Bb + Eb
-          </option>
-          <option
-            value="[0,2,3,4,5,7,8,9,10,11]"
-            data-template="Diatonic + {10} + {3} + {8}"
-            data-tonality="major"
-          >
-            Diatonic + Bb + Eb + Ab
-          </option>
-          <option
-            value="[0,1,2,3,4,5,7,8,9,10,11]"
-            data-template="Diatonic + {10} + {3} + {8} + {1}"
-            data-tonality="major"
-          >
-            Diatonic + Bb + Eb + Ab + Db
-          </option>
-          <option
-            value="[0,1,2,3,4,5,6,7,8,9,10,11]"
-            data-template="Chromatic"
-            data-tonality="major"
-          >
-            Chromatic
-          </option>
-          <option value="[]" data-template="Custom" data-tonality="major">
-            Custom
-          </option>
-        </select>
-      </div>
+          1 2 3 4 5
+        </option>
+        <option
+          value="[0,2,4,5,7,9]"
+          data-template="1 2 3 4 5 6"
+          data-tonality="major"
+        >
+          1 2 3 4 5 6
+        </option>
+        <option
+          value="[0,2,4,5,7,9,11]"
+          // selected
+          data-template="Diatonic Scale (Ionian)"
+          data-tonality="major"
+        >
+          Diatonic Scale (Ionian)
+        </option>
+        <option
+          value="[0,2,4,5,7,9,10,11]"
+          data-template="Diatonic + {10}"
+          data-tonality="major"
+        >
+          Diatonic + Bb
+        </option>
+        <option
+          value="[0,2,3,4,5,7,9,10,11]"
+          data-template="Diatonic + {10} + {3}"
+          data-tonality="major"
+        >
+          Diatonic + Bb + Eb
+        </option>
+        <option
+          value="[0,2,3,4,5,7,8,9,10,11]"
+          data-template="Diatonic + {10} + {3} + {8}"
+          data-tonality="major"
+        >
+          Diatonic + Bb + Eb + Ab
+        </option>
+        <option
+          value="[0,1,2,3,4,5,7,8,9,10,11]"
+          data-template="Diatonic + {10} + {3} + {8} + {1}"
+          data-tonality="major"
+        >
+          Diatonic + Bb + Eb + Ab + Db
+        </option>
+        <option
+          value="[0,1,2,3,4,5,6,7,8,9,10,11]"
+          data-template="Chromatic"
+          data-tonality="major"
+        >
+          Chromatic
+        </option>
+        <option value="[]" data-template="Custom" data-tonality="major">
+          Custom
+        </option>
+      </NativeSelect>
       <select className="hidden note-sets" id="InactiveSet">
         <option value="[0,7]" data-template="Perfect 5th" data-tonality="minor">
           Perfect 5th

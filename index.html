@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>colorful-ear-trainer-v2</title>
+    <!-- Set the theme before first paint to avoid a light-mode flash; useTheme reads this back -->
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch (e) {}
+        if (stored === "dark" || (stored !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

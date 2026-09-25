@@ -1,5 +1,6 @@
 import { useEartrainerStore } from "@/store/store";
 import { useState } from "react";
+import { Stepper, StepperInput } from "./Stepper";
 
 const MAX_TOTAL_TIME = 5999;
 
@@ -68,61 +69,41 @@ export function TotalTimeInput() {
   };
 
   return (
-    <div>
-      <p className="text-sm">Total Time:</p>
-      <div className="mt-1 flex items-center max-w-full">
-        <button
-          type="button"
-          className="incrementer"
-          aria-label="Decrease Quantity"
-          onClick={onDecrement}
-        >
-          –
-        </button>
-        <div className="time-input grow min-w-0 flex items-center">
-          <input
-            id="CountdownMinutes"
-            inputMode="numeric"
-            min={MIN_MINUTES}
-            max={MAX_MINUTES}
-            name="countdown-minutes"
-            value={minutes}
-            pattern="\d{2}"
-            step="1"
-            autoComplete="off"
-            data-countdown
-            className="grow min-w-0 w-full text-center"
-            onBlur={convertFromInputsToTotalSeconds}
-            onChange={handleMinuteInputChange}
-          />
-          :
-          <input
-            id="CountdownSeconds"
-            inputMode="numeric"
-            min={MIN_SECONDS}
-            max={MAX_SECONDS}
-            name="countdown-seconds"
-            value={seconds}
-            pattern="\d{2}"
-            step="1"
-            autoComplete="off"
-            data-countdown
-            className="grow min-w-0 w-full text-center"
-            onChange={handleSecondInputChange}
-            onBlur={convertFromInputsToTotalSeconds}
-          />
-        </div>
-        <button
-          type="button"
-          className="incrementer"
-          data-increment=""
-          aria-label="Increase Quantity"
-          onClick={onIncrement}
-        >
-          +
-        </button>
-      </div>
-      <p className="text-xs text-theme-secondary">in minutes</p>
-    </div>
+    <Stepper
+      label="Total Time:"
+      subLabel="in minutes"
+      onIncrement={onIncrement}
+      onDecrement={onDecrement}
+    >
+      <StepperInput
+        id="CountdownMinutes"
+        inputMode="numeric"
+        min={MIN_MINUTES}
+        max={MAX_MINUTES}
+        name="countdown-minutes"
+        value={minutes}
+        pattern="\d{2}"
+        step="1"
+        autoComplete="off"
+        data-countdown
+        onBlur={convertFromInputsToTotalSeconds}
+        onChange={handleMinuteInputChange}
+      />
+      :
+      <StepperInput
+        id="CountdownSeconds"
+        inputMode="numeric"
+        min={MIN_SECONDS}
+        max={MAX_SECONDS}
+        name="countdown-seconds"
+        value={seconds}
+        pattern="\d{2}"
+        step="1"
+        autoComplete="off"
+        data-countdown
+        onChange={handleSecondInputChange}
+        onBlur={convertFromInputsToTotalSeconds}
+      />
+    </Stepper>
   );
 }

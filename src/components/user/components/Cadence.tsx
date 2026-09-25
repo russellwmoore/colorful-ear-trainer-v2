@@ -1,4 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
+import { NativeSelect } from "@/components/ui/native-select";
 import {
   CADENCE_REGISTRY_MAP,
   type CadenceType,
@@ -23,30 +24,27 @@ export function Cadence() {
   return (
     <>
       <p>Cadence</p>
-      <div className="select-wrap">
-        <select
-          name="tonality"
-          id="Tonality"
-          className="input w-full"
-          onChange={(e) => {
-            const v = e.target.value;
-            if (isCadenceType(v)) setCadence(v);
-          }}
-          value={cadence}
-        >
-          {groups.map(({ label, quality }) => (
-            <optgroup key={quality} label={label}>
-              {cadenceEntries
-                .filter(([, info]) => info.quality === quality)
-                .map(([key, info]) => (
-                  <option key={key} value={key}>
-                    {info.label}
-                  </option>
-                ))}
-            </optgroup>
-          ))}
-        </select>
-      </div>
+      <NativeSelect
+        name="tonality"
+        id="Tonality"
+        onChange={(e) => {
+          const v = e.target.value;
+          if (isCadenceType(v)) setCadence(v);
+        }}
+        value={cadence}
+      >
+        {groups.map(({ label, quality }) => (
+          <optgroup key={quality} label={label}>
+            {cadenceEntries
+              .filter(([, info]) => info.quality === quality)
+              .map(([key, info]) => (
+                <option key={key} value={key}>
+                  {info.label}
+                </option>
+              ))}
+          </optgroup>
+        ))}
+      </NativeSelect>
     </>
   );
 }

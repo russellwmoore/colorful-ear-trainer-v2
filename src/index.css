@@ -1,26 +1,18 @@
-@import './styles/theme.css';
-@import './styles/range.css';
-@import './styles/gameify.css';
-@import './styles/levels.css';
-@import './styles/quantity.css';
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/jetbrains-mono";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* inline: these values reference runtime vars set in theme.css (body/.light-theme/.dark-theme),
-   not literals Tailwind can resolve at build time — plain @theme silently drops them from :root */
+/* inline: these values reference the runtime vars in :root/.dark below, not literals
+   Tailwind can resolve at build time — plain @theme silently drops them from :root */
 @theme inline {
-   --color-theme-text: var(--text-color);
-   --color-theme-secondary: var(--text-secondary);
-   --color-theme-bg: var(--bkg-color);
-   --grid-template-columns-14: repeat(14, minmax(0, 1fr));
-   --max-width-32: 8rem;
-   --transition-duration-0: 0ms;
    --font-heading: var(--font-mono);
    --font-mono: 'JetBrains Mono Variable', monospace;
+   /* viewport minus header (h-16 + border-b-2) and main padding (p-4 top + bottom) */
+   --spacing-app: calc(100dvh - 4rem - 2px - 2rem);
+   --font-sans: 'Helvetica Neue', Helvetica, sans-serif;
    --color-sidebar-ring: var(--sidebar-ring);
    --color-sidebar-border: var(--sidebar-border);
    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -61,53 +53,9 @@
    --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body,
-html {
-    font-size: 16px;
-    font-family: 'Helvetica Neue', Helvetica, sans-serif;
-}
-
-h1 {
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Maybe make these components instead? */
-.input {
-    @apply border border-theme-text rounded-lg px-2 text-lg z-0;
-    background: var(--bkg-color);
-    color: var(--text-color);
-}
-
-.select-wrap{
-    @apply relative;
-    &:after{
-        content: '▾';
-        @apply absolute w-4 h-4 top-1/2 transform -translate-y-1/2 right-1 -mt-1 pointer-events-none text-theme-text text-sm;
-    }
-}
-
-/* make component here */
-.btn {
-    @apply rounded-lg px-5 py-3  font-bold text-black;
-    &:active{
-        color: var(--bkg-color);
-        background: var(--text-color);
-    }
-}
-
-.card {
-    @apply rounded-lg border-2 border-solid p-4;
-    border-color: var(--text-color);
-}
-
-svg rect[data-note] {
-    @apply cursor-pointer select-none transition-all duration-200;
-}
-
 :root {
-   --background: oklch(1 0 0);
-   --foreground: oklch(0.145 0 0);
+   --background: oklch(0.952 0 0);
+   --foreground: oklch(0.182 0 0);
    --card: oklch(1 0 0);
    --card-foreground: oklch(0.145 0 0);
    --popover: oklch(1 0 0);
@@ -117,12 +65,12 @@ svg rect[data-note] {
    --secondary: oklch(0.97 0 0);
    --secondary-foreground: oklch(0.205 0 0);
    --muted: oklch(0.97 0 0);
-   --muted-foreground: oklch(0.556 0 0);
+   --muted-foreground: oklch(0.627 0 0);
    --accent: oklch(0.97 0 0);
    --accent-foreground: oklch(0.205 0 0);
    --destructive: oklch(0.577 0.245 27.325);
    --border: oklch(0.922 0 0);
-   --input: oklch(0.922 0 0);
+   --input: oklch(0.738 0 0);
    --ring: oklch(0.708 0 0);
    --chart-1: oklch(0.87 0 0);
    --chart-2: oklch(0.556 0 0);
@@ -141,8 +89,8 @@ svg rect[data-note] {
 }
 
 .dark {
-   --background: oklch(0.145 0 0);
-   --foreground: oklch(0.985 0 0);
+   --background: oklch(0.182 0 0);
+   --foreground: oklch(1 0 0);
    --card: oklch(0.205 0 0);
    --card-foreground: oklch(0.985 0 0);
    --popover: oklch(0.205 0 0);
@@ -152,7 +100,7 @@ svg rect[data-note] {
    --secondary: oklch(0.269 0 0);
    --secondary-foreground: oklch(0.985 0 0);
    --muted: oklch(0.269 0 0);
-   --muted-foreground: oklch(0.708 0 0);
+   --muted-foreground: oklch(0.683 0 0);
    --accent: oklch(0.269 0 0);
    --accent-foreground: oklch(0.985 0 0);
    --destructive: oklch(0.704 0.191 22.216);
@@ -182,6 +130,6 @@ svg rect[data-note] {
     @apply bg-background text-foreground;
    }
   html {
-    @apply font-mono;
+    @apply font-sans;
    }
 }
