@@ -6,6 +6,11 @@ import { type KeyCenterType } from "@/utils/noteNames";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { transpose } from "@/utils/transpose";
 import { synth } from "./synth";
+import { Countdown } from "./countdownTimer";
+import { useTimerStore } from "./timerStore";
+
+// TODO: need a file of consts for config
+const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // TODO: Consider slices of state here instead of this blobby thing.
@@ -13,6 +18,12 @@ const isDevelopment = process.env.NODE_ENV === "development";
 // TODO: Determine where this init should go.
 // Possibly at the top level of App in a useEffect on first mount. Then use the onLoad
 // callback to change a global state to indicate readiness.
+
+const countdown = new Countdown({
+  initialDurationMs: INITIAL_GAME_TIME_DURATION,
+  onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
+  onComplete: () => useEartrainerStore.getState().resetTimerToInitialValue(),
+});
 
 export type EarTrainerState = {
   keyCenter: KeyCenterType;
@@ -31,8 +42,9 @@ export type EarTrainerState = {
   setOctave: (newOctave: number) => void;
   cadenceTempo: number;
   setCadenceTempo: (newCadence: number) => void;
-  totalTime: number;
-  setTotalTime: (newTime: number) => void;
+  // totalTime in ms
+  totalInitialGameTime: number;
+  setTotalInitialGameTime: (newTime: number) => void;
   // readonly type is here to satisfy the library that handles the octave slider 🤮
   octaveRange: readonly number[];
   setOctaveRange: (newOctaveRange: readonly number[]) => void;
@@ -40,8 +52,17 @@ export type EarTrainerState = {
   playCadence: () => Promise<void>;
   isPlayingCadence: boolean;
   setIsPlayingCadence: (isPlaying: boolean) => void;
+  isPlayingGame: boolean;
+  setIsPlayingGame: (isPlaying: boolean) => void;
+  startCountdown: () => void;
+  pauseCountdown: () => void;
+  isCountdownPaused: boolean;
+  resetTimerToInitialValue: () => void;
 };
 
+/**
+ * All time is stored as milliseconds. Use utility functions for displays
+ */
 export const useEartrainerStore = create<EarTrainerState>()(
   devtools(
     persist(
@@ -76,9 +97,15 @@ export const useEartrainerStore = create<EarTrainerState>()(
         cadenceTempo: 60,
         setCadenceTempo: (newTempo: number) =>
           set({ cadenceTempo: newTempo }, undefined, "setCadenceTempo"),
-        totalTime: 300,
-        setTotalTime: (newTotalTime: number) =>
-          set({ totalTime: newTotalTime }, undefined, "setTotalTime"),
+        totalInitialGameTime: INITIAL_GAME_TIME_DURATION,
+        setTotalInitialGameTime: (newTotalTimeInMs: number) => {
+          countdown.setDuration(newTotalTimeInMs);
+          set(
+            { totalInitialGameTime: newTotalTimeInMs },
+            undefined,
+            "totalInitialGameTime",
+          );
+        },
         octaveRange: [4, 5],
         setOctaveRange: (newOctaveRange: readonly number[]) => {
           set({ octaveRange: newOctaveRange }, undefined, "setOctaveRange");
@@ -144,7 +171,40 @@ export const useEartrainerStore = create<EarTrainerState>()(
             }
           });
         },
+        isPlayingGame: false,
+        setIsPlayingGame: (isPlaying) =>
+          set({ isPlayingGame: isPlaying }, undefined, "setIsPlayingGame"),
+        startCountdown: () => {
+          countdown.start();
+          set({ isCountdownPaused: false }, undefined, "setIstCountdownPaused");
+        },
+        pauseCountdown: () => {
+          countdown.pause();
+          set({ isCountdownPaused: true });
+        },
+        isCountdownPaused: true,
+        setIsCountdownPaused: (isPaused: boolean) =>
+          set(
+            { isCountdownPaused: isPaused },
+            undefined,
+            "setIsCountdownPaused",
+          ),
+        resetTimerToInitialValue: () => {
+          countdown.initialDuration = get().totalInitialGameTime;
+          useTimerStore.setState({
+            countdownRemaining: get().totalInitialGameTime,
+          });
+          set(
+            {
+              isPlayingGame: false,
+              isCountdownPaused: true,
+            },
+            undefined,
+            "resetTimerToInitialValue",
+          );
+        },
       }),
+
       {
         name: "EarTrainerStore",
         // Only need to store the relevant game state,
@@ -158,7 +218,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           cadenceEvery: state.cadenceEvery,
           octave: state.octave,
           cadenceTempo: state.cadenceTempo,
-          totalTime: state.totalTime,
+          totalInitialGameTime: state.totalInitialGameTime,
           octaveRange: state.octaveRange,
         }),
       },
@@ -166,6 +226,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
     // TODO: devtools remain running, but they are not logged when 'enabbled:false',
     // so there is probably a perf hit here. Create a wrapper that has an entirely
     // separate implementation of devtools instead of the "enabled" flag
-    { name: "EarTrainerStore", enabled: isDevelopment },
+    {
+      name: "EarTrainerStore",
+      enabled: isDevelopment,
+    },
   ),
 );
