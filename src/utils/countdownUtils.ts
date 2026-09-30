@@ -13,9 +13,6 @@ export class Countdown {
   rafId: number | null;
   isPaused: boolean;
 
-  // This needs to be able to update the time remaining as the user makes changes in the user area
-  // needs to update the time remaining with
-
   constructor({ initialDurationMs, onTick, onComplete }: CountdownProps) {
     this.initialDuration = initialDurationMs;
     this.timeRemaining = initialDurationMs;
@@ -72,6 +69,7 @@ export class Countdown {
     const timeElapsed = performance.now() - this.startTime;
     this.timeRemaining = Math.max(0, this.initialDuration - timeElapsed);
 
+    // TODO: Throttle to not update so aggressively? update on the 10th of a second perhaps?
     this.onTick(this.timeRemaining);
 
     if (this.timeRemaining <= 0) {
