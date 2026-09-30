@@ -19,12 +19,6 @@ const isDevelopment = process.env.NODE_ENV === "development";
 // Possibly at the top level of App in a useEffect on first mount. Then use the onLoad
 // callback to change a global state to indicate readiness.
 
-const countdown = new Countdown({
-  initialDurationMs: INITIAL_GAME_TIME_DURATION,
-  onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
-  onComplete: () => useEartrainerStore.getState().resetTimerToInitialValue(),
-});
-
 export type EarTrainerState = {
   keyCenter: KeyCenterType;
   setKeyCenter: (newKey: KeyCenterType) => void;
@@ -99,7 +93,11 @@ export const useEartrainerStore = create<EarTrainerState>()(
           set({ cadenceTempo: newTempo }, undefined, "setCadenceTempo"),
         totalInitialGameTime: INITIAL_GAME_TIME_DURATION,
         setTotalInitialGameTime: (newTotalTimeInMs: number) => {
-          countdown.setDuration(newTotalTimeInMs);
+          // if the user is playing, don't set this time here on the countdown object.
+          const isUserCurrentlyPlaying = get().isPlayingGame;
+          if (!isUserCurrentlyPlaying) {
+            countdown.setDuration(newTotalTimeInMs);
+          }
           set(
             { totalInitialGameTime: newTotalTimeInMs },
             undefined,
@@ -232,3 +230,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
     },
   ),
 );
+
+const countdown = new Countdown({
+  initialDurationMs: useEartrainerStore.getState().totalInitialGameTime,
+  onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
+  onComplete: () => useEartrainerStore.getState().resetTimerToInitialValue(),
+});
