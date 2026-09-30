@@ -1,5 +1,5 @@
 import { PlayButton } from "./PlayButton";
-
+import { CountDown } from "./components/Countdown";
 export function Game() {
   return (
     <>
@@ -8,35 +8,12 @@ export function Game() {
 
       <PlayButton />
       <div className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative">
-        <div className="flex flex-col items-center justify-center">
-          {/* TODO: Countdown Timer Logic */}
-          {/* <countdown-timer id="Countdown" className="block w-full h-full max-w-32"> */}
-          <div
-            data-face
-            className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-w-1 aspect-h-1"
-          >
-            <div className="rounded-full flex flex-col justify-center items-center border-2 border-white">
-              <span data-time className="text-xl md:text-4xl font-bold">
-                05:00
-              </span>
-              <span className="text-sm hidden md:block">remaining</span>
-              <span className="text-sm md:hidden">left</span>
-              <div
-                className="absolute bg-linear-to-b from-green-500 to-green-600 left-0 bottom-0 right-0 h-full z-[-1]"
-                data-bg
-              ></div>
-            </div>
-          </div>
-          {/* </countdown-timer> */}
-        </div>
+        <CountDown />
         <div className="flex flex-col items-center justify-center">
           {/* TODO stopwatch time logic */}
           {/* <stopwatch-timer id="Stopwatch" className="block w-full h-full max-w-32"> */}
-          <div
-            data-face
-            className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-w-1 aspect-h-1"
-          >
-            <div className="rounded-full flex flex-col justify-center items-center border-2 border-white">
+          <div className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-square">
+            <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
               <div data-time className="text-xl md:text-4xl font-bold">
                 0.00s
               </div>

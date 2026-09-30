@@ -10,17 +10,17 @@ export function RandomizeBox() {
   );
 
   return (
-    <div className="col-span-1">
-      <label className="flex items-center gap-1 text-xs text-foreground">
+    <div className="col-span-1 flex flex-col items-center gap-1">
+      <label htmlFor="randomkey" className="text-s text-foreground">
         Randomize
-        <Switch
-          name="randomkey"
-          size="sm"
-          className="my-1"
-          checked={isRandomizeToggled}
-          onCheckedChange={randomizeKeyCenter}
-        />
       </label>
+      <Switch
+        id="randomkey"
+        name="randomkey"
+        className="my-1"
+        checked={isRandomizeToggled}
+        onCheckedChange={randomizeKeyCenter}
+      />
     </div>
   );
 }

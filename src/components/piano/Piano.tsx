@@ -111,7 +111,11 @@ export function Piano() {
 
   return (
     <div id="Piano" className="flex-auto min-h-0">
-      <svg viewBox="0 0 170 142" preserveAspectRatio="xMidYMin meet" className="size-full">
+      <svg
+        viewBox="0 0 170 142"
+        preserveAspectRatio="xMidYMin meet"
+        className="size-full"
+      >
         {pianoKeysInit.map((key) => {
           const noteName = key["data-note"].split(",")[0];
           return (

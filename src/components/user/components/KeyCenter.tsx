@@ -31,6 +31,7 @@ export function KeyCenter() {
       <select
         onChange={(e) => setKeyCenter(e.target.value as KeyCenterType)}
         value={keyCenter}
+        id="keyCenter"
       >
         {keyCenterDropDown.map((key) => (
           <option key={key.value} value={key.value}>
