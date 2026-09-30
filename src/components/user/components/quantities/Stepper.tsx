@@ -24,7 +24,7 @@ export function Stepper({
         <StepperButton aria-label="Decrease Quantity" onClick={onDecrement}>
           –
         </StepperButton>
-        <div className="flex min-w-0 grow items-center border-y border-foreground leading-8">
+        <div className="flex min-w-0 grow items-center border-y border-foreground">
           {children}
         </div>
         <StepperButton
@@ -44,7 +44,7 @@ export function StepperInput({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "h-8 w-full min-w-0 grow appearance-none border-0 bg-background px-2 py-0 text-center text-foreground",
+        "h-7.5 w-full min-w-0 grow appearance-none border-0 bg-background px-2 py-0 text-center text-foreground",
         className,
       )}
       {...props}
@@ -56,7 +56,7 @@ function StepperButton(props: ComponentProps<"button">) {
   return (
     <button
       type="button"
-      className="flex size-8 flex-none items-center justify-center rounded-sm border border-foreground bg-background p-0 text-foreground active:bg-foreground active:text-background"
+      className="flex size-8 flex-none items-center justify-center border border-foreground bg-background p-0 text-foreground active:bg-foreground active:text-background"
       {...props}
     />
   );
