@@ -22,7 +22,8 @@ const notes: (readonly NoteName[])[] = [
 ];
 
 type TransposeType = {
-  set: number[];
+  // readonly for types
+  set: number[] | readonly number[];
   keyCenter: FlatName;
   octave?: number;
   flatten?: boolean;
@@ -54,7 +55,7 @@ export function notesAsNumber(set: NoteName[], keyCenter: KeyCenterType) {
   });
 }
 
-function normalizeIndex(i: number) {
+export function normalizeIndex(i: number) {
   return ((i % 12) + 12) % 12;
 }
 

@@ -4,6 +4,7 @@ import { type CadenceType } from "@/utils/cadences";
 import * as Tone from "tone";
 import { type KeyCenterType } from "@/utils/noteNames";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
+import { type NoteSetId } from "@/utils/noteSets";
 import { transpose } from "@/utils/transpose";
 import { synth } from "./synth";
 import { Countdown } from "./countdownTimer";
@@ -52,6 +53,10 @@ export type EarTrainerState = {
   pauseCountdown: () => void;
   isCountdownPaused: boolean;
   resetTimerToInitialValue: () => void;
+  noteSetId: NoteSetId;
+  setNoteSetId: (noteSetId: NoteSetId) => void;
+  customNoteSet: number[] | null;
+  setCustomNoteSet: (newNoteSet: number[]) => void;
 };
 
 /**
@@ -164,6 +169,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
             if (i === array.length - 1) {
               const id = setTimeout(() => {
                 setIsCurrentlyPlaying(false);
+                // option to put event that the candence has finished playing
+                // if this is the first time a user is playing the cadence and the game is playing
+                //  then play the notes that the user has to guess
                 return clearTimeout(id);
               }, time * 1000);
             }
@@ -201,6 +209,20 @@ export const useEartrainerStore = create<EarTrainerState>()(
             "resetTimerToInitialValue",
           );
         },
+        noteSetId: "perfect5",
+        setNoteSetId: (noteSetId: NoteSetId) => {
+          set({ noteSetId, customNoteSet: null }, undefined, "setNoteSetId");
+        },
+        customNoteSet: null,
+        setCustomNoteSet: (newNoteSet: number[]) =>
+          set(
+            {
+              customNoteSet: newNoteSet,
+              noteSetId: "custom",
+            },
+            undefined,
+            "setCustomNoteSet",
+          ),
       }),
 
       {
@@ -218,6 +240,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           cadenceTempo: state.cadenceTempo,
           totalInitialGameTime: state.totalInitialGameTime,
           octaveRange: state.octaveRange,
+          noteSetId: state.noteSetId,
         }),
       },
     ),
