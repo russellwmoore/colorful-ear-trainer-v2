@@ -36,3 +36,20 @@ export const flats: readonly FlatName[] = PITCH_CLASSES.map((n) =>
 );
 
 export const allNotes: NoteName[] = PITCH_CLASSES.flat();
+
+// These are the key centers that will display flats or naturals for
+// available note sets. All key centers not listed here will be by default
+// categorized as sharps
+export const flatKeyCenters: Partial<FlatName>[] = [
+  "C",
+  "Db",
+  "Eb",
+  "F",
+  "Gb",
+  "Ab",
+  "Bb",
+] as const;
+
+export const IONIAN_INTERVALS = [0, 2, 4, 5, 7, 9, 11];
+export const AEOLIAN_INTERVALS = [0, 2, 3, 5, 7, 8, 10];
+export const CHROMATIC_INTERVALS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
