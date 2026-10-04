@@ -81,7 +81,7 @@ export function NoteSetPicker() {
         return (
           <label
             className={cn(
-              "relative flex items-center justify-center w-8 h-8 border border-white rounded-full cursor-pointer select-none has-checked:font-semibold text-theme-text",
+              "relative flex items-center justify-center w-8 h-8 border border-foreground rounded-full cursor-pointer select-none has-checked:font-semibold text-theme-text",
               additionalStyles,
             )}
             key={note}
