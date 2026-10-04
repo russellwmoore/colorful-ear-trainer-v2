@@ -16,4 +16,5 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  base: "/colorful-ear-trainer-v2/",
 });
