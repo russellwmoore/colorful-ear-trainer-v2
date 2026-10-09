@@ -1,5 +1,6 @@
 import { PlayButton } from "./PlayButton";
 import { CountDown } from "./components/Countdown";
+import { Countup } from "./components/Countup";
 export function Game() {
   return (
     <>
@@ -9,23 +10,7 @@ export function Game() {
       <PlayButton />
       <div className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative">
         <CountDown />
-        <div className="flex flex-col items-center justify-center">
-          {/* TODO stopwatch time logic */}
-          {/* <stopwatch-timer id="Stopwatch" className="block w-full h-full max-w-32"> */}
-          <div className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-square">
-            <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
-              <div data-time className="text-xl md:text-4xl font-bold">
-                0.00s
-              </div>
-              <div className="text-sm md:text-base md:pt-1 md:mt-1 border-t border-white">
-                <span data-limit className="mr-1">
-                  1s
-                </span>
-              </div>
-            </div>
-          </div>
-          {/* </stopwatch-timer> */}
-        </div>
+        <Countup />
         <div className="z-10 flex flex-col items-center justify-center">
           <div className="w-full flex flex-col bg-linear-to-r pt-1 rounded-lg border-2 border-white text-white">
             <div className="text-lg md:text-xl">Streak:</div>
@@ -42,6 +27,7 @@ export function Game() {
             </div>
           </div>
         </div>
+
         <div className="z-10 flex flex-col items-center justify-center w-full">
           <div className="w-full bg-linear-to-r text-white pt-1 rounded-lg border-2 border-white">
             <div className="text-lg md:text-xl">Score:</div>
