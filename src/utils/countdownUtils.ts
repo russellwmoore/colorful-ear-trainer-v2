@@ -83,19 +83,17 @@ export class Countdown {
 }
 
 /**
- * Takes milliseconds, returns a complete string of MM:SS
+ * Takes milliseconds, returns a complete string of MM:SS:MSMS
  * @param ms milliseconds
- * @returns "MM:SS"
  */
 export function millisecondsToMMSS(ms: number) {
-  // Round up so a countdown only reads 00:00 once time has actually run out
-
-  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-
+  const hundredths = Math.floor(ms / 10) % 100;
   return {
     minutes: String(minutes).padStart(2, "0"),
     seconds: String(seconds).padStart(2, "0"),
+    hundredths: String(hundredths).padStart(2, "0"),
   };
 }

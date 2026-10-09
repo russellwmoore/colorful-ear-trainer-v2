@@ -9,6 +9,7 @@ import { transpose } from "@/utils/transpose";
 import { synth } from "./synth";
 import { Countdown } from "./countdownTimer";
 import { useTimerStore } from "./timerStore";
+import { Countup } from "./countupStopwatch";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
@@ -182,10 +183,12 @@ export const useEartrainerStore = create<EarTrainerState>()(
           set({ isPlayingGame: isPlaying }, undefined, "setIsPlayingGame"),
         startCountdown: () => {
           countdown.start();
+          countup.start();
           set({ isCountdownPaused: false }, undefined, "setIstCountdownPaused");
         },
         pauseCountdown: () => {
           countdown.pause();
+          countup.pause();
           set({ isCountdownPaused: true });
         },
         isCountdownPaused: true,
@@ -258,4 +261,13 @@ const countdown = new Countdown({
   initialDurationMs: useEartrainerStore.getState().totalInitialGameTime,
   onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
   onComplete: () => useEartrainerStore.getState().resetTimerToInitialValue(),
+});
+
+const countup = new Countup({
+  initialExpirationTime:
+    useEartrainerStore.getState().timePerNote *
+    useEartrainerStore.getState().notes *
+    1000,
+  onTick: (ms) => useTimerStore.setState({ currentCountUp: ms }),
+  onComplete: () => console.log("DONE"),
 });

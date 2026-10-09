@@ -11,8 +11,10 @@ import { create } from "zustand";
 type TimerState = {
   // ms
   countdownRemaining: number;
+  currentCountUp: number;
 };
 // TODO: Add game play stopwatch timer.
 export const useTimerStore = create<TimerState>()(() => ({
   countdownRemaining: 0,
+  currentCountUp: 0,
 }));

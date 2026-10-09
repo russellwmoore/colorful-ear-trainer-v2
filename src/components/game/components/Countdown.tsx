@@ -33,7 +33,11 @@ export function CountDown() {
           <span className="text-sm hidden md:block">remaining</span>
           <span className="text-sm md:hidden">left</span>
           <div
-            className="absolute bg-linear-to-b from-green-500 to-green-600 left-0 bottom-0 right-0 h-full -z-1"
+            className="absolute bg-linear-to-b from-green-500 to-green-600 left-0 bottom-0 right-0 -z-1 h-full"
+            style={{
+              maxHeight: `${isPlayingGame ? "0" : "100%"}`,
+              transition: `max-height ${isPlayingGame ? totalInitialGameTime : 0}ms linear`,
+            }}
             data-bg
           ></div>
         </div>
