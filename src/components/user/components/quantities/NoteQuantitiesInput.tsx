@@ -6,8 +6,12 @@ const MAX = 12;
 const STEP = 1;
 
 export function NoteQuantitiesInput() {
-  const amountOfNotes = useEartrainerStore((state) => state.notes);
-  const setAmountOfNotes = useEartrainerStore((state) => state.setNotes);
+  const amountOfNotes = useEartrainerStore(
+    (state) => state.amountOfnotesToGuess,
+  );
+  const setAmountOfNotes = useEartrainerStore(
+    (state) => state.setAmountOfNotesToGuess,
+  );
 
   const handleIncrement = () => {
     if (amountOfNotes >= MAX) return;

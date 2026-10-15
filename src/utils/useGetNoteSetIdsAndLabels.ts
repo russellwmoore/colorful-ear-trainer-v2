@@ -6,7 +6,7 @@ import { NOTE_SETS, type NoteSetId } from "./noteSets";
 export function useGetNoteSetIdsAndLabels(quality: "major" | "minor") {
   const keyCenter = useEartrainerStore((state) => state.keyCenter);
   const transposedNoteNames = transpose({
-    set: CHROMATIC_INTERVALS,
+    arrOfNoteNumbers: CHROMATIC_INTERVALS,
     keyCenter,
   });
 

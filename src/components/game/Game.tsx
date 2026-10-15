@@ -1,4 +1,4 @@
-import { PlayButton } from "./PlayButton";
+import { GameControls } from "./GameControls";
 import { CountDown } from "./components/Countdown";
 import { Countup } from "./components/Countup";
 export function Game() {
@@ -7,7 +7,7 @@ export function Game() {
       {/* TODO: Game area logic */}
       {/* <game-area id="Gameify" className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative"> */}
 
-      <PlayButton />
+      <GameControls />
       <div className="rounded-lg flex-none justify-center select-none items-center grid grid-cols-4 md:grid-cols-2 text-center text-white gap-2 md:gap-4 p-2 md:p-4 relative">
         <CountDown />
         <Countup />

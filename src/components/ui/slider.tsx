@@ -43,19 +43,17 @@ function Slider({
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
-          <>
-            <SliderPrimitive.Thumb
-              data-slot="slider-thumb"
-              key={index}
-              className="relative flex items-center justify-center shrink-0 rounded-none border border-foreground bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-1 focus-visible:ring-1 focus-visible:outline-hidden active:ring-1 disabled:pointer-events-none disabled:opacity-50"
-              style={{ width: thumbSize, height: thumbSize }}
-            >
-              ||
-              <span className="absolute top-full left-1/2 mt-2 -translate-x-1/2 text-sm font-large text-foreground select-none border border-foreground p-1.5 pl-2.5 pr-2.5">
-                {_values[index]}
-              </span>
-            </SliderPrimitive.Thumb>
-          </>
+          <SliderPrimitive.Thumb
+            data-slot="slider-thumb"
+            key={`${index}+thumb`}
+            className="relative flex items-center justify-center shrink-0 rounded-none border border-foreground bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-1 focus-visible:ring-1 focus-visible:outline-hidden active:ring-1 disabled:pointer-events-none disabled:opacity-50"
+            style={{ width: thumbSize, height: thumbSize }}
+          >
+            ||
+            <span className="absolute top-full left-1/2 mt-2 -translate-x-1/2 text-sm font-large text-foreground select-none border border-foreground p-1.5 pl-2.5 pr-2.5">
+              {_values[index]}
+            </span>
+          </SliderPrimitive.Thumb>
         ))}
       </SliderPrimitive.Control>
     </SliderPrimitive.Root>

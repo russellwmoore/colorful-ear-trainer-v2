@@ -1,22 +1,22 @@
 import { expect, test, describe } from "vitest";
-
-import { normalizeIndex, transpose } from "./transpose";
+import type { NoteName } from "./noteNames";
+import { normalizeIndex, transpose, notesAsNumber } from "./transpose";
 
 describe("transpose", () => {
   test("Baseline transpose behavior", () => {
     const manyTransposes = [
-      transpose({ set: [0], keyCenter: "C" }),
-      transpose({ set: [0], keyCenter: "D" }),
-      transpose({ set: [0], keyCenter: "Bb" }),
+      transpose({ arrOfNoteNumbers: [0], keyCenter: "C" }),
+      transpose({ arrOfNoteNumbers: [0], keyCenter: "D" }),
+      transpose({ arrOfNoteNumbers: [0], keyCenter: "Bb" }),
     ];
     expect(manyTransposes).toStrictEqual([["C"], ["D"], ["Bb"]]);
   });
 
   test("Triad example", () => {
     const manyTransposes = [
-      transpose({ set: [0, 4, 7], keyCenter: "C" }),
-      transpose({ set: [0, 4, 7], keyCenter: "D" }),
-      transpose({ set: [0, 4, 7], keyCenter: "Bb" }),
+      transpose({ arrOfNoteNumbers: [0, 4, 7], keyCenter: "C" }),
+      transpose({ arrOfNoteNumbers: [0, 4, 7], keyCenter: "D" }),
+      transpose({ arrOfNoteNumbers: [0, 4, 7], keyCenter: "Bb" }),
     ];
     expect(manyTransposes).toStrictEqual([
       ["C", "E", "G"],
@@ -27,9 +27,9 @@ describe("transpose", () => {
 
   test("Negative numbers example", () => {
     const manyTransposes = [
-      transpose({ set: [-11, -4, -1], keyCenter: "C" }),
-      transpose({ set: [-11, -4, -1], keyCenter: "D" }),
-      transpose({ set: [-11, -4, -1], keyCenter: "Bb" }),
+      transpose({ arrOfNoteNumbers: [-11, -4, -1], keyCenter: "C" }),
+      transpose({ arrOfNoteNumbers: [-11, -4, -1], keyCenter: "D" }),
+      transpose({ arrOfNoteNumbers: [-11, -4, -1], keyCenter: "Bb" }),
     ];
     expect(manyTransposes).toStrictEqual([
       ["Db", "Ab", "B"],
@@ -41,12 +41,20 @@ describe("transpose", () => {
   test("For use with synth playback, include octaves", () => {
     const manyTransposes = [
       transpose({
-        set: [0, 3, 7],
+        arrOfNoteNumbers: [0, 3, 7],
         keyCenter: "C",
         withOctave: true,
       }),
-      transpose({ set: [0, 3, 7], keyCenter: "D", withOctave: true }),
-      transpose({ set: [0, 3, 7], keyCenter: "Bb", withOctave: true }),
+      transpose({
+        arrOfNoteNumbers: [0, 3, 7],
+        keyCenter: "D",
+        withOctave: true,
+      }),
+      transpose({
+        arrOfNoteNumbers: [0, 3, 7],
+        keyCenter: "Bb",
+        withOctave: true,
+      }),
     ];
     expect(manyTransposes).toStrictEqual([
       ["C3", "Eb3", "G3"],
@@ -76,5 +84,47 @@ describe("normalizeIndex", () => {
     { input: -24, expected: 0 },
   ])("works for negative numbers $input", ({ input, expected }) => {
     expect(normalizeIndex(input)).toBe(expected);
+  });
+});
+
+describe("notesAsNumber", () => {
+  test("Handles intervals in C with no normalizing needed", () => {
+    const scaleDegreesInC: NoteName[] = ["C", "D", "E", "F", "G", "A", "B"];
+    const scaleDegreeNumbers = scaleDegreesInC.map((note) =>
+      notesAsNumber(note, "C"),
+    );
+    expect(scaleDegreeNumbers).toStrictEqual([0, 2, 4, 5, 7, 9, 11]);
+  });
+
+  test("Handles both sharps and flats", () => {
+    const scaleDegreesInC: NoteName[] = ["C", "C#", "Db", "D", "D#", "Eb"];
+    const scaleDegreeNumbers = scaleDegreesInC.map((note) =>
+      notesAsNumber(note, "C"),
+    );
+    expect(scaleDegreeNumbers).toStrictEqual([0, 1, 1, 2, 3, 3]);
+  });
+
+  test("Handles normalization both sharps and flats", () => {
+    const scaleDegreesInB: NoteName[] = ["C", "C#", "Db", "D", "D#", "Eb"];
+    const scaleDegreeNumbers = scaleDegreesInB.map((note) =>
+      notesAsNumber(note, "B"),
+    );
+    expect(scaleDegreeNumbers).toStrictEqual([1, 2, 2, 3, 4, 4]);
+  });
+
+  test("Handles normalization both sharps and flats", () => {
+    const scaleDegreesInDb: NoteName[] = [
+      "C",
+      "C#",
+      "Db",
+      "D",
+      "D#",
+      "Eb",
+      "G",
+    ];
+    const scaleDegreeNumbers = scaleDegreesInDb.map((note) =>
+      notesAsNumber(note, "Db"),
+    );
+    expect(scaleDegreeNumbers).toStrictEqual([11, 0, 0, 1, 2, 2, 6]);
   });
 });
