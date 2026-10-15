@@ -5,7 +5,7 @@ import { millisecondsToMMSS } from "@/utils/countdownUtils";
 export function Countup() {
   const timeElapsed = useTimerStore((s) => s.currentCountUp);
   const initialTime = useEartrainerStore(
-    (state) => state.notes * state.timePerNote,
+    (state) => state.amountOfnotesToGuess * state.timePerNote,
   );
 
   return (

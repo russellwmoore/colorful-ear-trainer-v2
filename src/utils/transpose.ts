@@ -1,5 +1,6 @@
 import {
   flats,
+  PITCH_CLASS_MAP,
   sharps,
   type FlatName,
   type KeyCenterType,
@@ -23,7 +24,7 @@ const NOTE_SPELLINGS_BY_KEY: (readonly NoteName[])[] = [
 
 type TransposeType = {
   // readonly for types
-  set: number[] | readonly number[];
+  arrOfNoteNumbers: number[] | readonly number[];
   keyCenter: FlatName;
   octave?: number;
   flatten?: boolean;
@@ -42,14 +43,14 @@ type TransposeType = {
 
 // TODO: investigate flatten more. How will this be used?
 export function transpose({
-  set,
+  arrOfNoteNumbers,
   keyCenter,
   octave = 4,
   flatten = true,
   withOctave = false,
 }: TransposeType) {
   const keyCenterInt = flats.indexOf(keyCenter);
-  return set.map((note: number) => {
+  return arrOfNoteNumbers.map((note: number) => {
     const noteValue = note + keyCenterInt;
     const name = NOTE_SPELLINGS_BY_KEY[keyCenterInt][normalizeIndex(noteValue)];
     const oct = noteValue < 0 && flatten ? octave : octave - 1;
@@ -57,13 +58,14 @@ export function transpose({
   });
 }
 
-// TODO this is not a complete function. Need to determine the best inputs here.
-// This could be a good argument for keycenters as numbers!
-export function notesAsNumber(set: NoteName[], keyCenter: KeyCenterType) {
-  const keyCenterInt = flats.indexOf(keyCenter);
-  return set.map((name) => {
-    return NOTE_SPELLINGS_BY_KEY[keyCenterInt].indexOf(name);
-  });
+/**
+ * This function takes a key center and a notename and returns the corresponding scale degree number
+ * @param set A note name like G, A, Eb, C#
+ * @param keyCenter
+ * @returns
+ */
+export function notesAsNumber(set: NoteName, keyCenter: KeyCenterType) {
+  return normalizeIndex(PITCH_CLASS_MAP[set] - PITCH_CLASS_MAP[keyCenter]);
 }
 
 export function normalizeIndex(i: number) {

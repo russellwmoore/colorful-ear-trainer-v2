@@ -12,7 +12,9 @@ export function CountDown() {
   const totalInitialGameTime = useEartrainerStore(
     (state) => state.totalInitialGameTime,
   );
-  const isPlayingGame = useEartrainerStore((state) => state.isPlayingGame);
+  const isPlayingGame = useEartrainerStore(
+    (state) => state.gameStatus !== "idle",
+  );
 
   const displayedTime = useMemo(() => {
     return millisecondsToMMSS(

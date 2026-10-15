@@ -2,13 +2,16 @@ import { pianoKeysInit } from "./pianoKeys";
 import * as Tone from "tone";
 import { useEartrainerStore } from "@/store/store";
 import { useRef, useEffect } from "react";
-
+import { notesAsNumber } from "@/utils/transpose";
+import type { NoteName } from "@/utils/noteNames";
+import { synth } from "@/store/synth";
 // TODO: consolidate and determine where to put these variables
 const OCTAVE = 4;
 const GOLD = "rgba(251, 191, 36, 1)";
+const RED = "rgba(185, 28, 28, 1)";
 const WHITE = "transparent";
 const BLACK = "var(--foreground)";
-
+const GREEN = "rgba(80, 240, 80, 1)";
 const KEY_MAP: Record<string, string> = {
   a: "C",
   w: "C#",
@@ -25,22 +28,42 @@ const KEY_MAP: Record<string, string> = {
 };
 
 export function Piano() {
-  // TODO: should this synth be imported from the synth file instead?
-  const synth = useEartrainerStore((state) => state.synth);
   // A map to store elements by their note names: { "C": SVGRectElement, "D": ... }
   const keyRefs = useRef<Record<string, SVGRectElement | null>>({});
+
+  const setResetPianoKeys = useEartrainerStore((s) => s.setResetPianoKeys);
 
   // Track currently active keys to prevent browser "keydown auto-repeat" from re-triggering audio
   const activeKeys = useRef<Set<string>>(new Set());
 
+  const submitGuess = useEartrainerStore((s) => s.submitGuess);
+  const keyCenter = useEartrainerStore((s) => s.keyCenter);
+  const isAnsweringEnabled = useEartrainerStore((s) => s.isAnsweringEnabled);
+  const isPlayingAudio = useEartrainerStore((s) => s.isPlayingAudio);
+
   const handlePointerDown = (e: React.PointerEvent<SVGRectElement>) => {
+    if (isPlayingAudio) return;
     const target = e.currentTarget; // target that owns the event listener
-    const note = target.dataset.note?.split(",")[0];
-    if (!note) return;
+    const singleNote = target.dataset.note?.split(",")[0];
+    if (!singleNote) return;
 
     target.setPointerCapture(e.pointerId);
-    synth.triggerAttackRelease(`${note}${OCTAVE}`, "2n");
-    target.setAttribute("fill", GOLD);
+
+    synth.triggerAttackRelease(`${singleNote}${OCTAVE}`, "2n");
+
+    if (isAnsweringEnabled) {
+      // this note is a letter and it needs to be a number
+      const numberOfNote = notesAsNumber(singleNote as NoteName, keyCenter);
+
+      // the store records the guess and moves on to the next question when done
+      const isCorrect = submitGuess(Number(numberOfNote));
+      target.setAttribute("fill", isCorrect ? GREEN : RED);
+    } else {
+      // Keep guess feedback visible between rounds; only unlit keys flash gold
+      const fill = target.getAttribute("fill");
+      const isLitByGuess = fill === GREEN || fill === RED;
+      if (!isLitByGuess) target.setAttribute("fill", GOLD);
+    }
   };
 
   const handlePointerUpOrLeave = (e: React.PointerEvent<SVGRectElement>) => {
@@ -52,12 +75,31 @@ export function Piano() {
       console.error(err);
     }
 
-    const defaultColor = target.dataset.key === "black" ? BLACK : WHITE;
-    const id = setTimeout(() => {
-      target.setAttribute("fill", defaultColor);
-      clearTimeout(id);
-    }, 150);
+    // Only presses outside of gameplay flash. Guesses during gameplay (green/red)
+    // stay lit until resetPianoKeys runs before the next notes play. Checking isAnsweringEnabled here doesn't
+    // work since the callback is created before all of that state is updated: the final correct guess turns
+    // it off before pointerup fires.
+    if (target.getAttribute("fill") === GOLD) {
+      const defaultColor = target.dataset.key === "black" ? BLACK : WHITE;
+      setTimeout(() => {
+        target.setAttribute("fill", defaultColor);
+      }, 250);
+    }
   };
+
+  const resetAllKeys = () => {
+    Object.values(keyRefs.current).forEach((el) => {
+      if (!el) return;
+      el.setAttribute("fill", el.dataset.key === "black" ? BLACK : WHITE);
+    });
+  };
+
+  // Register the reset with the store so it can be called from outside the Piano
+  useEffect(() => {
+    setResetPianoKeys(resetAllKeys);
+    return () => setResetPianoKeys(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -105,8 +147,6 @@ export function Piano() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

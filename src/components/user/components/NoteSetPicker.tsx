@@ -46,7 +46,7 @@ export function NoteSetPicker() {
   const keyCenter = useEartrainerStore((s) => s.keyCenter);
 
   const allNotesTransposed = transpose({
-    set: customNoteSet ?? noteSetScaleDegrees,
+    arrOfNoteNumbers: customNoteSet ?? noteSetScaleDegrees,
     keyCenter,
   });
 
