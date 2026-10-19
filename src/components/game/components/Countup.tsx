@@ -1,16 +1,23 @@
 import { useEartrainerStore } from "@/store/store";
 import { useTimerStore } from "@/store/timerStore";
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
+import { cn } from "@/lib/utils";
 
 export function Countup() {
   const timeElapsed = useTimerStore((s) => s.currentCountUp);
   const initialTime = useEartrainerStore(
     (state) => state.amountOfnotesToGuess * state.timePerNote,
   );
+  const hasExpired = timeElapsed > initialTime * 1000;
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-square">
+      <div
+        className={cn(
+          "relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b aspect-square",
+          `${hasExpired ? "from-red-00 to-red-600" : "from-green-400 to-green-600"}`,
+        )}
+      >
         <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
           <div data-time className="text-xl md:text-4xl font-bold">
             {millisecondsToMMSS(timeElapsed).seconds}.

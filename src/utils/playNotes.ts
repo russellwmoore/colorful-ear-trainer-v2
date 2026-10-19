@@ -9,9 +9,17 @@ type Notes = {
 type PlayNotesProps = {
   notes: Notes[];
   cadenceTempo: number;
+  isNotesToGuess?: boolean;
+  onNoteAttackFinish?: () => void;
+  onAllNotesOff?: () => void;
 };
 
-export async function playNotes({ notes, cadenceTempo }: PlayNotesProps) {
+export async function playNotes({
+  notes,
+  cadenceTempo,
+  onNoteAttackFinish,
+  onAllNotesOff,
+}: PlayNotesProps) {
   await Tone.start();
 
   return new Promise((resolve) => {
@@ -24,8 +32,13 @@ export async function playNotes({ notes, cadenceTempo }: PlayNotesProps) {
       time += durationWithTempo;
     });
 
-    const id = setTimeout(() => {
-      clearTimeout(id);
+    // This is currently limited to single notes or single chords and not sequential notes or sequential chords
+    // More nuance here could be acheived through scheduling this callback
+    // with Tone.js transport
+    onNoteAttackFinish?.();
+
+    setTimeout(() => {
+      onAllNotesOff?.();
       resolve(true);
     }, time * 1000);
   });
