@@ -27,6 +27,9 @@ const KEY_MAP: Record<string, string> = {
   j: "B",
 };
 
+const defaultFill = (el: SVGRectElement) =>
+  el.dataset.key === "black" ? BLACK : WHITE;
+
 export function Piano() {
   // A map to store elements by their note names: { "C": SVGRectElement, "D": ... }
   const keyRefs = useRef<Record<string, SVGRectElement | null>>({});
@@ -36,61 +39,67 @@ export function Piano() {
   // Track currently active keys to prevent browser "keydown auto-repeat" from re-triggering audio
   const activeKeys = useRef<Set<string>>(new Set());
 
-  const submitGuess = useEartrainerStore((s) => s.submitGuess);
-  const keyCenter = useEartrainerStore((s) => s.keyCenter);
-  const isAnsweringEnabled = useEartrainerStore((s) => s.isAnsweringEnabled);
-  const isPlayingAudio = useEartrainerStore((s) => s.isPlayingAudio);
+  // Shared by clicks and computer-keyboard presses. Submits a guess while answering,
+  // otherwise flashes the key gold. Returns false when presses are blocked.
+  // Reads the store at press time so the keyboard listeners never go stale.
+  const pressKey = (note: string) => {
+    const { isPlayingAudio, isAnsweringEnabled, keyCenter, submitGuess } =
+      useEartrainerStore.getState();
+    if (isPlayingAudio) return false;
 
-  const handlePointerDown = (e: React.PointerEvent<SVGRectElement>) => {
-    if (isPlayingAudio) return;
-    const target = e.currentTarget; // target that owns the event listener
-    const singleNote = target.dataset.note?.split(",")[0];
-    if (!singleNote) return;
-
-    target.setPointerCapture(e.pointerId);
-
-    synth.triggerAttackRelease(`${singleNote}${OCTAVE}`, "2n");
-
+    const element = keyRefs.current[note];
     if (isAnsweringEnabled) {
       // this note is a letter and it needs to be a number
-      const numberOfNote = notesAsNumber(singleNote as NoteName, keyCenter);
+      const numberOfNote = notesAsNumber(note as NoteName, keyCenter);
 
       // the store records the guess and moves on to the next question when done
-      const isCorrect = submitGuess(Number(numberOfNote));
-      target.setAttribute("fill", isCorrect ? GREEN : RED);
+      const isCorrect = submitGuess(numberOfNote);
+      element?.setAttribute("fill", isCorrect ? GREEN : RED);
     } else {
       // Keep guess feedback visible between rounds; only unlit keys flash gold
-      const fill = target.getAttribute("fill");
+      const fill = element?.getAttribute("fill");
       const isLitByGuess = fill === GREEN || fill === RED;
-      if (!isLitByGuess) target.setAttribute("fill", GOLD);
+      if (!isLitByGuess) element?.setAttribute("fill", GOLD);
     }
+    return true;
+  };
+
+  // Only gold flashes are cleared. Guesses (green/red) stay lit until resetPianoKeys
+  // runs before the next notes play. Checking isAnsweringEnabled instead doesn't
+  // work: the final correct guess turns it off before the key is released.
+  const releaseKey = (note: string) => {
+    const element = keyRefs.current[note];
+    if (element?.getAttribute("fill") === GOLD) {
+      element.setAttribute("fill", defaultFill(element));
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<SVGRectElement>) => {
+    if (e.button !== 0) return;
+    const target = e.currentTarget; // target that owns the event listener
+    const singleNote = target.dataset.note?.split(",")[0];
+    if (!singleNote || !pressKey(singleNote)) return;
+
+    target.setPointerCapture(e.pointerId);
+    synth.triggerAttackRelease(`${singleNote}${OCTAVE}`, "2n");
   };
 
   const handlePointerUpOrLeave = (e: React.PointerEvent<SVGRectElement>) => {
     const target = e.currentTarget;
-    try {
+    if (target.hasPointerCapture(e.pointerId)) {
       target.releasePointerCapture(e.pointerId);
-    } catch (err) {
-      // Fallback if already released
-      console.error(err);
     }
 
-    // Only presses outside of gameplay flash. Guesses during gameplay (green/red)
-    // stay lit until resetPianoKeys runs before the next notes play. Checking isAnsweringEnabled here doesn't
-    // work since the callback is created before all of that state is updated: the final correct guess turns
-    // it off before pointerup fires.
-    if (target.getAttribute("fill") === GOLD) {
-      const defaultColor = target.dataset.key === "black" ? BLACK : WHITE;
-      setTimeout(() => {
-        target.setAttribute("fill", defaultColor);
-      }, 250);
-    }
+    const singleNote = target.dataset.note?.split(",")[0];
+    if (!singleNote) return;
+    // releaseKey rechecks the fill, so a guess made during the delay survives
+    setTimeout(() => releaseKey(singleNote), 250);
   };
 
   const resetAllKeys = () => {
     Object.values(keyRefs.current).forEach((el) => {
       if (!el) return;
-      el.setAttribute("fill", el.dataset.key === "black" ? BLACK : WHITE);
+      el.setAttribute("fill", defaultFill(el));
     });
   };
 
@@ -103,20 +112,20 @@ export function Piano() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore auto-repeat, shortcuts (macOS skips keyup while Cmd is held), and typing in form fields
+      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (
+        e.target instanceof HTMLElement &&
+        e.target.closest("input, textarea, select, [contenteditable]")
+      )
+        return;
       const key = e.key.toLowerCase();
       const note = KEY_MAP[key];
       if (!note || activeKeys.current.has(key)) return;
+      if (!pressKey(note)) return;
 
-      // 1. Lock the key so it doesn't stutter on long presses
+      // Lock the key so it doesn't stutter on long presses
       activeKeys.current.add(key);
-
-      // 2. Instantly update the DOM element color
-      const element = keyRefs.current[note];
-      if (element) {
-        element.setAttribute("fill", GOLD);
-      }
-
-      // 3. Play the audio note
       synth.triggerAttack(`${note}${OCTAVE}`, Tone.now());
     };
 
@@ -125,28 +134,31 @@ export function Piano() {
       const note = KEY_MAP[key];
       if (!note) return;
 
-      // 1. Remove from active tracking
       activeKeys.current.delete(key);
-
-      // 2. Instantly reset the DOM element color
-      const element = keyRefs.current[note];
-      if (element) {
-        const isBlackKey = element.dataset.key === "black";
-        element.setAttribute("fill", isBlackKey ? BLACK : WHITE);
-      }
-
-      // 3. Release the audio note
+      releaseKey(note);
       synth.triggerRelease(`${note}${OCTAVE}`);
     };
 
-    // Global listeners ensure chords catch perfectly even if focus shifts slightly
+    // keyup never fires if the window loses focus mid-press, so release everything
+    const handleBlur = () => {
+      activeKeys.current.forEach((key) => {
+        const note = KEY_MAP[key];
+        releaseKey(note);
+        synth.triggerRelease(`${note}${OCTAVE}`);
+      });
+      activeKeys.current.clear();
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", handleBlur);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", handleBlur);
     };
+    // pressKey/releaseKey only touch refs and store.getState(), so they're never stale
   }, []);
 
   return (
@@ -181,6 +193,7 @@ export function Piano() {
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUpOrLeave}
               onPointerLeave={handlePointerUpOrLeave}
+              onPointerCancel={handlePointerUpOrLeave}
             ></rect>
           );
         })}
