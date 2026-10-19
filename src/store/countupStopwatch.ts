@@ -43,12 +43,16 @@ export class Countup {
     if (this.rafId) cancelAnimationFrame(this.rafId);
   }
 
+  reset() {
+    this.isPaused = true;
+    this.elapsedTime = 0;
+  }
+
   _loop = () => {
     if (this.isPaused) return;
     const timeElapsed = performance.now() - this?.startTime;
     this.onTick(timeElapsed);
     if (timeElapsed > this.initialExpirationTime) {
-      this.isPaused = true;
       if (this.onComplete) this.onComplete();
     }
     this.rafId = requestAnimationFrame(this._loop);

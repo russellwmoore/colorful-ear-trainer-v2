@@ -78,6 +78,12 @@ export type EarTrainerState = {
   playCount: number;
   increasePlayCount: () => void;
   playTheGame: () => Promise<void>;
+  allAttempts: number;
+  correctAttempts: number;
+  lateAttempts: number;
+  bestScore: number;
+  bestCorrectStreak: number;
+  correctStreak: number;
 };
 
 /**
@@ -190,7 +196,15 @@ export const useEartrainerStore = create<EarTrainerState>()(
         },
         startGame: async () => {
           set(
-            { gameStatus: "playing", playCount: 0, currentGuesses: [] },
+            {
+              gameStatus: "playing",
+              playCount: 0,
+              currentGuesses: [],
+              correctAttempts: 0,
+              allAttempts: 0,
+              correctStreak: 0,
+              lateAttempts: 0,
+            },
             undefined,
             "startGame",
           );
@@ -209,6 +223,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
             "pauseGame",
           );
         },
+        resetCountUp: () => {
+          countup.reset();
+        },
         // Picks up the current question rather than asking a new one
         resumeGame: async () => {
           const { playNotesToGuess, setIsAnsweringEnabled } = get();
@@ -220,7 +237,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           setIsAnsweringEnabled(true, "resumeGame");
         },
         resetTimerToInitialValue: () => {
-          countup.pause();
+          countup.reset();
           // setDuration also refills timeRemaining, which start() needs above 0
           countdown.setDuration(get().totalInitialGameTime);
           set(
@@ -254,6 +271,11 @@ export const useEartrainerStore = create<EarTrainerState>()(
             currentGuesses,
             playCount,
             playTheGame,
+            allAttempts,
+            correctAttempts,
+            bestScore,
+            correctStreak,
+            bestCorrectStreak,
           } = get();
 
           // this regex smells bad. perhaps a different pattern to store guesses is needed?
@@ -267,6 +289,29 @@ export const useEartrainerStore = create<EarTrainerState>()(
             guesses.includes(correctNote),
           );
 
+          set({ allAttempts: allAttempts + 1 });
+          if (isCorrect) {
+            const amountOfCorrectAttempts = correctAttempts + 1;
+            set({
+              correctAttempts: amountOfCorrectAttempts,
+              bestScore:
+                amountOfCorrectAttempts > bestScore
+                  ? amountOfCorrectAttempts
+                  : bestScore,
+            });
+            if (guesses.length === 1) {
+              const updatedCorrectStreak = correctStreak + 1;
+              set({
+                correctStreak: updatedCorrectStreak,
+                bestCorrectStreak:
+                  bestCorrectStreak >= updatedCorrectStreak
+                    ? bestCorrectStreak
+                    : updatedCorrectStreak,
+              });
+            }
+          } else {
+            set({ correctStreak: 0 });
+          }
           if (isComplete) {
             set(
               {
@@ -277,6 +322,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
               undefined,
               "submitGuess-complete",
             );
+            countup.reset();
             setTimeout(() => {
               if (get().gameStatus === "playing") void playTheGame();
             }, CORRECT_FEEDBACK_MS);
@@ -326,18 +372,28 @@ export const useEartrainerStore = create<EarTrainerState>()(
         },
         playNotesToGuess: async () => {
           await Tone.start();
-          const { setIsPlayingAudio, notesToGuess } = get();
-          setIsPlayingAudio(true);
+          const { notesToGuess, setIsAnsweringEnabled } = get();
+
           await playNotes({
             notes: [{ sequence: notesToGuess, duration: 2 }],
             cadenceTempo: 60,
+            isNotesToGuess: true,
+            onNoteAttackFinish: () => {
+              setIsAnsweringEnabled(true, "playNotesToGuess");
+              countup.start();
+            },
           });
-          setIsPlayingAudio(false);
         },
         resetPianoKeys: null,
         setResetPianoKeys: (cb) =>
           set({ resetPianoKeys: cb }, undefined, "setResetPianoKeys"),
         playCount: 0,
+        allAttempts: 0,
+        correctAttempts: 0,
+        lateAttempts: 0,
+        bestScore: 0,
+        bestCorrectStreak: 0,
+        correctStreak: 0,
         increasePlayCount: () => {
           const currentPlayCount = get().playCount;
           set({ playCount: currentPlayCount + 1 });
@@ -349,7 +405,6 @@ export const useEartrainerStore = create<EarTrainerState>()(
             playCount,
             playCadence,
             playNotesToGuess,
-            setIsAnsweringEnabled,
           } = get();
           setNotesToGuess();
 
@@ -367,9 +422,6 @@ export const useEartrainerStore = create<EarTrainerState>()(
           get().resetPianoKeys?.();
           await playNotesToGuess();
           if (!isStillPlaying()) return;
-
-          countup.start();
-          setIsAnsweringEnabled(true, "playTheGame");
         },
       }),
 
@@ -389,6 +441,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
           totalInitialGameTime: state.totalInitialGameTime,
           octaveRange: state.octaveRange,
           noteSetId: state.noteSetId,
+          bestCorrectStreak: state.bestCorrectStreak,
+          bestScore: state.bestScore,
         }),
       },
     ),
@@ -405,10 +459,14 @@ export const useEartrainerStore = create<EarTrainerState>()(
 const countdown = new Countdown({
   initialDurationMs: useEartrainerStore.getState().totalInitialGameTime,
   onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
-  onComplete: () => useEartrainerStore.getState().resetTimerToInitialValue(),
+  onComplete: () => {
+    // TODO: create a reset game function to pass here
+    useEartrainerStore.getState().resetTimerToInitialValue();
+    useEartrainerStore.getState().resetPianoKeys?.();
+  },
 });
 
-const countup = new Countup({
+export const countup = new Countup({
   initialExpirationTime:
     useEartrainerStore.getState().timePerNote *
     useEartrainerStore.getState().amountOfnotesToGuess *
