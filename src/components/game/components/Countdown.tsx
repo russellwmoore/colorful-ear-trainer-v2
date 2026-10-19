@@ -26,7 +26,7 @@ export function CountDown() {
     <div className="flex flex-col items-center justify-center">
       <div
         data-face
-        className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-500 to-red-600 aspect-square"
+        className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-400 to-red-600 aspect-square"
       >
         <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
           <span data-time className="text-xl md:text-4xl font-bold">

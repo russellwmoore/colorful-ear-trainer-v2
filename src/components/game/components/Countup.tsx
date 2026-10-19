@@ -15,7 +15,7 @@ export function Countup() {
       <div
         className={cn(
           "relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b aspect-square",
-          `${hasExpired ? "from-red-00 to-red-600" : "from-green-400 to-green-600"}`,
+          `${hasExpired ? "from-red-400 to-red-600" : "from-green-400 to-green-600"}`,
         )}
       >
         <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
