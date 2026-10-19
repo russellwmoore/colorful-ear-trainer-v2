@@ -2,7 +2,11 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { type CadenceType } from "@/utils/cadences";
 import * as Tone from "tone";
-import { type KeyCenterType, type NoteName } from "@/utils/noteNames";
+import {
+  getRandomKeyCenter,
+  type KeyCenterType,
+  type NoteName,
+} from "@/utils/noteNames";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { type NoteSetId, NOTE_SETS } from "@/utils/noteSets";
 import { transpose } from "@/utils/transpose";
@@ -283,8 +287,11 @@ export const useEartrainerStore = create<EarTrainerState>()(
             notesAsNumber(note.replace(/\d$/, "") as NoteName, keyCenter),
           );
 
-          const guesses = [...currentGuesses, guess];
           const isCorrect = notesToGuessAsScaleDegrees.includes(guess);
+          // Repeating a note already guessed this question doesn't count again
+          if (currentGuesses.includes(guess)) return isCorrect;
+
+          const guesses = [...currentGuesses, guess];
           const isComplete = notesToGuessAsScaleDegrees.every((correctNote) =>
             guesses.includes(correctNote),
           );
@@ -405,10 +412,16 @@ export const useEartrainerStore = create<EarTrainerState>()(
             playCount,
             playCadence,
             playNotesToGuess,
+            isKeyCenterRandomized,
           } = get();
-          setNotesToGuess();
 
           const shouldPlayCadence = playCount % cadenceEvery === 0;
+
+          if (isKeyCenterRandomized && shouldPlayCadence) {
+            set({ keyCenter: getRandomKeyCenter() });
+          }
+
+          setNotesToGuess();
 
           // The player can pause while audio plays, so bail out after each await
           // this should get the most up to date value here, and not destructured at top of function
