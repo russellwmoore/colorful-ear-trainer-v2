@@ -1,3 +1,6 @@
+import type { KeyCenterType } from "./noteNames";
+import { transpose } from "./transpose";
+
 type Chord = number[]; // semitone offsets from the key center
 type CadenceVoicings = [Chord, Chord, Chord, Chord];
 
@@ -75,3 +78,23 @@ export type CadenceInfo = (typeof CADENCE_REGISTRY_MAP)[CadenceType];
 // Typeguard to make things extratight
 export const isCadenceType = (v: string): v is CadenceType =>
   v in CADENCE_REGISTRY_MAP;
+
+function progessionsToNotes(
+  arrOfNoteNumbers: readonly number[],
+  keyCenter: KeyCenterType,
+) {
+  return transpose({ arrOfNoteNumbers, keyCenter });
+}
+
+// This is a helper function to sanity check the scale degrees
+// in all of the cadences
+export function printAllProgressionsAsNoteNames(
+  keyCenter: KeyCenterType = "C",
+) {
+  (Object.keys(CADENCE_REGISTRY_MAP) as CadenceType[]).map((key) => {
+    const asNoteNames = CADENCE_REGISTRY_MAP[key].voicings.map((oneSequence) =>
+      progessionsToNotes(oneSequence, keyCenter),
+    );
+    console.log({ key, asNoteNames });
+  });
+}

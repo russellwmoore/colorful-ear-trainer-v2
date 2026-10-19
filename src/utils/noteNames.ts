@@ -15,7 +15,6 @@ export const PITCH_CLASSES = [
   "B",
 ] as const;
 
-
 export const PITCH_CLASS_MAP: Record<NoteName, number> = {
   C: 0,
   "C#": 1,
@@ -74,3 +73,8 @@ export const flatKeyCenters: Partial<FlatName>[] = [
 export const IONIAN_INTERVALS = [0, 2, 4, 5, 7, 9, 11];
 export const AEOLIAN_INTERVALS = [0, 2, 3, 5, 7, 8, 10];
 export const CHROMATIC_INTERVALS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+export function getRandomKeyCenter() {
+  const randomIndex = Math.floor(Math.random() * flats.length);
+  return flats[randomIndex];
+}
