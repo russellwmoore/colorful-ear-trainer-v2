@@ -39,7 +39,7 @@ function Slider({
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            className="bg-foreground select-none data-horizontal:h-full data-vertical:w-full"
+            className="bg-linear-to-r from-blue-500 to-blue-400 select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
