@@ -11,7 +11,7 @@ export function Game() {
 
   const percentage = (correctAttempts / allAttempts) * 100;
 
-  // When resetting the game, allAttempts is 0, and dividing by 0 
+  // When resetting the game, allAttempts is 0, and dividing by 0
   // doesn't allow this maxWidth to calculate correctly
   const isFirstQuestion = allAttempts === 0;
   const appliedPercentage = isFirstQuestion ? 100 : percentage;
@@ -26,7 +26,7 @@ export function Game() {
         <Score />
         <div className="rounded-lg overflow-hidden absolute top-0 left-0 right-0 h-full bg-linear-to-r from-red-700 to-red-900 z-0">
           <div
-            className="h-full bg-linear-to-r from-blue-500 to-blue-300 transition-all duration-400"
+            className="h-full bg-linear-to-r from-blue-500 to-blue-400 transition-all duration-400"
             style={{
               maxWidth: `${appliedPercentage}%`,
             }}

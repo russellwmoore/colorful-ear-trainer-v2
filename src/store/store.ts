@@ -14,9 +14,9 @@ import { synth } from "./synth";
 import { Countdown } from "./countdownTimer";
 import { useTimerStore } from "./timerStore";
 import { Countup } from "./countupStopwatch";
-import { getRandomNumberFromSet } from "@/utils/getRandomNumberFromSet";
 import { notesAsNumber } from "@/utils/transpose";
 import { playNotes } from "@/utils/playNotes";
+import { getRandomNotes } from "@/utils/getRandomNotes";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
@@ -52,9 +52,8 @@ export type EarTrainerState = {
   // totalTime in ms
   totalInitialGameTime: number;
   setTotalInitialGameTime: (newTime: number) => void;
-  // readonly type is here to satisfy the library that handles the octave slider 🤮
-  octaveRange: readonly number[];
-  setOctaveRange: (newOctaveRange: readonly number[]) => void;
+  octaveRange: number[];
+  setOctaveRange: (newOctaveRange: number[]) => void;
   playCadence: () => Promise<void>;
   isPlayingAudio: boolean;
   setIsPlayingAudio: (isPlaying: boolean) => void;
@@ -144,7 +143,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           );
         },
         octaveRange: [4, 5],
-        setOctaveRange: (newOctaveRange: readonly number[]) => {
+        setOctaveRange: (newOctaveRange: number[]) => {
           set({ octaveRange: newOctaveRange }, undefined, "setOctaveRange");
         },
         synth,
@@ -354,7 +353,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
         notesToGuess: [],
         setNotesToGuess: () => {
           // TODO: weights and all that
-          const { noteSetId, cadence, keyCenter, octaveRange } = get();
+          const {
+            noteSetId,
+            cadence,
+            keyCenter,
+            octaveRange,
+            amountOfnotesToGuess,
+          } = get();
           const tonality = CADENCE_REGISTRY_MAP[cadence].quality;
           const pitches = NOTE_SETS[noteSetId][tonality].pitches;
           const pitchesAsNotes = transpose({
@@ -362,20 +367,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
             keyCenter,
           });
 
-          // TODO: adapt to take chords. Stretch to take sequence of chords
-          const randomPitch =
-            pitchesAsNotes[Math.floor(Math.random() * pitchesAsNotes.length)];
-
-          // typescript angry, need [n,n] cast here
-          const octave = getRandomNumberFromSet(
-            octaveRange as [number, number],
+          const randomNotes = getRandomNotes(
+            pitchesAsNotes,
+            octaveRange,
+            amountOfnotesToGuess,
           );
 
-          set(
-            { notesToGuess: [`${randomPitch}${octave}`] },
-            undefined,
-            "setNotesToGuess",
-          );
+          set({ notesToGuess: randomNotes }, undefined, "setNotesToGuess");
         },
         playNotesToGuess: async () => {
           await Tone.start();
