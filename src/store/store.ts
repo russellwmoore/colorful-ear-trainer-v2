@@ -17,12 +17,23 @@ import { Countup } from "./countupStopwatch";
 import { notesAsNumber } from "@/utils/transpose";
 import { playNotes } from "@/utils/playNotes";
 import { getRandomNotes } from "@/utils/getRandomNotes";
+import { shuffleArray } from "@/utils/shuffleArray";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
 // Pause after a correct answer so the note rings before the next question
 const CORRECT_FEEDBACK_MS = 600;
 const isDevelopment = process.env.NODE_ENV === "development";
+
+// Tailwind needs the actual vars to be defined somewhere in source code
+// in order to to be defined in the compiled CSS
+const backgroundColors = [
+  "var(--color-pink-500)",
+  "var(--color-purple-500)",
+  "var(--color-yellow-500)",
+  "var(--color-blue-500)",
+  "var(--color-green-500)",
+];
 
 // TODO: Consider slices of state here instead of this blobby thing.
 
@@ -87,6 +98,7 @@ export type EarTrainerState = {
   bestScore: number;
   bestCorrectStreak: number;
   correctStreak: number;
+  backgroundColors: string[];
 };
 
 /**
@@ -207,6 +219,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
               allAttempts: 0,
               correctStreak: 0,
               lateAttempts: 0,
+              backgroundColors: shuffleArray(backgroundColors).slice(0, 3),
             },
             undefined,
             "startGame",
@@ -434,6 +447,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           await playNotesToGuess();
           if (!isStillPlaying()) return;
         },
+        backgroundColors: backgroundColors.slice(0, 3),
       }),
 
       {

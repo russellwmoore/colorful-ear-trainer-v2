@@ -2,10 +2,11 @@ import { Piano } from "./components/piano/Piano";
 import { User } from "./components/user/User";
 import { Game } from "./components/game/Game";
 import { Header } from "./components/header/Header";
+import { FancyBackground } from "./components/FancyBackground";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center isolate relative">
       <Header />
       <div className="grid w-full grid-cols-1 gap-4 p-4 mx-auto md:grid-cols-2 lg:grid-cols-4 max-w-screen-2xl">
         <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-app overflow-auto">
@@ -20,6 +21,7 @@ function App() {
           <Game />
         </div>
       </div>
+      <FancyBackground />
     </div>
   );
 }
