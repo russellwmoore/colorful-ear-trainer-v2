@@ -30,6 +30,19 @@ const KEY_MAP: Record<string, string> = {
 const defaultFill = (el: SVGRectElement) =>
   el.dataset.key === "black" ? BLACK : WHITE;
 
+// Re-adding a class that's already there doesn't replay its animation, so remove it
+// and force a reflow first. That way repeat wrong guesses on the same key shake every time.
+const shake = (el: SVGRectElement) => {
+  el.classList.remove("animate-shake");
+  void el.getBoundingClientRect();
+  el.classList.add("animate-shake");
+  el.addEventListener(
+    "animationend",
+    () => el.classList.remove("animate-shake"),
+    { once: true },
+  );
+};
+
 export function Piano() {
   // A map to store elements by their note names: { "C": SVGRectElement, "D": ... }
   const keyRefs = useRef<Record<string, SVGRectElement | null>>({});
@@ -55,6 +68,7 @@ export function Piano() {
       // the store records the guess and moves on to the next question when done
       const isCorrect = submitGuess(numberOfNote);
       element?.setAttribute("fill", isCorrect ? GREEN : RED);
+      if (!isCorrect && element) shake(element);
     } else {
       // Keep guess feedback visible between rounds; only unlit keys flash gold
       const fill = element?.getAttribute("fill");
@@ -162,11 +176,11 @@ export function Piano() {
   }, []);
 
   return (
-    <div id="Piano" className="flex-auto min-h-0">
+    <div id="Piano" className="flex-none w-full max-w-200 mx-auto">
       <svg
         viewBox="0 0 170 142"
         preserveAspectRatio="xMidYMin meet"
-        className="size-full"
+        className="w-full h-auto"
       >
         {pianoKeysInit.map((key) => {
           const noteName = key["data-note"].split(",")[0];
