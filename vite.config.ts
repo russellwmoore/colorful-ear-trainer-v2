@@ -23,8 +23,12 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    // Woweee, node has a webstorage thing now, so we need this to ignore it to use jsdom instead
-    execArgv: ["--no-webstorage"],
+    // Woweee, node has a webstorage thing now, so we need this to ignore it to use jsdom instead.
+    // Node 25+ enables it by default; older versions don't recognize the flag and crash.
+    execArgv:
+      Number(process.versions.node.split(".")[0]) >= 25
+        ? ["--no-webstorage"]
+        : [],
     reporters: ["dot"],
   },
 });
