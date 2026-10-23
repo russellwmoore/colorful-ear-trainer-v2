@@ -18,6 +18,7 @@ import { notesAsNumber } from "@/utils/transpose";
 import { playNotes } from "@/utils/playNotes";
 import { getRandomNotes } from "@/utils/getRandomNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
+import { confettiMilestone } from "./confetti";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
@@ -295,6 +296,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           } = get();
 
           // this regex smells bad. perhaps a different pattern to store guesses is needed?
+
           const notesToGuessAsScaleDegrees = notesToGuess.map((note) =>
             notesAsNumber(note.replace(/\d$/, "") as NoteName, keyCenter),
           );
@@ -327,6 +329,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
                     ? bestCorrectStreak
                     : updatedCorrectStreak,
               });
+              confettiMilestone(updatedCorrectStreak);
             }
           } else {
             set({ correctStreak: 0 });
