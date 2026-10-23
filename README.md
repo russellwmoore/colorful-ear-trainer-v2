@@ -60,7 +60,6 @@ TODO:
     - `npm run test`: runs all tests
     - `npm run test countdown`: runs all tests that have countdown in their filepath
     - `npm run test countdownUtils.test.ts`: runs countdownUtils.test.ts specifically
-- `npm run deploy`: deploys the current branch to github pages (will need to decide how and when to deploy things regarding tests passing, CI/CD process etc)
 
 # Official React + TypeScript + Vite jargon
 
