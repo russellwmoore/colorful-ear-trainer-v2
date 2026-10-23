@@ -8,7 +8,7 @@ export function RangeInput() {
   // This type is to satisfy the slider library
   const handleChange = (val: readonly number[] | number) => {
     if (Array.isArray(val)) {
-      setOctaveRange(val);
+      setOctaveRange([...(val as readonly number[])]);
     }
   };
   return (
