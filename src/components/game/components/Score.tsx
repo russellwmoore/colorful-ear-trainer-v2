@@ -6,14 +6,14 @@ export function Score() {
   const bestScore = useEartrainerStore((s) => s.bestScore);
 
   return (
-    <div className="z-10 flex flex-col items-center justify-center w-full">
-      <div className="w-full bg-linear-to-r text-white pt-1 rounded-lg border-2 border-white">
+    <div className="z-10 flex w-full flex-col items-center justify-center">
+      <div className="w-full rounded-lg border-2 border-white bg-linear-to-r pt-1 text-white">
         <div className="text-lg md:text-xl">Score:</div>
-        <div className="flex flex-row justify-center font-bold text-xl md:text-4xl">
+        <div className="flex flex-row justify-center text-xl font-bold md:text-4xl">
           <span data-correct>{correctAttempts}</span>/
           <span data-total>{allAttempts}</span>
         </div>
-        <div className="text-sm md:text-lg pt-1 pb-1 px-4 mt-1 flex justify-center items-center border-t-2 border-white">
+        <div className="mt-1 flex items-center justify-center border-t-2 border-white px-4 pt-1 pb-1 text-sm md:text-lg">
           Best: {bestScore}
           <span
             data-storage-key="score"

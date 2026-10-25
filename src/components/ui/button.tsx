@@ -1,10 +1,11 @@
-import type { ComponentProps } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import type { ComponentProps } from "react";
+
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   // active:bg-none drops the gradient so the pressed state shows the solid foreground color
-  "rounded-lg px-5 py-3 font-bold text-black bg-linear-to-r active:bg-none active:bg-foreground active:text-background",
+  "rounded-lg bg-linear-to-r px-5 py-3 font-bold text-black active:bg-foreground active:bg-none active:text-background",
   {
     variants: {
       variant: {

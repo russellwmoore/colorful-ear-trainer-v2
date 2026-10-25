@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from "vitest";
+
 import { useEartrainerStore } from "./store";
 
 const initialState = useEartrainerStore.getState();

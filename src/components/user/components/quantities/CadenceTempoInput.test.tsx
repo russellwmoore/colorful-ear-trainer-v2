@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, test } from "vitest";
+
 import { useEartrainerStore } from "@/store/store";
+
 import { CadenceTempoInput } from "./CadenceTempoInput";
 
 const initialState = useEartrainerStore.getState();
@@ -12,7 +14,10 @@ describe("CadenceTempoInput", () => {
   });
 
   test("renders the label and the in-play tempo", () => {
-    useEartrainerStore.setState({ cadenceTempoInit: 80, inPlayCadenceTempo: 90 });
+    useEartrainerStore.setState({
+      cadenceTempoInit: 80,
+      inPlayCadenceTempo: 90,
+    });
     render(<CadenceTempoInput />);
 
     expect(screen.getByText("Cadence Tempo:")).toBeInTheDocument();
@@ -22,7 +27,10 @@ describe("CadenceTempoInput", () => {
 
   test("updates both tempos while the in-play tempo matches the initial tempo", async () => {
     const user = userEvent.setup();
-    useEartrainerStore.setState({ cadenceTempoInit: 80, inPlayCadenceTempo: 80 });
+    useEartrainerStore.setState({
+      cadenceTempoInit: 80,
+      inPlayCadenceTempo: 80,
+    });
     render(<CadenceTempoInput />);
 
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));
@@ -34,7 +42,10 @@ describe("CadenceTempoInput", () => {
 
   test("only updates the in-play tempo once it has drifted from the initial tempo", async () => {
     const user = userEvent.setup();
-    useEartrainerStore.setState({ cadenceTempoInit: 80, inPlayCadenceTempo: 90 });
+    useEartrainerStore.setState({
+      cadenceTempoInit: 80,
+      inPlayCadenceTempo: 90,
+    });
     render(<CadenceTempoInput />);
 
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));

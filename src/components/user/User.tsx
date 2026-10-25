@@ -1,27 +1,27 @@
 import { Cadence } from "./components/Cadence";
 import { KeyCenter } from "./components/KeyCenter";
-import { NoteQuantitiesInput } from "./components/quantities/NoteQuantitiesInput";
 import { NoteSet } from "./components/NoteSet";
 import { CadenceEveryInput } from "./components/quantities/CadenceEveryInput";
-import { RandomizeBox } from "./components/RandomizeBox";
-import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
-import { OctaveInput } from "./components/quantities/OctaveInput";
 import { CadenceTempoInput } from "./components/quantities/CadenceTempoInput";
-import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
+import { NoteQuantitiesInput } from "./components/quantities/NoteQuantitiesInput";
+import { OctaveInput } from "./components/quantities/OctaveInput";
 import { RangeInput } from "./components/quantities/RangeInput";
+import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
+import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
+import { RandomizeBox } from "./components/RandomizeBox";
 
 export function User() {
   return (
-    <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-app overflow-auto">
-      <div className="rounded-lg border-2 border-foreground p-4 order-1 md:order-2 overflow-auto flex-auto">
+    <div className="grid gap-4 overflow-auto md:flex md:max-h-app md:flex-col md:gap-0 md:space-y-4">
+      <div className="order-1 flex-auto overflow-auto rounded-lg border-2 border-foreground p-4 md:order-2">
         {/* TODO: level info */}
         {/* <%- include('_level-info.ejs') %> */}
         <div id="UserCard">
-          <h2 className="-mt-4 -ml-4 -mr-4 bg-foreground text-background font-bold px-4 py-2 text-lg">
+          <h2 className="-mt-4 -mr-4 -ml-4 bg-foreground px-4 py-2 text-lg font-bold text-background">
             Set Options:
           </h2>
-          <div className="grid grid-cols-6 gap-y-4 gap-x-3 mb-4 mt-4">
-            <div className="col-span-4 border-foreground border rounded-lg p-2 grid grid-cols-2 gap-2">
+          <div className="mt-4 mb-4 grid grid-cols-6 gap-x-3 gap-y-4">
+            <div className="col-span-4 grid grid-cols-2 gap-2 rounded-lg border border-foreground p-2">
               <KeyCenter />
               <RandomizeBox />
             </div>
@@ -51,7 +51,7 @@ export function User() {
             </div>
           </div>
         </div>
-        <div className="-ml-4 -mr-4 -mb-4 p-4 mt-4 border-t-2 border-foreground">
+        <div className="mt-4 -mr-4 -mb-4 -ml-4 border-t-2 border-foreground p-4">
           <CadenceTempoInput />
         </div>
       </div>

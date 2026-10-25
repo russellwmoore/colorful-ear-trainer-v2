@@ -1,9 +1,9 @@
+import { CADENCE_REGISTRY_MAP, type CadenceType } from "./cadences";
 import {
-  IONIAN_INTERVALS,
   AEOLIAN_INTERVALS,
   CHROMATIC_INTERVALS,
+  IONIAN_INTERVALS,
 } from "./noteNames";
-import { CADENCE_REGISTRY_MAP, type CadenceType } from "./cadences";
 
 type Tonality = "major" | "minor";
 

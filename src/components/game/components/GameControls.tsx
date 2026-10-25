@@ -1,5 +1,5 @@
-import { useEartrainerStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
+import { useEartrainerStore } from "@/store/store";
 
 export function GameControls() {
   const gameStatus = useEartrainerStore((s) => s.gameStatus);
@@ -9,11 +9,11 @@ export function GameControls() {
     useEartrainerStore.getState();
 
   return (
-    <div className="flex flex-col flex-none">
+    <div className="flex flex-none flex-col">
       <Button onClick={togglePlay} id="Play" variant="play" className="text-xl">
         {gameStatus === "playing" ? "PAUSE" : "PLAY"}
       </Button>
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <Button
           id="PlayCadence"
           className="whitespace-nowrap"

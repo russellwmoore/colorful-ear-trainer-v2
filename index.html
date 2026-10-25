@@ -13,7 +13,11 @@
         try {
           stored = localStorage.getItem("theme");
         } catch (e) {}
-        if (stored === "dark" || (stored !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)) {
+        if (
+          stored === "dark" ||
+          (stored !== "light" &&
+            matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
           document.documentElement.classList.add("dark");
         }
       })();

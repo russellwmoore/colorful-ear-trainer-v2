@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+
 import { synth } from "@/store/synth";
 
 type Notes = {

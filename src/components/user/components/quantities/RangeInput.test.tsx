@@ -1,6 +1,8 @@
-import { beforeEach, describe, expect, test } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test } from "vitest";
+
 import { useEartrainerStore } from "@/store/store";
+
 import { RangeInput } from "./RangeInput";
 
 const initialState = useEartrainerStore.getState();

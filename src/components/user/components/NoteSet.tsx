@@ -3,6 +3,7 @@ import { useEartrainerStore } from "@/store/store";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { isNoteSetId } from "@/utils/noteSets";
 import { useGetNoteSetIdsAndLabels } from "@/utils/useGetNoteSetIdsAndLabels";
+
 import { NoteSetPicker } from "./NoteSetPicker";
 
 export function NoteSet() {
@@ -22,7 +23,7 @@ export function NoteSet() {
       <NativeSelect
         name="set-select"
         id="NoteSet"
-        className="note-sets text-lg p-2"
+        className="note-sets p-2 text-lg"
         onChange={handleChange}
         value={noteSetId}
       >

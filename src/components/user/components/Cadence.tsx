@@ -1,9 +1,9 @@
-import { useEartrainerStore } from "@/store/store";
 import { NativeSelect } from "@/components/ui/native-select";
+import { useEartrainerStore } from "@/store/store";
 import {
   CADENCE_REGISTRY_MAP,
-  type CadenceType,
   type CadenceInfo,
+  type CadenceType,
   isCadenceType,
 } from "@/utils/cadences";
 
