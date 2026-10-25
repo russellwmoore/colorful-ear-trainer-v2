@@ -13,26 +13,15 @@ export function NoteQuantitiesInput() {
     (state) => state.setAmountOfNotesToGuess,
   );
 
-  const handleIncrement = () => {
-    if (amountOfNotes >= MAX) return;
-    setAmountOfNotes(amountOfNotes + STEP);
-  };
-
-  const handleDecrement = () => {
-    if (amountOfNotes <= MIN) return;
-    setAmountOfNotes(amountOfNotes - STEP);
-  };
-
   return (
     <QuantitiesInput
       label="Notes:"
       subLabel="after cadence"
-      onIncrement={handleIncrement}
-      onDecrement={handleDecrement}
       value={amountOfNotes}
       min={MIN}
       max={MAX}
       step={STEP}
+      onValueChange={setAmountOfNotes}
     />
   );
 }

@@ -11,26 +11,15 @@ export function TimePerNoteInput() {
     (state) => state.setTimePerNote,
   );
 
-  const handleIncrement = () => {
-    if (amountOfTimePerNote >= MAX) return;
-    setAmountOfTimePerNote(amountOfTimePerNote + STEP);
-  };
-
-  const handleDecrement = () => {
-    if (amountOfTimePerNote <= MIN) return;
-    setAmountOfTimePerNote(amountOfTimePerNote - STEP);
-  };
-
   return (
     <QuantitiesInput
       label="Time Per Note:"
       subLabel="seconds"
-      onIncrement={handleIncrement}
-      onDecrement={handleDecrement}
       value={amountOfTimePerNote}
       min={MIN}
       max={MAX}
       step={STEP}
+      onValueChange={setAmountOfTimePerNote}
     />
   );
 }
