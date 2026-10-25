@@ -26,16 +26,16 @@ export function CountDown() {
     <div className="flex flex-col items-center justify-center">
       <div
         data-face
-        className="relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b from-red-400 to-red-600 aspect-square"
+        className="relative z-10 aspect-square w-full overflow-hidden rounded-full bg-linear-to-b from-red-400 to-red-600"
       >
-        <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
-          <span data-time className="text-xl md:text-4xl font-bold">
+        <div className="absolute inset-0 flex flex-col items-center justify-center rounded-full border-2 border-white">
+          <span data-time className="text-xl font-bold md:text-4xl">
             {displayedTime.minutes}:{displayedTime.seconds}
           </span>
-          <span className="text-sm hidden md:block">remaining</span>
+          <span className="hidden text-sm md:block">remaining</span>
           <span className="text-sm md:hidden">left</span>
           <div
-            className="absolute bg-linear-to-b from-green-500 to-green-600 left-0 bottom-0 right-0 -z-1 h-full"
+            className="absolute right-0 bottom-0 left-0 -z-1 h-full bg-linear-to-b from-green-500 to-green-600"
             style={{
               maxHeight: `${isPlayingGame ? "0" : "100%"}`,
               transition: `max-height ${isPlayingGame ? totalInitialGameTime : 0}ms linear`,

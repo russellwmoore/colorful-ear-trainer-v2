@@ -22,7 +22,7 @@ export function NoteSet() {
       <NativeSelect
         name="set-select"
         id="NoteSet"
-        className="note-sets text-lg p-2"
+        className="note-sets p-2 text-lg"
         onChange={handleChange}
         value={noteSetId}
       >

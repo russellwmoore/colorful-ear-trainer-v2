@@ -6,12 +6,12 @@ export function Streak() {
 
   return (
     <div className="z-10 flex flex-col items-center justify-center">
-      <div className="w-full flex flex-col bg-linear-to-r pt-1 rounded-lg border-2 border-white text-white">
+      <div className="flex w-full flex-col rounded-lg border-2 border-white bg-linear-to-r pt-1 text-white">
         <div className="text-lg md:text-xl">Streak:</div>
-        <div data-streak className="font-bold text-xl md:text-4xl">
+        <div data-streak className="text-xl font-bold md:text-4xl">
           {correctStreak}
         </div>
-        <div className="text-sm md:text-lg pt-1 pb-1 px-4 mt-1 flex justify-center items-center border-t-2 border-white">
+        <div className="mt-1 flex items-center justify-center border-t-2 border-white px-4 pt-1 pb-1 text-sm md:text-lg">
           Best: {bestCorrectStreak}
           <span
             data-storage-key="streak"

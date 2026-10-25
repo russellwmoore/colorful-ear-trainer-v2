@@ -176,11 +176,11 @@ export function Piano() {
   }, []);
 
   return (
-    <div id="Piano" className="flex-none w-full max-w-200 mx-auto">
+    <div id="Piano" className="mx-auto w-full max-w-200 flex-none">
       <svg
         viewBox="0 0 170 142"
         preserveAspectRatio="xMidYMin meet"
-        className="w-full h-auto"
+        className="h-auto w-full"
       >
         {pianoKeysInit.map((key) => {
           const noteName = key["data-note"].split(",")[0];
@@ -203,7 +203,7 @@ export function Piano() {
               fill={key.fill}
               data-key={key["data-key"]}
               data-note={key["data-note"]}
-              className="cursor-pointer select-none transition-all duration-200"
+              className="cursor-pointer transition-all duration-200 select-none"
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUpOrLeave}
               onPointerLeave={handlePointerUpOrLeave}

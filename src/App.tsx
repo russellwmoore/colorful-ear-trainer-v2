@@ -6,18 +6,18 @@ import { FancyBackground } from "./components/FancyBackground";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center isolate relative">
+    <div className="relative isolate flex flex-col items-center justify-center">
       <Header />
-      <div className="grid w-full grid-cols-1 gap-4 p-4 mx-auto md:grid-cols-2 lg:grid-cols-4 max-w-screen-2xl">
-        <div className="grid gap-4 md:gap-0 md:flex md:flex-col md:space-y-4 md:max-h-app overflow-auto">
+      <div className="mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 overflow-auto md:flex md:max-h-app md:flex-col md:gap-0 md:space-y-4">
           <User />
         </div>
-        <div className="md:col-span-2 md:order-3">
-          <div className="flex flex-col md:h-app space-y-4 overflow-hidden">
+        <div className="md:order-3 md:col-span-2">
+          <div className="flex flex-col space-y-4 overflow-hidden md:h-app">
             <Piano />
           </div>
         </div>
-        <div className="order-4 md:order-2 lg:order-4 flex flex-col md:max-h-app overflow-auto space-y-4">
+        <div className="order-4 flex flex-col space-y-4 overflow-auto md:order-2 md:max-h-app lg:order-4">
           <Game />
         </div>
       </div>

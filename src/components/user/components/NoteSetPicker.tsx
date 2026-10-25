@@ -74,14 +74,14 @@ export function NoteSetPicker() {
   const checkableNotes = flatKeyCenters.includes(keyCenter) ? flats : sharps;
 
   return (
-    <div className="grid items-center justify-center gap-2 mt-3 grid-cols-14 grid-rows-2">
+    <div className="mt-3 grid grid-cols-14 grid-rows-2 items-center justify-center gap-2">
       {checkableNotes.map((note, index) => {
         const additionalStyles = pickerCss[note];
 
         return (
           <label
             className={cn(
-              "relative flex items-center justify-center w-8 h-8 border border-foreground rounded-full cursor-pointer select-none has-checked:font-semibold text-theme-text",
+              "text-theme-text relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-foreground select-none has-checked:font-semibold",
               additionalStyles,
             )}
             key={note}

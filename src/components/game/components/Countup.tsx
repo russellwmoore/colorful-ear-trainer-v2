@@ -14,16 +14,16 @@ export function Countup() {
     <div className="flex flex-col items-center justify-center">
       <div
         className={cn(
-          "relative overflow-hidden z-10 rounded-full w-full bg-linear-to-b aspect-square",
+          "relative z-10 aspect-square w-full overflow-hidden rounded-full bg-linear-to-b",
           `${hasExpired ? "from-red-400 to-red-600" : "from-green-400 to-green-600"}`,
         )}
       >
-        <div className="absolute inset-0 rounded-full flex flex-col justify-center items-center border-2 border-white">
-          <div data-time className="text-xl md:text-4xl font-bold">
+        <div className="absolute inset-0 flex flex-col items-center justify-center rounded-full border-2 border-white">
+          <div data-time className="text-xl font-bold md:text-4xl">
             {millisecondsToMMSS(timeElapsed).seconds}.
             {millisecondsToMMSS(timeElapsed).hundredths}
           </div>
-          <div className="text-sm md:text-base md:pt-1 md:mt-1 border-t border-white">
+          <div className="border-t border-white text-sm md:mt-1 md:pt-1 md:text-base">
             <span data-limit className="mr-1">
               {initialTime}s
             </span>
