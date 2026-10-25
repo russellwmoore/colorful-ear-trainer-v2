@@ -6,14 +6,14 @@ const MAX = 400;
 const STEP = 1;
 
 export function CadenceTempoInput() {
-  const cadenceTempo = useEartrainerStore((s) => s.cadenceTempo);
+  const cadenceTempoInit = useEartrainerStore((s) => s.cadenceTempoInit);
   const inPlayCadenceTempo = useEartrainerStore((s) => s.inPlayCadenceTempo);
-  const setCadenceTempo = useEartrainerStore((s) => s.setCadenceTempo);
+  const setCadenceTempo = useEartrainerStore((s) => s.setCadenceTempoInit);
   const setInPlayCadenceTempo = useEartrainerStore(
     (s) => s.setInPlayCadenceTempo,
   );
 
-  const isInitialTempo = inPlayCadenceTempo === cadenceTempo;
+  const isInitialTempo = inPlayCadenceTempo === cadenceTempoInit;
 
   const setTempo = (val: number) => {
     setInPlayCadenceTempo(val);
