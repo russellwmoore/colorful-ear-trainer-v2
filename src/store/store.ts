@@ -22,6 +22,7 @@ import { confettiMilestone } from "./confetti";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
+const INITIAL_CADENCE_TEMPO = 60;
 // Pause after a correct answer so the note rings before the next question
 const CORRECT_FEEDBACK_MS = 600;
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -142,10 +143,10 @@ export const useEartrainerStore = create<EarTrainerState>()(
         octave: 4,
         setOctave: (newOctave: number) =>
           set({ octave: newOctave }, undefined, "setOctave"),
-        cadenceTempoInit: 60,
+        cadenceTempoInit: INITIAL_CADENCE_TEMPO,
         setCadenceTempoInit: (newTempo: number) =>
           set({ cadenceTempoInit: newTempo }, undefined, "setCadenceTempoInit"),
-        inPlayCadenceTempo: get()?.cadenceTempoInit,
+        inPlayCadenceTempo: INITIAL_CADENCE_TEMPO,
         setInPlayCadenceTempo: (newTempo: number) =>
           set(
             { inPlayCadenceTempo: newTempo },
@@ -181,7 +182,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
             cadence,
             keyCenter,
             octave,
-            cadenceTempoInit: cadenceTempo,
+            inPlayCadenceTempo,
             isPlayingAudio,
             setIsPlayingAudio,
           } = get();
@@ -208,7 +209,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           setIsPlayingAudio(true);
           await playNotes({
             notes: enrichedArrOfVoicings,
-            cadenceTempo,
+            cadenceTempo: inPlayCadenceTempo,
           });
           setIsPlayingAudio(false);
         },
@@ -493,7 +494,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           timePerNote: state.timePerNote,
           cadenceEvery: state.cadenceEvery,
           octave: state.octave,
-          cadenceTempo: state.cadenceTempoInit,
+          cadenceTempoInit: state.cadenceTempoInit,
           inPlayCadenceTempo: state.cadenceTempoInit,
           totalInitialGameTime: state.totalInitialGameTime,
           octaveRange: state.octaveRange,
