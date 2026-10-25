@@ -7,26 +7,39 @@ type QuantitiesInputProps = {
   min: number;
   max: number;
   step: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
+  onValueChange: (value: number) => void;
 };
 
 export function QuantitiesInput({
   label,
   subLabel,
   value,
-  onIncrement,
-  onDecrement,
   min,
   max,
   step,
+  onValueChange,
 }: QuantitiesInputProps) {
+  const clamp = (n: number) => Math.min(max, Math.max(min, n));
+
+  // Typing is left unclamped so intermediate values (e.g. "1" on the way to "120")
+  // are allowed, then the value is clamped once the user leaves the field.
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value);
+    if (Number.isNaN(val)) return;
+    onValueChange(val);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value);
+    onValueChange(Number.isNaN(val) ? clamp(value) : clamp(val));
+  };
+
   return (
     <Stepper
       label={label}
       subLabel={subLabel}
-      onIncrement={onIncrement}
-      onDecrement={onDecrement}
+      onIncrement={() => onValueChange(clamp(value + step))}
+      onDecrement={() => onValueChange(clamp(value - step))}
     >
       <StepperInput
         value={value}
@@ -34,7 +47,8 @@ export function QuantitiesInput({
         max={max}
         step={step}
         inputMode="decimal"
-        // TODO: add general onChange to be passed from wrapper
+        onChange={handleChange}
+        onBlur={handleBlur}
       />
     </Stepper>
   );

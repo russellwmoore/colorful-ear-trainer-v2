@@ -42,3 +42,8 @@ vi.mock("@/store/synth", () => ({
     releaseAll: vi.fn(),
   },
 }));
+
+// 6. No OffscreenCanvas in jsdom; confetti.ts builds emoji shapes as soon as it's imported
+vi.mock("@/store/confetti", () => ({
+  confettiMilestone: vi.fn(),
+}));

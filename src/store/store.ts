@@ -9,12 +9,12 @@ import {
 } from "@/utils/noteNames";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { type NoteSetId, NOTE_SETS } from "@/utils/noteSets";
-import { transpose } from "@/utils/transpose";
+import { transpose, notesAsNumber } from "@/utils/transpose";
 import { synth } from "./synth";
 import { Countdown } from "./countdownTimer";
 import { useTimerStore } from "./timerStore";
 import { Countup } from "./countupStopwatch";
-import { notesAsNumber } from "@/utils/transpose";
+
 import { playNotes } from "@/utils/playNotes";
 import { getRandomNotes } from "@/utils/getRandomNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
@@ -22,6 +22,7 @@ import { confettiMilestone } from "./confetti";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
+const INITIAL_CADENCE_TEMPO = 60;
 // Pause after a correct answer so the note rings before the next question
 const CORRECT_FEEDBACK_MS = 600;
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -59,8 +60,10 @@ export type EarTrainerState = {
   setCadenceEvery: (newTimePerNote: number) => void;
   octave: number;
   setOctave: (newOctave: number) => void;
-  cadenceTempo: number;
-  setCadenceTempo: (newCadence: number) => void;
+  cadenceTempoInit: number;
+  setCadenceTempoInit: (newCadenceTempo: number) => void;
+  inPlayCadenceTempo: number;
+  setInPlayCadenceTempo: (newCadenceTempo: number) => void;
   // totalTime in ms
   totalInitialGameTime: number;
   setTotalInitialGameTime: (newTime: number) => void;
@@ -140,9 +143,16 @@ export const useEartrainerStore = create<EarTrainerState>()(
         octave: 4,
         setOctave: (newOctave: number) =>
           set({ octave: newOctave }, undefined, "setOctave"),
-        cadenceTempo: 60,
-        setCadenceTempo: (newTempo: number) =>
-          set({ cadenceTempo: newTempo }, undefined, "setCadenceTempo"),
+        cadenceTempoInit: INITIAL_CADENCE_TEMPO,
+        setCadenceTempoInit: (newTempo: number) =>
+          set({ cadenceTempoInit: newTempo }, undefined, "setCadenceTempoInit"),
+        inPlayCadenceTempo: INITIAL_CADENCE_TEMPO,
+        setInPlayCadenceTempo: (newTempo: number) =>
+          set(
+            { inPlayCadenceTempo: newTempo },
+            undefined,
+            "inPlayCadenceTempo",
+          ),
         totalInitialGameTime: INITIAL_GAME_TIME_DURATION,
         setTotalInitialGameTime: (newTotalTimeInMs: number) => {
           // if the user is playing, don't set this time here on the countdown object.
@@ -159,7 +169,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
         setOctaveRange: (newOctaveRange: number[]) => {
           set({ octaveRange: newOctaveRange }, undefined, "setOctaveRange");
         },
-        synth,
+
         isPlayingAudio: false,
         setIsPlayingAudio: (isPlaying: boolean) => {
           set({ isPlayingAudio: isPlaying }, undefined, "setIsPlayingAudio");
@@ -172,7 +182,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
             cadence,
             keyCenter,
             octave,
-            cadenceTempo,
+            inPlayCadenceTempo,
             isPlayingAudio,
             setIsPlayingAudio,
           } = get();
@@ -199,7 +209,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           setIsPlayingAudio(true);
           await playNotes({
             notes: enrichedArrOfVoicings,
-            cadenceTempo,
+            cadenceTempo: inPlayCadenceTempo,
           });
           setIsPlayingAudio(false);
         },
@@ -293,6 +303,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
             bestScore,
             correctStreak,
             bestCorrectStreak,
+            inPlayCadenceTempo,
+            cadenceTempoInit,
           } = get();
 
           // this regex smells bad. perhaps a different pattern to store guesses is needed?
@@ -301,40 +313,53 @@ export const useEartrainerStore = create<EarTrainerState>()(
             notesAsNumber(note.replace(/\d$/, "") as NoteName, keyCenter),
           );
 
-          const isCorrect = notesToGuessAsScaleDegrees.includes(guess);
+          const isCorrectNote = notesToGuessAsScaleDegrees.includes(guess);
           // Repeating a note already guessed this question doesn't count again
-          if (currentGuesses.includes(guess)) return isCorrect;
+          if (currentGuesses.includes(guess)) return isCorrectNote;
 
           const guesses = [...currentGuesses, guess];
-          const isComplete = notesToGuessAsScaleDegrees.every((correctNote) =>
-            guesses.includes(correctNote),
+          const isPlayComplete = notesToGuessAsScaleDegrees.every(
+            (correctNote) => guesses.includes(correctNote),
           );
 
-          set({ allAttempts: allAttempts + 1 });
-          if (isCorrect) {
+          set({ allAttempts: allAttempts + 1 }, undefined, "submitGuess");
+          if (isCorrectNote) {
             const amountOfCorrectAttempts = correctAttempts + 1;
-            set({
-              correctAttempts: amountOfCorrectAttempts,
-              bestScore:
-                amountOfCorrectAttempts > bestScore
-                  ? amountOfCorrectAttempts
-                  : bestScore,
-            });
+            set(
+              {
+                correctAttempts: amountOfCorrectAttempts,
+                bestScore:
+                  amountOfCorrectAttempts > bestScore
+                    ? amountOfCorrectAttempts
+                    : bestScore,
+              },
+              undefined,
+              "submitGuess-isCorrect",
+            );
             if (guesses.length === 1) {
               const updatedCorrectStreak = correctStreak + 1;
-              set({
-                correctStreak: updatedCorrectStreak,
-                bestCorrectStreak:
-                  bestCorrectStreak >= updatedCorrectStreak
-                    ? bestCorrectStreak
-                    : updatedCorrectStreak,
-              });
+              set(
+                {
+                  correctStreak: updatedCorrectStreak,
+                  bestCorrectStreak:
+                    bestCorrectStreak >= updatedCorrectStreak
+                      ? bestCorrectStreak
+                      : updatedCorrectStreak,
+                  inPlayCadenceTempo: Math.floor(inPlayCadenceTempo * 1.025),
+                },
+                undefined,
+                "submitGuess-isCorrectStreak",
+              );
               confettiMilestone(updatedCorrectStreak);
             }
           } else {
-            set({ correctStreak: 0 });
+            set(
+              { correctStreak: 0, inPlayCadenceTempo: cadenceTempoInit },
+              undefined,
+              "submitGuess-incorrectGuess",
+            );
           }
-          if (isComplete) {
+          if (isPlayComplete) {
             set(
               {
                 currentGuesses: [],
@@ -342,17 +367,21 @@ export const useEartrainerStore = create<EarTrainerState>()(
                 playCount: playCount + 1,
               },
               undefined,
-              "submitGuess-complete",
+              "submitGuess-playComplete",
             );
             countup.reset();
             setTimeout(() => {
               if (get().gameStatus === "playing") void playTheGame();
             }, CORRECT_FEEDBACK_MS);
           } else {
-            set({ currentGuesses: guesses }, undefined, "submitGuess");
+            set(
+              { currentGuesses: guesses },
+              undefined,
+              "submitGuess-notPlayComplete",
+            );
           }
 
-          return isCorrect;
+          return isCorrectNote;
         },
 
         resetCurrentGuesses: () => {
@@ -465,7 +494,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
           timePerNote: state.timePerNote,
           cadenceEvery: state.cadenceEvery,
           octave: state.octave,
-          cadenceTempo: state.cadenceTempo,
+          cadenceTempoInit: state.cadenceTempoInit,
+          inPlayCadenceTempo: state.cadenceTempoInit,
           totalInitialGameTime: state.totalInitialGameTime,
           octaveRange: state.octaveRange,
           noteSetId: state.noteSetId,
@@ -502,3 +532,35 @@ export const countup = new Countup({
   onTick: (ms) => useTimerStore.setState({ currentCountUp: ms }),
   onComplete: () => console.log("DONE"),
 });
+
+/**
+ * Levels:
+ * Each level has a time, a streak to win, a key, a cadence
+ * notes after cadence
+ * seconds per note
+ * cadence every
+ * octave range.
+ *
+ * all scoring needs to be persisted for each of these levels.
+ *
+ *
+ * levelSettings : {
+ *   easy1: {
+ *    alldata
+ *  }
+ * }
+ *
+ * socringForLevels : {
+ *  easy1: {
+ *    score,
+ *    streak
+ *  }
+ * }
+ *
+ *
+ * if on a level, all scoring needs to be updated in the UI.
+ * currently, only 1 scoring exists for the whole game
+ *
+ *
+ *  *
+ */

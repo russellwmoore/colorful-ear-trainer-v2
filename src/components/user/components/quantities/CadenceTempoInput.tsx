@@ -1,34 +1,34 @@
 import { useEartrainerStore } from "@/store/store";
 import { QuantitiesInput } from "./QuantitiesInput";
 
-const MIN = 1;
+const MIN = 60;
 const MAX = 400;
 const STEP = 1;
 
 export function CadenceTempoInput() {
-  const cadenceTempo = useEartrainerStore((state) => state.cadenceTempo);
-  const setCadenceTempo = useEartrainerStore((state) => state.setCadenceTempo);
+  const cadenceTempoInit = useEartrainerStore((s) => s.cadenceTempoInit);
+  const inPlayCadenceTempo = useEartrainerStore((s) => s.inPlayCadenceTempo);
+  const setCadenceTempo = useEartrainerStore((s) => s.setCadenceTempoInit);
+  const setInPlayCadenceTempo = useEartrainerStore(
+    (s) => s.setInPlayCadenceTempo,
+  );
 
-  const handleIncrement = () => {
-    if (cadenceTempo >= MAX) return;
-    setCadenceTempo(cadenceTempo + STEP);
-  };
+  const isInitialTempo = inPlayCadenceTempo === cadenceTempoInit;
 
-  const handleDecrement = () => {
-    if (cadenceTempo <= MIN) return;
-    setCadenceTempo(cadenceTempo - STEP);
+  const setTempo = (val: number) => {
+    setInPlayCadenceTempo(val);
+    if (isInitialTempo) setCadenceTempo(val);
   };
 
   return (
     <QuantitiesInput
       label="Cadence Tempo:"
       subLabel="beats per minute"
-      onIncrement={handleIncrement}
-      onDecrement={handleDecrement}
-      value={cadenceTempo}
+      value={inPlayCadenceTempo}
       min={MIN}
       max={MAX}
       step={STEP}
+      onValueChange={setTempo}
     />
   );
 }
