@@ -10,10 +10,10 @@ import {
   type KeyCenterType,
   type NoteName,
 } from "@/utils/noteNames";
-import { NOTE_SETS,type NoteSetId } from "@/utils/noteSets";
+import { NOTE_SETS, type NoteSetId } from "@/utils/noteSets";
 import { playNotes } from "@/utils/playNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
-import { notesAsNumber,transpose } from "@/utils/transpose";
+import { notesAsNumber, transpose } from "@/utils/transpose";
 
 import { confettiMilestone } from "./confetti";
 import { Countdown } from "./countdownTimer";
