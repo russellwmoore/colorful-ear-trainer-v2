@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Format, lint and tests are enforced on the PR by required status checks (see test.yml)
+  # Format, lint and tests are enforced on the PR by required status checks (see ci.yml)
   build:
     runs-on: ubuntu-latest
 
