@@ -1,10 +1,10 @@
 import {
-  flats,
-  PITCH_CLASS_MAP,
-  sharps,
   type FlatName,
+  flats,
   type KeyCenterType,
   type NoteName,
+  PITCH_CLASS_MAP,
+  sharps,
 } from "./noteNames";
 
 const NOTE_SPELLINGS_BY_KEY: (readonly NoteName[])[] = [

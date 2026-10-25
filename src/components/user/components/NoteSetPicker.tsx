@@ -1,9 +1,9 @@
+import { cn } from "@/lib/utils";
 import { useEartrainerStore } from "@/store/store";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { flatKeyCenters, flats, sharps } from "@/utils/noteNames";
 import { NOTE_SETS } from "@/utils/noteSets";
-import { transpose, normalizeIndex } from "@/utils/transpose";
-import { cn } from "@/lib/utils";
+import { normalizeIndex,transpose } from "@/utils/transpose";
 
 const whiteKeysSelect = "has-checked:bg-linear-to-r from-blue-600 to-blue-700";
 const blackKeysSelect =

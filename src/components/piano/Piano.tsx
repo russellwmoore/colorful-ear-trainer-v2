@@ -1,10 +1,12 @@
-import { pianoKeysInit } from "./pianoKeys";
+import { useEffect, useRef } from "react";
 import * as Tone from "tone";
+
 import { useEartrainerStore } from "@/store/store";
-import { useRef, useEffect } from "react";
-import { notesAsNumber } from "@/utils/transpose";
-import type { NoteName } from "@/utils/noteNames";
 import { synth } from "@/store/synth";
+import type { NoteName } from "@/utils/noteNames";
+import { notesAsNumber } from "@/utils/transpose";
+
+import { pianoKeysInit } from "./pianoKeys";
 // TODO: consolidate and determine where to put these variables
 const OCTAVE = 4;
 const GOLD = "rgba(251, 191, 36, 1)";

@@ -1,14 +1,14 @@
 import { Cadence } from "./components/Cadence";
 import { KeyCenter } from "./components/KeyCenter";
-import { NoteQuantitiesInput } from "./components/quantities/NoteQuantitiesInput";
 import { NoteSet } from "./components/NoteSet";
 import { CadenceEveryInput } from "./components/quantities/CadenceEveryInput";
-import { RandomizeBox } from "./components/RandomizeBox";
-import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
-import { OctaveInput } from "./components/quantities/OctaveInput";
 import { CadenceTempoInput } from "./components/quantities/CadenceTempoInput";
-import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
+import { NoteQuantitiesInput } from "./components/quantities/NoteQuantitiesInput";
+import { OctaveInput } from "./components/quantities/OctaveInput";
 import { RangeInput } from "./components/quantities/RangeInput";
+import { TimePerNoteInput } from "./components/quantities/TimePerNoteInput";
+import { TotalTimeInput } from "./components/quantities/TotalTimeInput";
+import { RandomizeBox } from "./components/RandomizeBox";
 
 export function User() {
   return (

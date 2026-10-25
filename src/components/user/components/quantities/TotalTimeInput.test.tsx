@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, test } from "vitest";
+
 import { useEartrainerStore } from "@/store/store";
+
 import { TotalTimeInput } from "./TotalTimeInput";
 
 const initialState = useEartrainerStore.getState();

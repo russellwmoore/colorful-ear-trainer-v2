@@ -1,7 +1,9 @@
-import { useEartrainerStore } from "@/store/store";
 import { useState } from "react";
-import { Stepper, StepperInput } from "./Stepper";
+
+import { useEartrainerStore } from "@/store/store";
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
+
+import { Stepper, StepperInput } from "./Stepper";
 
 // 99:59, the most that fits in MM:SS
 const MAX_TOTAL_TIME_MS = (99 * 60 + 59) * 1000;

@@ -1,4 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
+
 import { QuantitiesInput } from "./QuantitiesInput";
 
 const MIN = 0.5;

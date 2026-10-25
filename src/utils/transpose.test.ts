@@ -1,6 +1,7 @@
-import { expect, test, describe } from "vitest";
+import { describe, expect, test } from "vitest";
+
 import type { NoteName } from "./noteNames";
-import { normalizeIndex, transpose, notesAsNumber } from "./transpose";
+import { normalizeIndex, notesAsNumber, transpose } from "./transpose";
 
 describe("transpose", () => {
   test("Baseline transpose behavior", () => {

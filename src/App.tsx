@@ -1,8 +1,8 @@
-import { Piano } from "./components/piano/Piano";
-import { User } from "./components/user/User";
+import { FancyBackground } from "./components/FancyBackground";
 import { Game } from "./components/game/Game";
 import { Header } from "./components/header/Header";
-import { FancyBackground } from "./components/FancyBackground";
+import { Piano } from "./components/piano/Piano";
+import { User } from "./components/user/User";
 
 function App() {
   return (

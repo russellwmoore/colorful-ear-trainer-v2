@@ -1,5 +1,5 @@
-import { useEartrainerStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
+import { useEartrainerStore } from "@/store/store";
 
 export function GameControls() {
   const gameStatus = useEartrainerStore((s) => s.gameStatus);

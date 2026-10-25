@@ -3,6 +3,7 @@ import { useEartrainerStore } from "@/store/store";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
 import { isNoteSetId } from "@/utils/noteSets";
 import { useGetNoteSetIdsAndLabels } from "@/utils/useGetNoteSetIdsAndLabels";
+
 import { NoteSetPicker } from "./NoteSetPicker";
 
 export function NoteSet() {

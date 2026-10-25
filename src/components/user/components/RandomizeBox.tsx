@@ -1,5 +1,5 @@
-import { useEartrainerStore } from "@/store/store";
 import { Switch } from "@/components/ui/switch";
+import { useEartrainerStore } from "@/store/store";
 
 export function RandomizeBox() {
   const isRandomizeToggled = useEartrainerStore(

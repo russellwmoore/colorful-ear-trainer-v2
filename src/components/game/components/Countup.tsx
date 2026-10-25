@@ -1,7 +1,7 @@
+import { cn } from "@/lib/utils";
 import { useEartrainerStore } from "@/store/store";
 import { useTimerStore } from "@/store/timerStore";
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
-import { cn } from "@/lib/utils";
 
 export function Countup() {
   const timeElapsed = useTimerStore((s) => s.currentCountUp);

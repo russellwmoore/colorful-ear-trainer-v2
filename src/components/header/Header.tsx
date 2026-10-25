@@ -1,5 +1,5 @@
-import { useTheme } from "@/hooks/useTheme";
 import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/hooks/useTheme";
 
 // TODO: Everything for header
 export function Header() {

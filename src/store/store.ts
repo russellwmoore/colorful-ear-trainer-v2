@@ -1,24 +1,25 @@
+import * as Tone from "tone";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+
 import { type CadenceType } from "@/utils/cadences";
-import * as Tone from "tone";
+import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
+import { getRandomNotes } from "@/utils/getRandomNotes";
 import {
   getRandomKeyCenter,
   type KeyCenterType,
   type NoteName,
 } from "@/utils/noteNames";
-import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
-import { type NoteSetId, NOTE_SETS } from "@/utils/noteSets";
-import { transpose, notesAsNumber } from "@/utils/transpose";
-import { synth } from "./synth";
-import { Countdown } from "./countdownTimer";
-import { useTimerStore } from "./timerStore";
-import { Countup } from "./countupStopwatch";
-
+import { NOTE_SETS,type NoteSetId } from "@/utils/noteSets";
 import { playNotes } from "@/utils/playNotes";
-import { getRandomNotes } from "@/utils/getRandomNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
+import { notesAsNumber,transpose } from "@/utils/transpose";
+
 import { confettiMilestone } from "./confetti";
+import { Countdown } from "./countdownTimer";
+import { Countup } from "./countupStopwatch";
+import { synth } from "./synth";
+import { useTimerStore } from "./timerStore";
 
 // TODO: need a file of consts for config
 const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;

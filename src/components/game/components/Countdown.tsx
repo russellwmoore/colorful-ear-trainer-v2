@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { millisecondsToMMSS } from "@/utils/countdownUtils";
+
 import { useEartrainerStore } from "@/store/store";
 import { useTimerStore } from "@/store/timerStore";
+import { millisecondsToMMSS } from "@/utils/countdownUtils";
 
 export function CountDown() {
   // totalGameTimeRemaining uses the timerStore instead of the earTrainerStore to grab the passing time values.

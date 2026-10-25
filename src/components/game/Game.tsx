@@ -1,9 +1,10 @@
-import { GameControls } from "./components/GameControls";
-import { Streak } from "./components/Streak";
+import { useEartrainerStore } from "@/store/store";
+
 import { CountDown } from "./components/Countdown";
 import { Countup } from "./components/Countup";
+import { GameControls } from "./components/GameControls";
 import { Score } from "./components/Score";
-import { useEartrainerStore } from "@/store/store";
+import { Streak } from "./components/Streak";
 
 export function Game() {
   const allAttempts = useEartrainerStore((s) => s.allAttempts);
