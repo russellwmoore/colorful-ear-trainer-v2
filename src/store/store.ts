@@ -370,16 +370,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
             bestCorrectStreak: bestCorreectStreakNew,
           } = bests[gameLevel];
 
-          // for every guess we have to know what game we are playing.
-          // practice mode is one game
-          // the other games are defined in play levels
-          // if use is in practice mode, then all scoring goes to practice mode
-          // if user is in playLevel mode, all scoring is in the corresponding game.
-
-          //
-
           // this regex smells bad. perhaps a different pattern to store guesses is needed?
-
           const notesToGuessAsScaleDegrees = notesToGuess.map((note) =>
             notesAsNumber(note.replace(/\d$/, "") as NoteName, keyCenter),
           );

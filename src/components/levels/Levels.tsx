@@ -1,8 +1,11 @@
 import { useEartrainerStore } from "@/store/store";
 
 import { LevelInfoDetail } from "./LevelInfoDetail";
-import { gameLevels, type LevelId } from "./LevelsMetaData";
+import { gameLevels, type LevelId, type LevelType } from "./LevelsMetaData";
 
+type EnrichedLevels = LevelType & {
+  isComplete: boolean;
+};
 export function Levels() {
   const gameLevel = useEartrainerStore((s) => s.gameLevel);
   const setGameLevel = useEartrainerStore((s) => s.setGameLevel);
@@ -11,11 +14,12 @@ export function Levels() {
   };
   const bests = useEartrainerStore((s) => s.bests);
 
-  const enrichedGameLevels = gameLevels.map((level) => {
+  const enrichedGameLevels: EnrichedLevels[] = gameLevels.map((level) => {
     const toWin = level.streakToWin;
     const bestForLevel = bests[level.id].bestCorrectStreak;
     return { ...level, isComplete: bestForLevel >= toWin };
   });
+
   return (
     <div id="LevelInfo">
       <h2 className="-mt-4 -mr-4 -ml-4 bg-foreground px-4 py-2 text-lg font-bold text-background">
@@ -35,6 +39,7 @@ export function Levels() {
                 className={
                   selected ? `bg-linear-to-r from-purple-600 to-purple-400` : ""
                 }
+                key={id}
               >
                 <input
                   type="radio"
@@ -49,8 +54,7 @@ export function Levels() {
                   htmlFor={id}
                   className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                 >
-                  {label}
-                  {isComplete && "⭐️"}
+                  {label} {isComplete && "⭐️"}
                 </label>
               </div>
             );
@@ -59,13 +63,14 @@ export function Levels() {
         <div className="pl-4 text-sm">Medium</div>
         {enrichedGameLevels
           .filter(({ difficulty }) => difficulty === "medium")
-          .map(({ id, name, label }) => {
+          .map(({ id, name, label, isComplete }) => {
             const selected = id === gameLevel;
             return (
               <div
                 className={
                   selected ? `bg-linear-to-r from-purple-600 to-purple-400` : ""
                 }
+                key={id}
               >
                 <input
                   type="radio"
@@ -80,7 +85,7 @@ export function Levels() {
                   htmlFor={id}
                   className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                 >
-                  {label}
+                  {label} {isComplete && "⭐️"}
                 </label>
               </div>
             );
@@ -90,7 +95,7 @@ export function Levels() {
         <div className="col-span-3 grid grid-cols-4">
           {enrichedGameLevels
             .filter(({ difficulty }) => difficulty === "hard")
-            .map(({ id, name, label }) => {
+            .map(({ id, name, label, isComplete }) => {
               const selected = id === gameLevel;
               return (
                 <div
@@ -99,6 +104,7 @@ export function Levels() {
                       ? `bg-linear-to-r from-purple-600 to-purple-400`
                       : ""
                   }
+                  key={id}
                 >
                   <input
                     type="radio"
@@ -113,7 +119,7 @@ export function Levels() {
                     htmlFor={id}
                     className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                   >
-                    {label}
+                    {label} {isComplete && "⭐️"}
                   </label>
                 </div>
               );

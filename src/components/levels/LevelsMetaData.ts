@@ -14,7 +14,7 @@ export type LevelId =
   | "advanced3"
   | "insane1";
 
-type LevelType = {
+export type LevelType = {
   name: string;
   label: string;
   id: LevelId;
