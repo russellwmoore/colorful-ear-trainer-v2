@@ -1,8 +1,6 @@
 import { cn } from "@/lib/utils";
-import { useEartrainerStore } from "@/store/store";
-import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
+import { selectActivePitches, useEartrainerStore } from "@/store/store";
 import { flatKeyCenters, flats, sharps } from "@/utils/noteNames";
-import { NOTE_SETS } from "@/utils/noteSets";
 import { normalizeIndex, transpose } from "@/utils/transpose";
 
 const whiteKeysSelect = "has-checked:bg-linear-to-r from-blue-600 to-blue-700";
@@ -35,18 +33,13 @@ const pickerCss = {
 };
 
 export function NoteSetPicker() {
-  const noteSetId = useEartrainerStore((s) => s.noteSetId);
-  const cadence = useEartrainerStore((s) => s.cadence);
-  const majorOrMinor = CADENCE_REGISTRY_MAP[cadence].quality;
-  const noteSetScaleDegrees = NOTE_SETS[noteSetId][majorOrMinor].pitches;
-
-  const customNoteSet = useEartrainerStore((s) => s.customNoteSet);
+  const activePitches = useEartrainerStore(selectActivePitches);
   const setCustomNoteSet = useEartrainerStore((s) => s.setCustomNoteSet);
 
   const keyCenter = useEartrainerStore((s) => s.keyCenter);
 
   const allNotesTransposed = transpose({
-    arrOfNoteNumbers: customNoteSet ?? noteSetScaleDegrees,
+    arrOfNoteNumbers: activePitches,
     keyCenter,
   });
 
@@ -58,15 +51,10 @@ export function NoteSetPicker() {
     const normalizedScaleDegree = normalizeIndex(keyOffest);
 
     if (checked) {
-      setCustomNoteSet([
-        ...(customNoteSet ?? [...noteSetScaleDegrees]),
-        normalizedScaleDegree,
-      ]);
+      setCustomNoteSet([...activePitches, normalizedScaleDegree]);
     } else {
       setCustomNoteSet(
-        (customNoteSet ?? [...noteSetScaleDegrees]).filter(
-          (note) => note !== normalizedScaleDegree,
-        ),
+        activePitches.filter((note) => note !== normalizedScaleDegree),
       );
     }
   };

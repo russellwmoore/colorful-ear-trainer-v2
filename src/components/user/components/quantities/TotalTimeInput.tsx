@@ -87,7 +87,6 @@ export function TotalTimeInput() {
         pattern="\d{2}"
         step="1"
         autoComplete="off"
-        data-countdown
         onBlur={commitDraft}
         onChange={handleMinuteInputChange}
       />
@@ -102,7 +101,6 @@ export function TotalTimeInput() {
         pattern="\d{2}"
         step="1"
         autoComplete="off"
-        data-countdown
         onBlur={commitDraft}
         onChange={handleSecondInputChange}
       />

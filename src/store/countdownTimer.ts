@@ -65,6 +65,10 @@ export class Countdown {
     this.timeRemaining = this.initialDuration;
     this.start();
   }
+  reset() {
+    this.pause();
+    this.timeRemaining = this.initialDuration;
+  }
 
   _loop = () => {
     if (this.isPaused) return;

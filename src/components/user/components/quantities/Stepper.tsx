@@ -28,11 +28,7 @@ export function Stepper({
         <div className="flex min-w-0 grow items-center border-y border-foreground">
           {children}
         </div>
-        <StepperButton
-          aria-label="Increase Quantity"
-          data-increment=""
-          onClick={onIncrement}
-        >
+        <StepperButton aria-label="Increase Quantity" onClick={onIncrement}>
           +
         </StepperButton>
       </div>

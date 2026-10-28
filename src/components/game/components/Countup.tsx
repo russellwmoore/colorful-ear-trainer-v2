@@ -6,7 +6,7 @@ import { millisecondsToMMSS } from "@/utils/countdownUtils";
 export function Countup() {
   const timeElapsed = useTimerStore((s) => s.currentCountUp);
   const initialTime = useEartrainerStore(
-    (state) => state.amountOfnotesToGuess * state.timePerNote,
+    (state) => state.amountOfNotesToGuess * state.timePerNote,
   );
   const hasExpired = timeElapsed > initialTime * 1000;
 
@@ -19,14 +19,12 @@ export function Countup() {
         )}
       >
         <div className="absolute inset-0 flex flex-col items-center justify-center rounded-full border-2 border-white">
-          <div data-time className="text-xl font-bold md:text-4xl">
+          <div className="text-xl font-bold md:text-4xl">
             {millisecondsToMMSS(timeElapsed).seconds}.
             {millisecondsToMMSS(timeElapsed).hundredths}
           </div>
           <div className="border-t border-white text-sm md:mt-1 md:pt-1 md:text-base">
-            <span data-limit className="mr-1">
-              {initialTime}s
-            </span>
+            <span className="mr-1">{initialTime}s</span>
           </div>
         </div>
       </div>

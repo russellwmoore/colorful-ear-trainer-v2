@@ -1,16 +1,14 @@
 import { NativeSelect } from "@/components/ui/native-select";
-import { useEartrainerStore } from "@/store/store";
-import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
+import { selectTonality, useEartrainerStore } from "@/store/store";
 import { isNoteSetId } from "@/utils/noteSets";
 import { useGetNoteSetIdsAndLabels } from "@/utils/useGetNoteSetIdsAndLabels";
 
 import { NoteSetPicker } from "./NoteSetPicker";
 
 export function NoteSet() {
-  const cadence = useEartrainerStore((state) => state.cadence);
   const noteSetId = useEartrainerStore((state) => state.noteSetId);
   const setNoteSetId = useEartrainerStore((state) => state.setNoteSetId);
-  const quality = CADENCE_REGISTRY_MAP[cadence].quality;
+  const quality = useEartrainerStore(selectTonality);
   const noteSetIdsAndLabels = useGetNoteSetIdsAndLabels(quality);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

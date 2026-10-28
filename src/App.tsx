@@ -1,8 +1,8 @@
 import { FancyBackground } from "./components/FancyBackground";
 import { Game } from "./components/game/Game";
 import { Header } from "./components/header/Header";
+import { Options } from "./components/Options";
 import { Piano } from "./components/piano/Piano";
-import { User } from "./components/user/User";
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Header />
       <div className="mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="grid gap-4 overflow-auto md:flex md:max-h-app md:flex-col md:gap-0 md:space-y-4">
-          <User />
+          <Options />
         </div>
         <div className="md:order-3 md:col-span-2">
           <div className="flex flex-col space-y-4 overflow-hidden md:h-app">
