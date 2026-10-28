@@ -1,9 +1,15 @@
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/hooks/useTheme";
+import { type GameMode, useEartrainerStore } from "@/store/store";
 
 // TODO: Everything for header
 export function Header() {
   const { theme, toggleTheme } = useTheme();
+  const gameMode = useEartrainerStore((s) => s.gameMode);
+  const setGameMode = useEartrainerStore((s) => s.setGameMode);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGameMode(e.target.value as GameMode);
+  };
 
   return (
     <header className="sticky top-0 z-20 h-16 w-full border-b-2 border-foreground bg-background lg:bg-transparent">
@@ -20,7 +26,8 @@ export function Header() {
                 value="practice"
                 id="TogglePractice"
                 className="hidden"
-                defaultChecked
+                onChange={handleChange}
+                checked={gameMode === "practice"}
               />
               <label
                 htmlFor="TogglePractice"
@@ -36,6 +43,8 @@ export function Header() {
                 value="play"
                 id="TogglePlay"
                 className="hidden"
+                onChange={handleChange}
+                checked={gameMode === "play"}
               />
               <label
                 htmlFor="TogglePlay"
@@ -44,10 +53,7 @@ export function Header() {
                 Play Levels
               </label>
             </div>
-            <div
-              data-animated-label
-              className="absolute top-0 bottom-0 left-0 h-full w-1/2 bg-linear-to-r from-yellow-600 to-yellow-400 transition-transform group-has-[#TogglePlay:checked]:translate-x-full"
-            ></div>
+            <div className="absolute top-0 bottom-0 left-0 h-full w-1/2 bg-linear-to-r from-yellow-600 to-yellow-400 transition-transform group-has-[#TogglePlay:checked]:translate-x-full"></div>
           </div>
         </div>
         <div className="col-span-2 hidden grow items-center md:flex md:justify-center md:text-center">
@@ -62,7 +68,6 @@ export function Header() {
               <span className="text-xl md:hidden">?</span>
               <span className="hidden md:block">Instructions</span>
             </button>
-            {/* </modal-toggle> */}
           </div>
           <div className="flex flex-col">
             <Switch

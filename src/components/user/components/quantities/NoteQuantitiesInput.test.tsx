@@ -14,7 +14,7 @@ describe("NoteQuantitiesInput", () => {
   });
 
   test("renders the label and the amountOfnotesToGuess from the store", () => {
-    useEartrainerStore.setState({ amountOfnotesToGuess: 3 });
+    useEartrainerStore.setState({ amountOfNotesToGuess: 3 });
     render(<NoteQuantitiesInput />);
 
     expect(screen.getByText("Notes:")).toBeInTheDocument();
@@ -24,33 +24,33 @@ describe("NoteQuantitiesInput", () => {
 
   test("+ and - update amountOfnotesToGuess in the store", async () => {
     const user = userEvent.setup();
-    useEartrainerStore.setState({ amountOfnotesToGuess: 3 });
+    useEartrainerStore.setState({ amountOfNotesToGuess: 3 });
     render(<NoteQuantitiesInput />);
 
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));
-    expect(useEartrainerStore.getState().amountOfnotesToGuess).toBe(4);
+    expect(useEartrainerStore.getState().amountOfNotesToGuess).toBe(4);
     expect(screen.getByRole("textbox")).toHaveValue("4");
 
     await user.click(screen.getByRole("button", { name: "Decrease Quantity" }));
-    expect(useEartrainerStore.getState().amountOfnotesToGuess).toBe(3);
+    expect(useEartrainerStore.getState().amountOfNotesToGuess).toBe(3);
   });
 
   test("+ does not go above 12", async () => {
     const user = userEvent.setup();
-    useEartrainerStore.setState({ amountOfnotesToGuess: 12 });
+    useEartrainerStore.setState({ amountOfNotesToGuess: 12 });
     render(<NoteQuantitiesInput />);
 
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));
-    expect(useEartrainerStore.getState().amountOfnotesToGuess).toBe(12);
+    expect(useEartrainerStore.getState().amountOfNotesToGuess).toBe(12);
   });
 
   test("- does not go below 1", async () => {
     const user = userEvent.setup();
-    useEartrainerStore.setState({ amountOfnotesToGuess: 1 });
+    useEartrainerStore.setState({ amountOfNotesToGuess: 1 });
     render(<NoteQuantitiesInput />);
 
     await user.click(screen.getByRole("button", { name: "Decrease Quantity" }));
-    expect(useEartrainerStore.getState().amountOfnotesToGuess).toBe(1);
+    expect(useEartrainerStore.getState().amountOfNotesToGuess).toBe(1);
   });
 
   test("clamps a typed value into range on blur", async () => {
@@ -61,6 +61,6 @@ describe("NoteQuantitiesInput", () => {
     await user.clear(input);
     await user.type(input, "99");
     await user.tab();
-    expect(useEartrainerStore.getState().amountOfnotesToGuess).toBe(12);
+    expect(useEartrainerStore.getState().amountOfNotesToGuess).toBe(12);
   });
 });

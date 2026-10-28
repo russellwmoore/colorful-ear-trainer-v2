@@ -46,6 +46,7 @@ export class Countup {
   reset() {
     this.isPaused = true;
     this.elapsedTime = 0;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
   }
 
   _loop = () => {

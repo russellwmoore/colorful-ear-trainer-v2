@@ -8,7 +8,7 @@ const STEP = 1;
 
 export function NoteQuantitiesInput() {
   const amountOfNotes = useEartrainerStore(
-    (state) => state.amountOfnotesToGuess,
+    (state) => state.amountOfNotesToGuess,
   );
   const setAmountOfNotes = useEartrainerStore(
     (state) => state.setAmountOfNotesToGuess,
