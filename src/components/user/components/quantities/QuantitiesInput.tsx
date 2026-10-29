@@ -7,6 +7,7 @@ type QuantitiesInputProps = {
   min: number;
   max: number;
   step: number;
+  name: string;
   onValueChange: (value: number) => void;
 };
 
@@ -17,6 +18,7 @@ export function QuantitiesInput({
   min,
   max,
   step,
+  name,
   onValueChange,
 }: QuantitiesInputProps) {
   const clamp = (n: number) => Math.min(max, Math.max(min, n));
@@ -49,6 +51,7 @@ export function QuantitiesInput({
         inputMode="decimal"
         onChange={handleChange}
         onBlur={handleBlur}
+        name={`${name}StepperInput`}
       />
     </Stepper>
   );

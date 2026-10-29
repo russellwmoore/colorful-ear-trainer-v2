@@ -1,14 +1,13 @@
 import { cn } from "@/lib/utils";
-import { useEartrainerStore } from "@/store/store";
+import { selectCountUpLimitMs, useEartrainerStore } from "@/store/store";
 import { useTimerStore } from "@/store/timerStore";
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
+import { msToSeconds } from "@/utils/time";
 
 export function Countup() {
-  const timeElapsed = useTimerStore((s) => s.currentCountUp);
-  const initialTime = useEartrainerStore(
-    (state) => state.amountOfNotesToGuess * state.timePerNote,
-  );
-  const hasExpired = timeElapsed > initialTime * 1000;
+  const timeElapsed = useTimerStore((s) => s.countUpElapsedMs);
+  const hasExpired = useTimerStore((s) => s.isCountUpExpired);
+  const limitMs = useEartrainerStore(selectCountUpLimitMs);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -24,7 +23,7 @@ export function Countup() {
             {millisecondsToMMSS(timeElapsed).hundredths}
           </div>
           <div className="border-t border-white text-sm md:mt-1 md:pt-1 md:text-base">
-            <span className="mr-1">{initialTime}s</span>
+            <span className="mr-1">{msToSeconds(limitMs)}s</span>
           </div>
         </div>
       </div>

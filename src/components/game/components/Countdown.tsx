@@ -6,12 +6,12 @@ import { millisecondsToMMSS } from "@/utils/countdownUtils";
 
 export function CountDown() {
   // totalGameTimeRemaining uses the timerStore instead of the earTrainerStore to grab the passing time values.
-  const totalGameTimeRemaining = useTimerStore(
-    (state) => state.countdownRemaining,
+  const totalGameTimeRemainingMs = useTimerStore(
+    (state) => state.countdownRemainingMs,
   );
 
-  const totalInitialGameTime = useEartrainerStore(
-    (state) => state.totalInitialGameTime,
+  const totalInitialGameTimeMs = useEartrainerStore(
+    (state) => state.totalInitialGameTimeMs,
   );
   const isPlayingGame = useEartrainerStore(
     (state) => state.gameStatus !== "idle",
@@ -19,9 +19,9 @@ export function CountDown() {
 
   const displayedTime = useMemo(() => {
     return millisecondsToMMSS(
-      isPlayingGame ? totalGameTimeRemaining : totalInitialGameTime,
+      isPlayingGame ? totalGameTimeRemainingMs : totalInitialGameTimeMs,
     );
-  }, [totalInitialGameTime, totalGameTimeRemaining, isPlayingGame]);
+  }, [totalInitialGameTimeMs, totalGameTimeRemainingMs, isPlayingGame]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -36,7 +36,7 @@ export function CountDown() {
             className="absolute right-0 bottom-0 left-0 -z-1 h-full bg-linear-to-b from-green-500 to-green-600"
             style={{
               maxHeight: `${isPlayingGame ? "0" : "100%"}`,
-              transition: `max-height ${isPlayingGame ? totalInitialGameTime : 0}ms linear`,
+              transition: `max-height ${isPlayingGame ? totalInitialGameTimeMs : 0}ms linear`,
             }}
           ></div>
         </div>

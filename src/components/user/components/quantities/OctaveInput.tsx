@@ -14,6 +14,7 @@ export function OctaveInput() {
     <QuantitiesInput
       label="Octave:"
       subLabel="of cadence"
+      name="octave"
       value={octave}
       min={MIN}
       max={MAX}

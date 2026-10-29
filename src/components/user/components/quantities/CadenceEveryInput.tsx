@@ -14,6 +14,7 @@ export function CadenceEveryInput() {
     <QuantitiesInput
       label="Cadence every:"
       subLabel="question(s)"
+      name="cadenceEvery"
       value={cadenceEvery}
       min={MIN}
       max={MAX}

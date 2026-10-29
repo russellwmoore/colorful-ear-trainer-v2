@@ -1,12 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import { millisecondsToMMSS } from "./countdownUtils";
+import { minutesToMs, SECOND_MS, secondsToMs } from "./time";
 
-// millisecond values for various units
-const ONE_SECOND = 1000;
-const FIVE_SECONDS = 5 * ONE_SECOND;
-const ONE_MINUTE = 60 * ONE_SECOND;
-const FIVE_MINUTES = 5 * ONE_MINUTE;
+const FIVE_SECONDS = secondsToMs(5);
+const FIVE_MINUTES = minutesToMs(5);
 
 describe("Millis", () => {
   test("Whole Millisecond values", () => {
@@ -41,8 +39,8 @@ describe("Millis", () => {
 
   test("Cusp Millisecond values with minutes elapsed", () => {
     const time1 = millisecondsToMMSS(FIVE_MINUTES + 1);
-    const time2 = millisecondsToMMSS(FIVE_MINUTES - ONE_SECOND);
-    const time3 = millisecondsToMMSS(FIVE_MINUTES - ONE_SECOND - 1);
+    const time2 = millisecondsToMMSS(FIVE_MINUTES - SECOND_MS);
+    const time3 = millisecondsToMMSS(FIVE_MINUTES - SECOND_MS - 1);
     expect(time1).toStrictEqual({
       minutes: "05",
       seconds: "00",
@@ -63,8 +61,8 @@ describe("Millis", () => {
   test("Cusp very small values", () => {
     // ocassionally, frame rates and JS math operations leave very small numbers that need to be rounded for views
     const thing = millisecondsToMMSS(FIVE_MINUTES + 0.000001);
-    const thing2 = millisecondsToMMSS(FIVE_MINUTES - ONE_SECOND - 0.000001);
-    const thing3 = millisecondsToMMSS(FIVE_MINUTES - ONE_SECOND - 1);
+    const thing2 = millisecondsToMMSS(FIVE_MINUTES - SECOND_MS - 0.000001);
+    const thing3 = millisecondsToMMSS(FIVE_MINUTES - SECOND_MS - 1);
     expect(thing).toStrictEqual({
       minutes: "05",
       seconds: "00",
