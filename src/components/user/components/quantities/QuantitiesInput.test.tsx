@@ -8,6 +8,7 @@ const renderInput = (value: number) => {
   const onValueChange = vi.fn();
   render(
     <QuantitiesInput
+      name="numberOfNotes"
       label="Notes:"
       subLabel="after cadence"
       value={value}
