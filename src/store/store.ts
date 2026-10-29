@@ -19,6 +19,7 @@ import {
 import { getNoteSetPitches, type NoteSetId } from "@/utils/noteSets";
 import { playNotes } from "@/utils/playNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
+import { minutesToMs, secondsToMs } from "@/utils/time";
 import { notesAsNumber, transpose } from "@/utils/transpose";
 
 import { confettiMilestone } from "./confetti";
@@ -28,7 +29,8 @@ import { synth } from "./synth";
 import { useTimerStore } from "./timerStore";
 
 // TODO: need a file of consts for config
-const INITIAL_GAME_TIME_DURATION = 5 * 60 * 1000;
+const INITIAL_GAME_TIME_MS = minutesToMs(5);
+const INITIAL_TIME_PER_NOTE_MS = secondsToMs(5);
 const INITIAL_CADENCE_TEMPO = 60;
 // Pause after a correct answer so the note rings before the next question
 const CORRECT_FEEDBACK_MS = 600;
@@ -62,8 +64,8 @@ export type EarTrainerState = {
   setCadence: (newCadence: CadenceType) => void;
   amountOfNotesToGuess: number;
   setAmountOfNotesToGuess: (newNumberOfNotes: number) => void;
-  timePerNote: number;
-  setTimePerNote: (newTimePerNote: number) => void;
+  timePerNoteMs: number;
+  setTimePerNoteMs: (newTimePerNoteMs: number) => void;
   cadenceEvery: number;
   setCadenceEvery: (newTimePerNote: number) => void;
   octave: number;
@@ -72,9 +74,8 @@ export type EarTrainerState = {
   setCadenceTempoInit: (newCadenceTempo: number) => void;
   inPlayCadenceTempo: number;
   setInPlayCadenceTempo: (newCadenceTempo: number) => void;
-  // totalTime in ms
-  totalInitialGameTime: number;
-  setTotalInitialGameTime: (newTime: number) => void;
+  totalInitialGameTimeMs: number;
+  setTotalInitialGameTimeMs: (newTimeMs: number) => void;
   octaveRange: number[];
   setOctaveRange: (newOctaveRange: number[]) => void;
   playCadence: () => Promise<void>;
@@ -117,7 +118,8 @@ export type EarTrainerState = {
 };
 
 /**
- * All time is stored as milliseconds. Use utility functions for displays
+ * All durations are stored as milliseconds, named with an Ms suffix.
+ * Use the helpers in @/utils/time to build them and to convert for display.
  */
 export const useEartrainerStore = create<EarTrainerState>()(
   devtools(
@@ -145,9 +147,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
             undefined,
             "setAmountOfNotesToGuess",
           ),
-        timePerNote: 5,
-        setTimePerNote: (newTimePerNote: number) =>
-          set({ timePerNote: newTimePerNote }, undefined, "setTimePerNote"),
+        timePerNoteMs: INITIAL_TIME_PER_NOTE_MS,
+        setTimePerNoteMs: (newTimePerNoteMs: number) =>
+          set(
+            { timePerNoteMs: newTimePerNoteMs },
+            undefined,
+            "setTimePerNoteMs",
+          ),
         cadenceEvery: 1,
         setCadenceEvery: (newCadenceEvery: number) =>
           set({ cadenceEvery: newCadenceEvery }, undefined, "setCadenceEvery"),
@@ -164,16 +170,16 @@ export const useEartrainerStore = create<EarTrainerState>()(
             undefined,
             "inPlayCadenceTempo",
           ),
-        totalInitialGameTime: INITIAL_GAME_TIME_DURATION,
-        setTotalInitialGameTime: (newTotalTimeInMs: number) => {
+        totalInitialGameTimeMs: INITIAL_GAME_TIME_MS,
+        setTotalInitialGameTimeMs: (newTotalTimeInMs: number) => {
           // if the user is playing, don't set this time here on the countdown object.
           if (get().gameStatus === "idle") {
             countdown.setDuration(newTotalTimeInMs);
           }
           set(
-            { totalInitialGameTime: newTotalTimeInMs },
+            { totalInitialGameTimeMs: newTotalTimeInMs },
             undefined,
-            "totalInitialGameTime",
+            "setTotalInitialGameTimeMs",
           );
         },
         octaveRange: [4, 5],
@@ -212,7 +218,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
                   octave,
                   withOctave: true,
                 }),
-                duration: i === 0 || i === array.length - 1 ? 2 : 1,
+                durationBeats: i === 0 || i === array.length - 1 ? 2 : 1,
               };
             },
           );
@@ -246,24 +252,27 @@ export const useEartrainerStore = create<EarTrainerState>()(
               allAttempts: 0,
               correctStreak: 0,
               lateAttempts: 0,
-              totalInitialGameTime: levelInfo?.totalInitialGameTime,
+              totalInitialGameTimeMs: levelInfo?.totalInitialGameTimeMs,
               keyCenter: levelInfo?.keyCenter,
               noteSetId: levelInfo?.noteSet ?? ("perfect5" as const),
               customNoteSet: null,
               amountOfNotesToGuess: levelInfo?.amountOfNotesToGuess ?? 1,
-              timePerNote: levelInfo?.timePerNote,
+              timePerNoteMs: levelInfo?.timePerNoteMs,
               cadenceEvery: levelInfo?.cadenceEvery,
               octaveRange: levelInfo?.octaveRange,
             },
             undefined,
             "setGameLevel",
           );
-          countdown.reset();
-          countdown.setDuration(levelInfo?.totalInitialGameTime ?? 5);
+          countdown
+            .reset()
+            .setDuration(
+              levelInfo?.totalInitialGameTimeMs ?? INITIAL_GAME_TIME_MS,
+            );
           countup.reset();
           useTimerStore.setState({
-            countdownRemaining: 0,
-            currentCountUp: 0,
+            countdownRemainingMs: 0,
+            countUpElapsedMs: 0,
           });
         },
         startGame: async () => {
@@ -313,7 +322,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
         resetTimerToInitialValue: () => {
           countup.reset();
           // setDuration also refills timeRemaining, which start() needs above 0
-          countdown.setDuration(get().totalInitialGameTime);
+          countdown.setDuration(get().totalInitialGameTimeMs);
           set(
             { gameStatus: "idle", isAnsweringEnabled: false },
             undefined,
@@ -486,7 +495,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
           const { notesToGuess, setIsAnsweringEnabled } = get();
 
           await playNotes({
-            notes: [{ sequence: notesToGuess, duration: 2 }],
+            notes: [{ sequence: notesToGuess, durationBeats: 2 }],
             cadenceTempo: 60,
             isNotesToGuess: true,
             onNoteAttackFinish: () => {
@@ -552,13 +561,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
           keyCenter: state.keyCenter,
           isKeyCenterRandomized: state.isKeyCenterRandomized,
           cadence: state.cadence,
-          amountOfnotesToGuess: state.amountOfNotesToGuess,
-          timePerNote: state.timePerNote,
+          amountOfNotesToGuess: state.amountOfNotesToGuess,
+          timePerNoteMs: state.timePerNoteMs,
           cadenceEvery: state.cadenceEvery,
           octave: state.octave,
           cadenceTempoInit: state.cadenceTempoInit,
           inPlayCadenceTempo: state.cadenceTempoInit,
-          totalInitialGameTime: state.totalInitialGameTime,
+          totalInitialGameTimeMs: state.totalInitialGameTimeMs,
           octaveRange: state.octaveRange,
           noteSetId: state.noteSetId,
           gameMode: state.gameMode,
@@ -588,10 +597,12 @@ export const selectActivePitches = (s: EarTrainerState) =>
   s.customNoteSet ?? getNoteSetPitches(s.noteSetId, s.cadence);
 export const selectStreakPerLevel = (s: EarTrainerState, level: LevelId) =>
   s.bests[level].bestCorrectStreak;
+export const selectCountUpLimitMs = (s: EarTrainerState) =>
+  s.amountOfNotesToGuess * s.timePerNoteMs;
 
 const countdown = new Countdown({
-  initialDurationMs: useEartrainerStore.getState().totalInitialGameTime,
-  onTick: (ms) => useTimerStore.setState({ countdownRemaining: ms }),
+  initialDurationMs: useEartrainerStore.getState().totalInitialGameTimeMs,
+  onTick: (ms) => useTimerStore.setState({ countdownRemainingMs: ms }),
   onComplete: () => {
     // TODO: create a reset game function to pass here
     useEartrainerStore.getState().resetTimerToInitialValue();
@@ -600,10 +611,8 @@ const countdown = new Countdown({
 });
 
 export const countup = new Countup({
-  initialExpirationTime:
-    useEartrainerStore.getState().timePerNote *
-    useEartrainerStore.getState().amountOfNotesToGuess *
-    1000,
-  onTick: (ms) => useTimerStore.setState({ currentCountUp: ms }),
-  onComplete: () => console.log("DONE"),
+  getExpirationMs: () => selectCountUpLimitMs(useEartrainerStore.getState()),
+  onTick: (ms) => useTimerStore.setState({ countUpElapsedMs: ms }),
+  onComplete: () => useTimerStore.setState({ isCountUpExpired: true }),
+  onReset: () => useTimerStore.setState({ isCountUpExpired: false }),
 });

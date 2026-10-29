@@ -49,6 +49,7 @@ export function QuantitiesInput({
         inputMode="decimal"
         onChange={handleChange}
         onBlur={handleBlur}
+        name="stepper-input"
       />
     </Stepper>
   );

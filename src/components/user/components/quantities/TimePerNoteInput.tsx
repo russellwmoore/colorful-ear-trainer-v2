@@ -1,4 +1,5 @@
 import { useEartrainerStore } from "@/store/store";
+import { msToSeconds, secondsToMs } from "@/utils/time";
 
 import { QuantitiesInput } from "./QuantitiesInput";
 
@@ -7,20 +8,21 @@ const MAX = 999999;
 const STEP = 0.5;
 
 export function TimePerNoteInput() {
-  const amountOfTimePerNote = useEartrainerStore((state) => state.timePerNote);
-  const setAmountOfTimePerNote = useEartrainerStore(
-    (state) => state.setTimePerNote,
+  const timePerNoteMs = useEartrainerStore((state) => state.timePerNoteMs);
+  const setTimePerNoteMs = useEartrainerStore(
+    (state) => state.setTimePerNoteMs,
   );
 
   return (
     <QuantitiesInput
       label="Time Per Note:"
       subLabel="seconds"
-      value={amountOfTimePerNote}
+      // The store holds ms, the input shows and steps in seconds
+      value={msToSeconds(timePerNoteMs)}
       min={MIN}
       max={MAX}
       step={STEP}
-      onValueChange={setAmountOfTimePerNote}
+      onValueChange={(value) => setTimePerNoteMs(secondsToMs(value))}
     />
   );
 }

@@ -2,12 +2,17 @@ import { useState } from "react";
 
 import { useEartrainerStore } from "@/store/store";
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
+import {
+  minutesToMs as minutesToMs,
+  SECOND_MS,
+  secondsToMs as secondsToMs,
+} from "@/utils/time";
 
 import { Stepper, StepperInput } from "./Stepper";
 
 // 99:59, the most that fits in MM:SS
-const MAX_TOTAL_TIME_MS = (99 * 60 + 59) * 1000;
-const STEP_MS = 1000;
+const MAX_TOTAL_TIME_MS = minutesToMs(99) + secondsToMs(59);
+const STEP_MS = SECOND_MS;
 
 const MIN_MINUTES = millisecondsToMMSS(0).minutes;
 const MAX_MINUTES = millisecondsToMMSS(MAX_TOTAL_TIME_MS).minutes;
@@ -28,9 +33,9 @@ const clampTotalTime = (ms: number) =>
 // from the store. The time displayed in this component is always a formatted
 // value of ms to MM:SS.
 export function TotalTimeInput() {
-  const totalTime = useEartrainerStore((state) => state.totalInitialGameTime);
-  const setTotalInitialGameTime = useEartrainerStore(
-    (state) => state.setTotalInitialGameTime,
+  const totalTime = useEartrainerStore((state) => state.totalInitialGameTimeMs);
+  const setTotalInitialGameTimeMs = useEartrainerStore(
+    (state) => state.setTotalInitialGameTimeMs,
   );
 
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -38,9 +43,10 @@ export function TotalTimeInput() {
 
   const commitDraft = () => {
     if (!draft) return;
-    const totalSeconds = Number(draft.minutes) * 60 + Number(draft.seconds);
-    const newTime = clampTotalTime(totalSeconds * 1000);
-    setTotalInitialGameTime(newTime);
+    const newTime = clampTotalTime(
+      minutesToMs(Number(draft.minutes)) + secondsToMs(Number(draft.seconds)),
+    );
+    setTotalInitialGameTimeMs(newTime);
     setDraft(null);
   };
 
@@ -61,13 +67,13 @@ export function TotalTimeInput() {
   const onDecrement = () => {
     setDraft(null);
     const newTime = clampTotalTime(totalTime - STEP_MS);
-    setTotalInitialGameTime(newTime);
+    setTotalInitialGameTimeMs(newTime);
   };
 
   const onIncrement = () => {
     setDraft(null);
     const newTime = clampTotalTime(totalTime + STEP_MS);
-    setTotalInitialGameTime(newTime);
+    setTotalInitialGameTimeMs(newTime);
   };
 
   return (

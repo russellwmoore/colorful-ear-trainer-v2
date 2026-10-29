@@ -38,7 +38,7 @@ export class Countdown {
 
     // Immediately fire the tick callback so the UI reflects the new input value
     this.onTick(this.timeRemaining);
-    return true;
+    return this;
   }
 
   start() {
@@ -68,6 +68,7 @@ export class Countdown {
   reset() {
     this.pause();
     this.timeRemaining = this.initialDuration;
+    return this;
   }
 
   _loop = () => {
@@ -85,23 +86,5 @@ export class Countdown {
     }
 
     this.rafId = requestAnimationFrame(this._loop);
-  };
-}
-
-/**
- * Takes milliseconds, returns a complete string of MM:SS
- * @param ms milliseconds
- * @returns "MM:SS"
- */
-export function millisecondsToMMSS(ms: number) {
-  // Round up so a countdown only reads 00:00 once time has actually run out
-
-  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return {
-    minutes: String(minutes).padStart(2, "0"),
-    seconds: String(seconds).padStart(2, "0"),
   };
 }

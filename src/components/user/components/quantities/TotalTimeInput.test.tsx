@@ -3,16 +3,20 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test } from "vitest";
 
 import { useEartrainerStore } from "@/store/store";
+import {
+  minutesToMs as minutesToMs,
+  secondsToMs as secondsToMs,
+} from "@/utils/time";
 
 import { TotalTimeInput } from "./TotalTimeInput";
 
 const initialState = useEartrainerStore.getState();
 
-const MAX_TOTAL_TIME_MS = (99 * 60 + 59) * 1000;
+const MAX_TOTAL_TIME_MS = minutesToMs(99) + secondsToMs(59);
 
 const setTotalTime = (ms: number) =>
-  useEartrainerStore.setState({ totalInitialGameTime: ms });
-const getTotalTime = () => useEartrainerStore.getState().totalInitialGameTime;
+  useEartrainerStore.setState({ totalInitialGameTimeMs: ms });
+const getTotalTime = () => useEartrainerStore.getState().totalInitialGameTimeMs;
 
 const getInputs = () => {
   const [minutes, seconds] = screen.getAllByRole("textbox");
@@ -25,7 +29,7 @@ describe("TotalTimeInput", () => {
   });
 
   test("renders the label and the store time as MM:SS", () => {
-    setTotalTime((2 * 60 + 5) * 1000);
+    setTotalTime(minutesToMs(2) + secondsToMs(5));
     render(<TotalTimeInput />);
 
     expect(screen.getByText("Total Time:")).toBeInTheDocument();
@@ -37,16 +41,16 @@ describe("TotalTimeInput", () => {
 
   test("+ and - change the time by one second", async () => {
     const user = userEvent.setup();
-    setTotalTime(60 * 1000);
+    setTotalTime(minutesToMs(1));
     render(<TotalTimeInput />);
 
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));
-    expect(getTotalTime()).toBe(61 * 1000);
+    expect(getTotalTime()).toBe(secondsToMs(61));
     expect(getInputs().seconds).toHaveValue("01");
 
     await user.click(screen.getByRole("button", { name: "Decrease Quantity" }));
     await user.click(screen.getByRole("button", { name: "Decrease Quantity" }));
-    expect(getTotalTime()).toBe(59 * 1000);
+    expect(getTotalTime()).toBe(secondsToMs(59));
     expect(getInputs().minutes).toHaveValue("00");
     expect(getInputs().seconds).toHaveValue("59");
   });
@@ -71,22 +75,22 @@ describe("TotalTimeInput", () => {
 
   test("holds typed values as a draft and commits them to the store on blur", async () => {
     const user = userEvent.setup();
-    setTotalTime(5 * 60 * 1000);
+    setTotalTime(minutesToMs(5));
     render(<TotalTimeInput />);
     const { minutes, seconds } = getInputs();
 
     await user.clear(minutes);
     await user.type(minutes, "3");
     await user.click(seconds);
-    expect(getTotalTime()).toBe(3 * 60 * 1000);
+    expect(getTotalTime()).toBe(minutesToMs(3));
     // Draft is cleared, so the field is re-formatted from the store
     expect(minutes).toHaveValue("03");
 
     await user.clear(seconds);
-    expect(getTotalTime()).toBe(3 * 60 * 1000);
+    expect(getTotalTime()).toBe(minutesToMs(3));
     await user.type(seconds, "30");
     await user.tab();
-    expect(getTotalTime()).toBe((3 * 60 + 30) * 1000);
+    expect(getTotalTime()).toBe(minutesToMs(3) + secondsToMs(30));
   });
 
   test("strips non-digit characters while typing", async () => {
@@ -109,7 +113,7 @@ describe("TotalTimeInput", () => {
     await user.clear(seconds);
     await user.type(seconds, "90");
     await user.tab();
-    expect(getTotalTime()).toBe(90 * 1000);
+    expect(getTotalTime()).toBe(secondsToMs(90));
     expect(minutes).toHaveValue("01");
     expect(seconds).toHaveValue("30");
   });
@@ -130,17 +134,17 @@ describe("TotalTimeInput", () => {
 
   test("blurring without typing leaves the store unchanged", async () => {
     const user = userEvent.setup();
-    setTotalTime(42 * 1000);
+    setTotalTime(secondsToMs(42));
     render(<TotalTimeInput />);
 
     await user.click(getInputs().minutes);
     await user.tab();
-    expect(getTotalTime()).toBe(42 * 1000);
+    expect(getTotalTime()).toBe(secondsToMs(42));
   });
 
   test("+ commits a typed draft before incrementing", async () => {
     const user = userEvent.setup();
-    setTotalTime(60 * 1000);
+    setTotalTime(minutesToMs(1));
     render(<TotalTimeInput />);
     const { minutes } = getInputs();
 
@@ -148,7 +152,7 @@ describe("TotalTimeInput", () => {
     await user.type(minutes, "7");
     // Clicking + blurs the field, which commits 07:00 first
     await user.click(screen.getByRole("button", { name: "Increase Quantity" }));
-    expect(getTotalTime()).toBe((7 * 60 + 1) * 1000);
+    expect(getTotalTime()).toBe(minutesToMs(7) + secondsToMs(1));
     expect(minutes).toHaveValue("07");
     expect(getInputs().seconds).toHaveValue("01");
   });

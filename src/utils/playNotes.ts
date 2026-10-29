@@ -1,10 +1,12 @@
 import * as Tone from "tone";
 
 import { synth } from "@/store/synth";
+import { secondsToMs } from "@/utils/time";
 
 type Notes = {
   sequence: string[];
-  duration: number;
+  // In beats, scaled to seconds by cadenceTempo
+  durationBeats: number;
 };
 
 type PlayNotesProps = {
@@ -24,11 +26,13 @@ export async function playNotes({
   await Tone.start();
 
   return new Promise((resolve) => {
+    // Tone.js schedules in seconds, so time here stays in seconds
     let time = 0;
 
     const now = Tone.now();
-    notes.forEach(({ sequence, duration }) => {
-      const durationWithTempo = (duration * 60) / cadenceTempo;
+    notes.forEach(({ sequence, durationBeats }) => {
+      const durationWithTempo = (durationBeats * 60) / cadenceTempo;
+      // triggerAttachRelease expects durationWithTempo to be a time in seconds, not milliseconds.
       synth.triggerAttackRelease(sequence, durationWithTempo, now + time);
       time += durationWithTempo;
     });
@@ -41,6 +45,6 @@ export async function playNotes({
     setTimeout(() => {
       onAllNotesOff?.();
       resolve(true);
-    }, time * 1000);
+    }, secondsToMs(time));
   });
 }

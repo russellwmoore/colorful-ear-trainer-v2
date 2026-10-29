@@ -1,4 +1,5 @@
 import { millisecondsToMMSS } from "@/utils/countdownUtils";
+import { msToSeconds } from "@/utils/time";
 import { useGetNoteSetIdsAndLabels } from "@/utils/useGetNoteSetIdsAndLabels";
 
 import { gameLevels, type LevelId } from "./LevelsMetaData";
@@ -11,7 +12,7 @@ export function LevelInfoDetail({ levelId }: LevelsInfoDetailProps) {
     gameLevels.find((level) => level.id === levelId) ?? gameLevels[0];
   const octaveRange = levelInfo?.octaveRange[1] - levelInfo?.octaveRange[0];
   const { minutes, seconds } = millisecondsToMMSS(
-    Number(levelInfo?.totalInitialGameTime),
+    Number(levelInfo?.totalInitialGameTimeMs),
   );
   const noteSetIdsAndLabels = useGetNoteSetIdsAndLabels("major", "C");
   const notes = noteSetIdsAndLabels.find(
@@ -42,7 +43,7 @@ export function LevelInfoDetail({ levelId }: LevelsInfoDetailProps) {
           {levelInfo?.amountOfNotesToGuess} note after cadence
         </li>
         <li className="level-attribute">
-          {levelInfo?.timePerNote} seconds per note
+          {msToSeconds(levelInfo?.timePerNoteMs)} seconds per note
         </li>
         <li className="level-attribute">
           {" "}
