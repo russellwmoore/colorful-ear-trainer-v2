@@ -6,7 +6,7 @@ import { millisecondsToMMSS } from "@/utils/countdownUtils";
 
 export function CountDown() {
   // totalGameTimeRemaining uses the timerStore instead of the earTrainerStore to grab the passing time values.
-  const totalGameTimeRemaining = useTimerStore(
+  const totalGameTimeRemainingMs = useTimerStore(
     (state) => state.countdownRemainingMs,
   );
 
@@ -19,9 +19,9 @@ export function CountDown() {
 
   const displayedTime = useMemo(() => {
     return millisecondsToMMSS(
-      isPlayingGame ? totalGameTimeRemaining : totalInitialGameTimeMs,
+      isPlayingGame ? totalGameTimeRemainingMs : totalInitialGameTimeMs,
     );
-  }, [totalInitialGameTimeMs, totalGameTimeRemaining, isPlayingGame]);
+  }, [totalInitialGameTimeMs, totalGameTimeRemainingMs, isPlayingGame]);
 
   return (
     <div className="flex flex-col items-center justify-center">

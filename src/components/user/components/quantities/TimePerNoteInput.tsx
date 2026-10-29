@@ -17,6 +17,7 @@ export function TimePerNoteInput() {
     <QuantitiesInput
       label="Time Per Note:"
       subLabel="seconds"
+      name="timePerNote"
       // The store holds ms, the input shows and steps in seconds
       value={msToSeconds(timePerNoteMs)}
       min={MIN}

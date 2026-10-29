@@ -18,6 +18,7 @@ export function NoteQuantitiesInput() {
     <QuantitiesInput
       label="Notes:"
       subLabel="after cadence"
+      name="amountOfNotes"
       value={amountOfNotes}
       min={MIN}
       max={MAX}

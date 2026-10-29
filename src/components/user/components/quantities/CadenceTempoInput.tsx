@@ -25,6 +25,7 @@ export function CadenceTempoInput() {
     <QuantitiesInput
       label="Cadence Tempo:"
       subLabel="beats per minute"
+      name="cadenceTempo"
       value={inPlayCadenceTempo}
       min={MIN}
       max={MAX}
