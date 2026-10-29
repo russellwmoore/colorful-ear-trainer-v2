@@ -73,7 +73,7 @@ jobs:
       - name: Run Vitest tests
         run: npx vitest run
 
-  # Vitest strips types without checking them, so tsc only runs here
+  # Vitest doesn't type-check, so this is the only job that catches type errors (via tsc in npm run build)
   build:
     runs-on: ubuntu-latest
 
