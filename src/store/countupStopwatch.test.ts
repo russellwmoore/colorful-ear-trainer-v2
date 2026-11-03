@@ -171,6 +171,42 @@ describe("Countup", () => {
     expect(onTick).toHaveBeenCalledTimes(tickCount);
   });
 
+  test("stop freezes the elapsed time and keeps the expired state", () => {
+    const { countup, onTick, onReset } = makeCountup(SECOND_MS);
+    countup.start();
+    vi.advanceTimersByTime(2 * SECOND_MS);
+    countup.stop();
+
+    const lastTick = onTick.mock.lastCall![0] as number;
+    const tickCount = onTick.mock.calls.length;
+    vi.advanceTimersByTime(SECOND_MS);
+    expect(onTick).toHaveBeenCalledTimes(tickCount);
+    expect(countup.elapsedTime).toBe(lastTick);
+    expect(countup.hasExpired).toBe(true);
+    expect(onReset).not.toHaveBeenCalled();
+  });
+
+  test("starting after stop counts from zero", () => {
+    const { countup, onTick, onReset, onComplete } = makeCountup(SECOND_MS);
+    countup.start();
+    vi.advanceTimersByTime(2 * SECOND_MS);
+    countup.stop();
+
+    countup.start();
+    expect(onReset).toHaveBeenCalledOnce();
+    expect(onTick).toHaveBeenLastCalledWith(0);
+    vi.advanceTimersByTime(2 * SECOND_MS);
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
+
+  test("reset ticks zero", () => {
+    const { countup, onTick } = makeCountup();
+    countup.start();
+    vi.advanceTimersByTime(2 * SECOND_MS);
+    countup.reset();
+    expect(onTick).toHaveBeenLastCalledWith(0);
+  });
+
   test("reset calls onReset", () => {
     const { countup, onReset } = makeCountup();
     countup.start();

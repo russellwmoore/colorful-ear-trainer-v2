@@ -19,7 +19,7 @@ import {
 import { getNoteSetPitches, type NoteSetId } from "@/utils/noteSets";
 import { playNotes } from "@/utils/playNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
-import { minutesToMs, secondsToMs } from "@/utils/time";
+import { minutesToMs, SECOND_MS, secondsToMs } from "@/utils/time";
 import { notesAsNumber, transpose } from "@/utils/transpose";
 
 import { confettiMilestone } from "./confetti";
@@ -56,6 +56,7 @@ export type GameStatus = "idle" | "playing" | "paused";
 export type GameMode = "practice" | "play";
 
 export type EarTrainerState = {
+  // User options
   keyCenter: KeyCenterType;
   setKeyCenter: (newKey: KeyCenterType) => void;
   isKeyCenterRandomized: boolean;
@@ -78,41 +79,44 @@ export type EarTrainerState = {
   setTotalInitialGameTimeMs: (newTimeMs: number) => void;
   octaveRange: number[];
   setOctaveRange: (newOctaveRange: number[]) => void;
-  playCadence: () => Promise<void>;
-  isPlayingAudio: boolean;
-  setIsPlayingAudio: (isPlaying: boolean) => void;
-  gameStatus: GameStatus;
-  togglePlay: () => void;
-  startGame: () => Promise<void>;
-  pauseGame: () => void;
-  resumeGame: () => Promise<void>;
-  resetTimerToInitialValue: () => void;
   noteSetId: NoteSetId;
   setNoteSetId: (noteSetId: NoteSetId) => void;
   customNoteSet: number[] | null;
   setCustomNoteSet: (newNoteSet: number[]) => void;
-  // user guesses
-  submitGuess: (guess: number) => boolean;
-  currentGuesses: number[];
-  resetCurrentGuesses: () => void;
-  isAnsweringEnabled: boolean;
-  setIsAnsweringEnabled: (isAnswering: boolean, origin: string) => void;
-  playNotesToGuess: () => Promise<void>;
-  notesToGuess: string[];
-  setNotesToGuess: () => void;
-  resetPianoKeys: (() => void) | null;
-  setResetPianoKeys: (cb: (() => void) | null) => void;
-  playCount: number;
-  increasePlayCount: () => void;
+
+  // Gameplay
+  isPlayingAudio: boolean;
+  setIsPlayingAudio: (isPlaying: boolean) => void;
+  playCadence: () => Promise<void>;
+  gameStatus: GameStatus;
+  togglePlay: () => void;
   gameMode: GameMode;
   setGameMode: (mode: GameMode) => void;
   gameLevel: LevelId;
   setGameLevel: (levelId: LevelId) => void;
-  playTheGame: () => Promise<void>;
+  startGame: () => Promise<void>;
+  pauseGame: () => void;
+  resumeGame: () => Promise<void>;
+  resetTimerToInitialValue: () => void;
+  currentGuesses: number[];
+  submitGuess: (guess: number) => boolean;
+  resetCurrentGuesses: () => void;
+  isAnsweringEnabled: boolean;
+  setIsAnsweringEnabled: (isAnswering: boolean, origin: string) => void;
+  // Set once per question by the stopwatch's onComplete, cleared on reset
+  isCountUpExpired: boolean;
+  notesToGuess: string[];
+  setNotesToGuess: () => void;
+  playNotesToGuess: () => Promise<void>;
+  resetPianoKeys: (() => void) | null;
+  setResetPianoKeys: (cb: (() => void) | null) => void;
+  playCount: number;
   allAttempts: number;
   correctAttempts: number;
   lateAttempts: number;
   correctStreak: number;
+  increasePlayCount: () => void;
+  playTheGame: () => Promise<void>;
   backgroundColors: string[];
   bests: LevelScoring;
 };
@@ -186,7 +190,32 @@ export const useEartrainerStore = create<EarTrainerState>()(
         setOctaveRange: (newOctaveRange: number[]) => {
           set({ octaveRange: newOctaveRange }, undefined, "setOctaveRange");
         },
-
+        noteSetId: "perfect5" as const,
+        setNoteSetId: (noteSetId: NoteSetId) => {
+          set({ noteSetId, customNoteSet: null }, undefined, "setNoteSetId");
+        },
+        customNoteSet: null,
+        setCustomNoteSet: (newNoteSet: number[]) => {
+          if (newNoteSet.length === 0) {
+            set(
+              {
+                customNoteSet: null,
+                noteSetId: "perfect5" as const,
+              },
+              undefined,
+              "setCustomNoteSet-emptySet",
+            );
+          } else {
+            set(
+              {
+                customNoteSet: newNoteSet,
+                noteSetId: "custom",
+              },
+              undefined,
+              "setCustomNoteSet",
+            );
+          }
+        },
         isPlayingAudio: false,
         setIsPlayingAudio: (isPlaying: boolean) => {
           set({ isPlayingAudio: isPlaying }, undefined, "setIsPlayingAudio");
@@ -270,10 +299,6 @@ export const useEartrainerStore = create<EarTrainerState>()(
               levelInfo?.totalInitialGameTimeMs ?? INITIAL_GAME_TIME_MS,
             );
           countup.reset();
-          useTimerStore.setState({
-            countdownRemainingMs: 0,
-            countUpElapsedMs: 0,
-          });
         },
         startGame: async () => {
           set(
@@ -306,18 +331,15 @@ export const useEartrainerStore = create<EarTrainerState>()(
             "pauseGame",
           );
         },
-        resetCountUp: () => {
-          countup.reset();
-        },
-        // Picks up the current question rather than asking a new one
+
         resumeGame: async () => {
-          const { playNotesToGuess, setIsAnsweringEnabled } = get();
+          const { playNotesToGuess, setNotesToGuess } = get();
+          setNotesToGuess();
           set({ gameStatus: "playing" }, undefined, "resumeGame");
           countdown.start();
           await playNotesToGuess();
           if (get().gameStatus !== "playing") return;
           countup.start();
-          setIsAnsweringEnabled(true, "resumeGame");
         },
         resetTimerToInitialValue: () => {
           countup.reset();
@@ -329,32 +351,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
             "resetTimerToInitialValue",
           );
         },
-        noteSetId: "perfect5" as const,
-        setNoteSetId: (noteSetId: NoteSetId) => {
-          set({ noteSetId, customNoteSet: null }, undefined, "setNoteSetId");
-        },
-        customNoteSet: null,
-        setCustomNoteSet: (newNoteSet: number[]) => {
-          if (newNoteSet.length === 0) {
-            set(
-              {
-                customNoteSet: null,
-                noteSetId: "perfect5" as const,
-              },
-              undefined,
-              "setCustomNoteSet-emptySet",
-            );
-          } else {
-            set(
-              {
-                customNoteSet: newNoteSet,
-                noteSetId: "custom",
-              },
-              undefined,
-              "setCustomNoteSet",
-            );
-          }
-        },
+
         currentGuesses: [],
         // Records a guess and returns whether it was correct. Once every note has
         // been guessed, starts the next question after a short pause.
@@ -443,7 +440,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
               undefined,
               "submitGuess-playComplete",
             );
-            countup.reset();
+            // Keeps the final time showing until answering is enabled again
+            countup.stop();
             setTimeout(() => {
               if (get().gameStatus === "playing") void playTheGame();
             }, CORRECT_FEEDBACK_MS);
@@ -468,6 +466,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
             undefined,
             `setIsAnsweringEnabled-${origin}`,
           ),
+        isCountUpExpired: false,
         notesToGuess: [],
         setNotesToGuess: () => {
           // TODO: weights and all that
@@ -511,8 +510,6 @@ export const useEartrainerStore = create<EarTrainerState>()(
         allAttempts: 0,
         correctAttempts: 0,
         lateAttempts: 0,
-        bestScore: 0,
-        bestCorrectStreak: 0,
         correctStreak: 0,
         increasePlayCount: () => {
           const currentPlayCount = get().playCount;
@@ -602,7 +599,12 @@ export const selectCountUpLimitMs = (s: EarTrainerState) =>
 
 const countdown = new Countdown({
   initialDurationMs: useEartrainerStore.getState().totalInitialGameTimeMs,
-  onTick: (ms) => useTimerStore.setState({ countdownRemainingMs: ms }),
+  // Floored to whole seconds, matching the display, so subscribers only
+  // re-render once a second instead of every frame
+  onTick: (ms) =>
+    useTimerStore.setState({
+      countdownRemainingMs: Math.floor(ms / SECOND_MS) * SECOND_MS,
+    }),
   onComplete: () => {
     // TODO: create a reset game function to pass here
     useEartrainerStore.getState().resetTimerToInitialValue();
@@ -613,6 +615,16 @@ const countdown = new Countdown({
 export const countup = new Countup({
   getExpirationMs: () => selectCountUpLimitMs(useEartrainerStore.getState()),
   onTick: (ms) => useTimerStore.setState({ countUpElapsedMs: ms }),
-  onComplete: () => useTimerStore.setState({ isCountUpExpired: true }),
-  onReset: () => useTimerStore.setState({ isCountUpExpired: false }),
+  onComplete: () =>
+    useEartrainerStore.setState(
+      { isCountUpExpired: true },
+      undefined,
+      "countup-expired",
+    ),
+  onReset: () =>
+    useEartrainerStore.setState(
+      { isCountUpExpired: false },
+      undefined,
+      "countup-reset",
+    ),
 });

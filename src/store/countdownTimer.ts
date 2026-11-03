@@ -68,6 +68,7 @@ export class Countdown {
   reset() {
     this.pause();
     this.timeRemaining = this.initialDuration;
+    this.onTick(this.timeRemaining);
     return this;
   }
 

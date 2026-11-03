@@ -76,13 +76,13 @@ describe("count-up expiration", () => {
     countup.start();
 
     vi.advanceTimersByTime(900);
-    expect(useTimerStore.getState().isCountUpExpired).toBe(false);
+    expect(useEartrainerStore.getState().isCountUpExpired).toBe(false);
 
     vi.advanceTimersByTime(200);
-    expect(useTimerStore.getState().isCountUpExpired).toBe(true);
+    expect(useEartrainerStore.getState().isCountUpExpired).toBe(true);
 
     countup.reset();
-    expect(useTimerStore.getState().isCountUpExpired).toBe(false);
+    expect(useEartrainerStore.getState().isCountUpExpired).toBe(false);
   });
 
   test("uses settings changed after the stopwatch was created", () => {
@@ -93,9 +93,29 @@ describe("count-up expiration", () => {
     countup.start();
 
     vi.advanceTimersByTime(9000);
-    expect(useTimerStore.getState().isCountUpExpired).toBe(false);
+    expect(useEartrainerStore.getState().isCountUpExpired).toBe(false);
 
     vi.advanceTimersByTime(1100);
-    expect(useTimerStore.getState().isCountUpExpired).toBe(true);
+    expect(useEartrainerStore.getState().isCountUpExpired).toBe(true);
+  });
+
+  test("reset clears the displayed elapsed time", () => {
+    countup.start();
+    vi.advanceTimersByTime(1500);
+    expect(useTimerStore.getState().countUpElapsedMs).toBeGreaterThan(0);
+
+    countup.reset();
+    expect(useTimerStore.getState().countUpElapsedMs).toBe(0);
+  });
+});
+
+describe("countdown display", () => {
+  beforeEach(() => {
+    useEartrainerStore.setState(initialState, true);
+  });
+
+  test("floors the remaining time to whole seconds", () => {
+    useEartrainerStore.getState().setTotalInitialGameTimeMs(90_500);
+    expect(useTimerStore.getState().countdownRemainingMs).toBe(90_000);
   });
 });
