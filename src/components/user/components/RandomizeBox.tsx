@@ -17,7 +17,7 @@ export function RandomizeBox() {
       <Switch
         id="randomkey"
         name="randomkey"
-        className="my-1"
+        className="my-1 data-checked:bg-blue-600"
         checked={isRandomizeToggled}
         onCheckedChange={randomizeKeyCenter}
       />

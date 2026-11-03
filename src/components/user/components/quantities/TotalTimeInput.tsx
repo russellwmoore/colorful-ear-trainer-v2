@@ -79,7 +79,7 @@ export function TotalTimeInput() {
   return (
     <Stepper
       label="Total Time:"
-      subLabel="in minutes"
+      subLabel="countdown MM:SS"
       onIncrement={onIncrement}
       onDecrement={onDecrement}
     >

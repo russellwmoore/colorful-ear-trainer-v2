@@ -16,11 +16,14 @@ export class Countup {
   startTime: number;
   elapsedTime: number;
   hasExpired: boolean;
+  // Stopped keeps the final time showing, but the next start counts from zero
+  isStopped: boolean;
 
   constructor({ getExpirationMs, onTick, onComplete, onReset }: CountupProps) {
     this.getExpirationMs = getExpirationMs;
     this.elapsedTime = 0;
     this.hasExpired = false;
+    this.isStopped = false;
     this.startTime = performance.now();
     this.onTick = onTick;
 
@@ -32,6 +35,7 @@ export class Countup {
 
   start() {
     if (!this.isPaused) return;
+    if (this.isStopped) this.reset();
     if (this.elapsedTime) {
       this.startTime = performance.now() - this.elapsedTime;
     } else {
@@ -48,11 +52,18 @@ export class Countup {
     if (this.rafId) cancelAnimationFrame(this.rafId);
   }
 
+  stop() {
+    this.pause();
+    this.isStopped = true;
+  }
+
   reset() {
     this.isPaused = true;
+    this.isStopped = false;
     this.elapsedTime = 0;
     this.hasExpired = false;
     if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.onTick(this.elapsedTime);
     if (this.onReset) this.onReset();
   }
 

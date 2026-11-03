@@ -32,6 +32,7 @@ export function Cadence() {
           if (isCadenceType(v)) setCadence(v);
         }}
         value={cadence}
+        className="p-2 text-lg"
       >
         {groups.map(({ label, quality }) => (
           <optgroup key={quality} label={label}>

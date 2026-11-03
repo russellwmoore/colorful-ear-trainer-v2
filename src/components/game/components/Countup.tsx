@@ -6,7 +6,7 @@ import { msToSeconds } from "@/utils/time";
 
 export function Countup() {
   const timeElapsed = useTimerStore((s) => s.countUpElapsedMs);
-  const hasExpired = useTimerStore((s) => s.isCountUpExpired);
+  const hasExpired = useEartrainerStore((s) => s.isCountUpExpired);
   const limitMs = useEartrainerStore(selectCountUpLimitMs);
 
   return (

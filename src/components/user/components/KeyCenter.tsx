@@ -1,3 +1,4 @@
+import { NativeSelect } from "@/components/ui/native-select";
 import { useEartrainerStore } from "@/store/store";
 import type { KeyCenterType } from "@/utils/noteNames";
 
@@ -28,17 +29,18 @@ export function KeyCenter() {
   return (
     <div>
       <p>Key:</p>
-      <select
+      <NativeSelect
         onChange={(e) => setKeyCenter(e.target.value as KeyCenterType)}
         value={keyCenter}
         id="keyCenter"
+        className="p-2 text-lg"
       >
         {keyCenterDropDown.map((key) => (
           <option key={key.value} value={key.value}>
             {key.display}
           </option>
         ))}
-      </select>
+      </NativeSelect>
     </div>
   );
 }

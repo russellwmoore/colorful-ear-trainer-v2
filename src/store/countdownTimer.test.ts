@@ -134,6 +134,14 @@ describe("Countdown", () => {
     expect(countdown.timeRemaining).toBe(5 * SECOND_MS);
   });
 
+  test("reset ticks the full duration", () => {
+    const { countdown, onTick } = makeCountdown();
+    countdown.start();
+    vi.advanceTimersByTime(2 * SECOND_MS);
+    countdown.reset();
+    expect(onTick).toHaveBeenLastCalledWith(5 * SECOND_MS);
+  });
+
   test("reset after completion allows starting again", () => {
     const { countdown, onComplete } = makeCountdown(SECOND_MS);
     countdown.start();
