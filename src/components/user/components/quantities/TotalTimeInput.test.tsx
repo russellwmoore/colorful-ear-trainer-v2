@@ -33,7 +33,7 @@ describe("TotalTimeInput", () => {
     render(<TotalTimeInput />);
 
     expect(screen.getByText("Total Time:")).toBeInTheDocument();
-    expect(screen.getByText("in minutes")).toBeInTheDocument();
+    expect(screen.getByText("countdown MM:SS")).toBeInTheDocument();
     const { minutes, seconds } = getInputs();
     expect(minutes).toHaveValue("02");
     expect(seconds).toHaveValue("05");
