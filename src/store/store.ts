@@ -7,6 +7,7 @@ import {
   type LevelId,
   type LevelScoring,
   levelScoringInit,
+  type PlayLevelId,
 } from "@/components/levels/LevelsMetaData";
 import { type CadenceType } from "@/utils/cadences";
 import { CADENCE_REGISTRY_MAP } from "@/utils/cadences";
@@ -36,6 +37,15 @@ const INITIAL_CADENCE_TEMPO = 60;
 const CORRECT_FEEDBACK_MS = 600;
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// Per-run counters cleared whenever the mode or level changes
+const STATS_RESET = {
+  currentGuesses: [],
+  correctAttempts: 0,
+  allAttempts: 0,
+  correctStreak: 0,
+  lateAttempts: 0,
+};
+
 // Tailwind needs the actual vars to be defined somewhere in source code
 // in order to to be defined in the compiled CSS
 const backgroundColors = [
@@ -45,12 +55,6 @@ const backgroundColors = [
   "var(--color-blue-500)",
   "var(--color-green-500)",
 ];
-
-// TODO: Consider slices of state here instead of this blobby thing.
-
-// TODO: Determine where this init should go.
-// Possibly at the top level of App in a useEffect on first mount. Then use the onLoad
-// callback to change a global state to indicate readiness.
 
 export type GameStatus = "idle" | "playing" | "paused";
 export type GameMode = "practice" | "play";
@@ -92,8 +96,10 @@ export type EarTrainerState = {
   togglePlay: () => void;
   gameMode: GameMode;
   setGameMode: (mode: GameMode) => void;
-  gameLevel: LevelId;
-  setGameLevel: (levelId: LevelId) => void;
+  // Last level chosen in play mode. Kept while in practice mode so it's
+  // restored on switching back. Use selectScoreKey for the scoring bucket.
+  playLevel: PlayLevelId;
+  setPlayLevel: (levelId: PlayLevelId) => void;
   startGame: () => Promise<void>;
   pauseGame: () => void;
   resumeGame: () => Promise<void>;
@@ -267,20 +273,39 @@ export const useEartrainerStore = create<EarTrainerState>()(
         },
         gameMode: "practice",
         setGameMode: (mode: GameMode) => {
-          set({ gameMode: mode }, undefined, "setGameMode");
+          if (mode === get().gameMode) return;
+          // Stop any run in progress so its scores can't land in the other
+          // mode's bucket
+          synth.releaseAll();
+          get().resetPianoKeys?.();
+          if (mode === "play") {
+            set({ gameMode: mode }, undefined, "setGameMode-toPlay");
+            // Re-applies the sticky level's settings and resets the run
+            get().setPlayLevel(get().playLevel);
+            return;
+          }
+          set(
+            {
+              gameMode: mode,
+              gameStatus: "idle",
+              isAnsweringEnabled: false,
+              ...STATS_RESET,
+            },
+            undefined,
+            "setGameMode-toPractice",
+          );
+          countdown.reset().setDuration(get().totalInitialGameTimeMs);
+          countup.reset();
         },
-        gameLevel: "beginner1",
-        setGameLevel: (levelId: LevelId) => {
+        playLevel: "beginner1",
+        setPlayLevel: (levelId: PlayLevelId) => {
           const levelInfo = gameLevels.find((l) => l.id === levelId);
           set(
             {
-              gameLevel: levelId,
+              playLevel: levelId,
               gameStatus: "idle",
-              currentGuesses: [],
-              correctAttempts: 0,
-              allAttempts: 0,
-              correctStreak: 0,
-              lateAttempts: 0,
+              isAnsweringEnabled: false,
+              ...STATS_RESET,
               totalInitialGameTimeMs: levelInfo?.totalInitialGameTimeMs,
               keyCenter: levelInfo?.keyCenter,
               noteSetId: levelInfo?.noteSet ?? ("perfect5" as const),
@@ -291,8 +316,9 @@ export const useEartrainerStore = create<EarTrainerState>()(
               octaveRange: levelInfo?.octaveRange,
             },
             undefined,
-            "setGameLevel",
+            "setPlayLevel",
           );
+          get().resetPianoKeys?.();
           countdown
             .reset()
             .setDuration(
@@ -368,13 +394,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
             inPlayCadenceTempo,
             cadenceTempoInit,
             bests,
-            gameLevel,
           } = get();
 
+          const scoreKey = selectScoreKey(get());
           const {
             bestScore: bestScoreNew,
             bestCorrectStreak: bestCorreectStreakNew,
-          } = bests[gameLevel];
+          } = bests[scoreKey];
 
           // this regex smells bad. perhaps a different pattern to store guesses is needed?
           const notesToGuessAsScaleDegrees = notesToGuess.map((note) =>
@@ -407,7 +433,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
                 correctStreak: updatedCorrectStreak,
                 bests: {
                   ...bests,
-                  [gameLevel]: {
+                  [scoreKey]: {
                     bestCorrectStreak: Math.max(
                       bestCorreectStreakNew,
                       updatedCorrectStreak,
@@ -546,8 +572,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
           await playNotesToGuess();
           if (!isStillPlaying()) return;
         },
-        backgroundColors: backgroundColors.slice(0, 3),
         bests: levelScoringInit,
+        backgroundColors: backgroundColors.slice(0, 3),
       }),
 
       {
@@ -568,15 +594,12 @@ export const useEartrainerStore = create<EarTrainerState>()(
           octaveRange: state.octaveRange,
           noteSetId: state.noteSetId,
           gameMode: state.gameMode,
-          gameLevel: state.gameLevel,
+          playLevel: state.playLevel,
           bests: state.bests,
           customNoteSet: state.customNoteSet,
         }),
       },
     ),
-    // TODO: devtools remain running, but they are not logged when 'enabbled:false',
-    // so there is probably a perf hit here. Create a wrapper that has an entirely
-    // separate implementation of devtools instead of the "enabled" flag
     {
       name: "EarTrainerStore",
       enabled: isDevelopment,
@@ -584,10 +607,13 @@ export const useEartrainerStore = create<EarTrainerState>()(
   ),
 );
 
+// The single rule for which bests bucket the current run reads and writes
+export const selectScoreKey = (s: EarTrainerState): LevelId =>
+  s.gameMode === "practice" ? "practice" : s.playLevel;
 export const selectBestScore = (s: EarTrainerState) =>
-  s.bests[s.gameLevel].bestScore;
+  s.bests[selectScoreKey(s)].bestScore;
 export const selectBestCorrectStreak = (s: EarTrainerState) =>
-  s.bests[s.gameLevel].bestCorrectStreak;
+  s.bests[selectScoreKey(s)].bestCorrectStreak;
 export const selectTonality = (s: EarTrainerState) =>
   CADENCE_REGISTRY_MAP[s.cadence].quality;
 export const selectActivePitches = (s: EarTrainerState) =>
