@@ -15,10 +15,13 @@ export type LevelId =
   | "advanced3"
   | "insane1";
 
+// Levels selectable in play mode. "practice" is only a scoring bucket.
+export type PlayLevelId = Exclude<LevelId, "practice">;
+
 export type LevelType = {
   name: string;
   label: string;
-  id: LevelId;
+  id: PlayLevelId;
   difficulty: "easy" | "medium" | "hard";
   totalInitialGameTimeMs: number;
   streakToWin: number;
@@ -184,7 +187,6 @@ export const gameLevels = [
   ...intermediateLevels,
   ...advnacedLevels,
 ];
-
 type ScoreType = {
   bestScore: number;
   bestCorrectStreak: number;

@@ -1,16 +1,16 @@
 import { useEartrainerStore } from "@/store/store";
 
 import { LevelInfoDetail } from "./LevelInfoDetail";
-import { gameLevels, type LevelId, type LevelType } from "./LevelsMetaData";
+import { gameLevels, type LevelType, type PlayLevelId } from "./LevelsMetaData";
 
 type EnrichedLevels = LevelType & {
   isComplete: boolean;
 };
 export function Levels() {
-  const gameLevel = useEartrainerStore((s) => s.gameLevel);
-  const setGameLevel = useEartrainerStore((s) => s.setGameLevel);
+  const playLevel = useEartrainerStore((s) => s.playLevel);
+  const setPlayLevel = useEartrainerStore((s) => s.setPlayLevel);
   const handleLevelPick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGameLevel(e.target.id as LevelId);
+    setPlayLevel(e.target.id as PlayLevelId);
   };
   const bests = useEartrainerStore((s) => s.bests);
 
@@ -33,7 +33,7 @@ export function Levels() {
         {enrichedGameLevels
           .filter(({ difficulty }) => difficulty === "easy")
           .map(({ id, name, label, isComplete }) => {
-            const selected = id === gameLevel;
+            const selected = id === playLevel;
             return (
               <div
                 className={
@@ -64,7 +64,7 @@ export function Levels() {
         {enrichedGameLevels
           .filter(({ difficulty }) => difficulty === "medium")
           .map(({ id, name, label, isComplete }) => {
-            const selected = id === gameLevel;
+            const selected = id === playLevel;
             return (
               <div
                 className={
@@ -96,7 +96,7 @@ export function Levels() {
           {enrichedGameLevels
             .filter(({ difficulty }) => difficulty === "hard")
             .map(({ id, name, label, isComplete }) => {
-              const selected = id === gameLevel;
+              const selected = id === playLevel;
               return (
                 <div
                   className={
@@ -126,7 +126,7 @@ export function Levels() {
             })}
         </div>
       </div>
-      <LevelInfoDetail levelId={gameLevel} />
+      <LevelInfoDetail levelId={playLevel} />
     </div>
   );
 }

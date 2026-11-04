@@ -1,8 +1,15 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { gameLevels } from "@/components/levels/LevelsMetaData";
 import { secondsToMs } from "@/utils/time";
+import { notesAsNumber } from "@/utils/transpose";
 
-import { countup, selectCountUpLimitMs, useEartrainerStore } from "./store";
+import {
+  countup,
+  selectCountUpLimitMs,
+  selectScoreKey,
+  useEartrainerStore,
+} from "./store";
 import { useTimerStore } from "./timerStore";
 
 const initialState = useEartrainerStore.getState();
@@ -117,5 +124,84 @@ describe("countdown display", () => {
   test("floors the remaining time to whole seconds", () => {
     useEartrainerStore.getState().setTotalInitialGameTimeMs(90_500);
     expect(useTimerStore.getState().countdownRemainingMs).toBe(90_000);
+  });
+});
+
+describe("game mode and play level", () => {
+  beforeEach(() => {
+    useEartrainerStore.setState(initialState, true);
+  });
+
+  const guessFirstNoteCorrectly = () => {
+    // Two notes, so the question isn't complete and no next question starts
+    useEartrainerStore.setState({ keyCenter: "C", notesToGuess: ["C4", "E4"] });
+    return useEartrainerStore.getState().submitGuess(notesAsNumber("C", "C"));
+  };
+
+  test("practice guesses score in the practice bucket only", () => {
+    useEartrainerStore.setState({
+      gameMode: "practice",
+      playLevel: "beginner2",
+    });
+    expect(guessFirstNoteCorrectly()).toBe(true);
+
+    const { bests } = useEartrainerStore.getState();
+    expect(bests.practice.bestScore).toBe(1);
+    expect(bests.beginner1.bestScore).toBe(0);
+    expect(bests.beginner2.bestScore).toBe(0);
+  });
+
+  test("play guesses score in the selected level's bucket", () => {
+    useEartrainerStore.getState().setGameMode("play");
+    useEartrainerStore.getState().setPlayLevel("beginner3");
+    guessFirstNoteCorrectly();
+
+    const state = useEartrainerStore.getState();
+    expect(selectScoreKey(state)).toBe("beginner3");
+    expect(state.bests.beginner3.bestScore).toBe(1);
+    expect(state.bests.practice.bestScore).toBe(0);
+  });
+
+  test("the selected level sticks across a trip through practice mode", () => {
+    const { setGameMode, setPlayLevel } = useEartrainerStore.getState();
+    setGameMode("play");
+    setPlayLevel("intermediate2");
+    setGameMode("practice");
+    expect(selectScoreKey(useEartrainerStore.getState())).toBe("practice");
+
+    setGameMode("play");
+    expect(useEartrainerStore.getState().playLevel).toBe("intermediate2");
+  });
+
+  test("switching to play applies the level's settings", () => {
+    useEartrainerStore.setState({
+      gameMode: "practice",
+      playLevel: "beginner1",
+      amountOfNotesToGuess: 5,
+      timePerNoteMs: secondsToMs(1),
+    });
+    useEartrainerStore.getState().setGameMode("play");
+
+    const beginner1 = gameLevels.find((l) => l.id === "beginner1")!;
+    expect(useEartrainerStore.getState()).toMatchObject({
+      amountOfNotesToGuess: beginner1.amountOfNotesToGuess,
+      timePerNoteMs: beginner1.timePerNoteMs,
+    });
+  });
+
+  test("switching mode stops the run and clears its counters", () => {
+    useEartrainerStore.setState({
+      gameMode: "play",
+      gameStatus: "playing",
+      correctStreak: 4,
+      correctAttempts: 6,
+    });
+    useEartrainerStore.getState().setGameMode("practice");
+
+    expect(useEartrainerStore.getState()).toMatchObject({
+      gameStatus: "idle",
+      correctStreak: 0,
+      correctAttempts: 0,
+    });
   });
 });
