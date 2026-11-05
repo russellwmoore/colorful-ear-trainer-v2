@@ -87,6 +87,8 @@ export type EarTrainerState = {
   setNoteSetId: (noteSetId: NoteSetId) => void;
   customNoteSet: number[] | null;
   setCustomNoteSet: (newNoteSet: number[]) => void;
+  isMidiActive: boolean;
+  setIsMidiActive: (isMidiActive: boolean) => void;
 
   // Gameplay
   isPlayingAudio: boolean;
@@ -221,6 +223,10 @@ export const useEartrainerStore = create<EarTrainerState>()(
               "setCustomNoteSet",
             );
           }
+        },
+        isMidiActive: false,
+        setIsMidiActive: (isMidiActive: boolean) => {
+          set({ isMidiActive }, undefined, "setIsMidiActive");
         },
         isPlayingAudio: false,
         setIsPlayingAudio: (isPlaying: boolean) => {
