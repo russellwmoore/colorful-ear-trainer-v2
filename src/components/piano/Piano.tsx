@@ -29,8 +29,7 @@ const KEY_MAP: Record<string, string> = {
   j: "B",
 };
 
-// *** Moved here from inside handleMIDIMessage so the array isn't rebuilt on every message.
-// *** MIDI note numbers map to sharps, matching the piano keys' first data-note name.
+// TODO:
 const MIDI_NOTE_NAMES = [
   "C",
   "C#",
