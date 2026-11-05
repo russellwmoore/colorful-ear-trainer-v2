@@ -29,6 +29,23 @@ const KEY_MAP: Record<string, string> = {
   j: "B",
 };
 
+// *** Moved here from inside handleMIDIMessage so the array isn't rebuilt on every message.
+// *** MIDI note numbers map to sharps, matching the piano keys' first data-note name.
+const MIDI_NOTE_NAMES = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
+];
+
 const defaultFill = (el: SVGRectElement) =>
   el.dataset.key === "black" ? BLACK : WHITE;
 
@@ -50,7 +67,7 @@ export function Piano() {
   const keyRefs = useRef<Record<string, SVGRectElement | null>>({});
 
   const setResetPianoKeys = useEartrainerStore((s) => s.setResetPianoKeys);
-
+  const setIsMidiActive = useEartrainerStore((s) => s.setIsMidiActive);
   // Track currently active keys to prevent browser "keydown auto-repeat" from re-triggering audio
   const activeKeys = useRef<Set<string>>(new Set());
 
@@ -174,7 +191,98 @@ export function Piano() {
       window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleBlur);
     };
-    // pressKey/releaseKey only touch refs and store.getState(), so they're never stale
+  }, []);
+
+  // Midi keyboard events
+  useEffect(() => {
+    // Safari (and probably other browsers) don't have midi capabililties and will
+    // break if requestMIDIAccess is called on navigator
+    if (!("requestMIDIAccess" in navigator)) return;
+
+    let midi: MIDIAccess | null = null;
+    let cancelled = false;
+
+    const heldNotes = new Set<number>();
+
+    const pitchClass = (noteNumber: number) => MIDI_NOTE_NAMES[noteNumber % 12];
+    const toneNote = (noteNumber: number) =>
+      `${pitchClass(noteNumber)}${Math.floor(noteNumber / 12) - 1}`;
+
+    const releaseNote = (noteNumber: number) => {
+      heldNotes.delete(noteNumber);
+      synth.triggerRelease(toneNote(noteNumber));
+      const name = pitchClass(noteNumber);
+      const stillHeld = [...heldNotes].some((n) => pitchClass(n) === name);
+      if (!stillHeld) releaseKey(name);
+    };
+
+    const releaseAll = () => [...heldNotes].forEach(releaseNote);
+
+    function handleMIDIMessage(event: MIDIMessageEvent) {
+      console.log({ event });
+      const { isPlayingAudio } = useEartrainerStore.getState();
+
+      if (!event.data || event.data.length < 3 || isPlayingAudio) return;
+
+      const [status, noteNumber, velocity] = event.data;
+      // Caution, bitwise function here. This grabs the command of the bits of midi
+      const command = status & 0xf0;
+      const isNoteOnCommand = command === 0x90;
+      const isNoteOffCommand = command === 0x80;
+      // velocity > 0 means pressed
+      if (isNoteOnCommand && velocity > 0) {
+        if (heldNotes.has(noteNumber)) return;
+        if (!pressKey(pitchClass(noteNumber))) return;
+
+        heldNotes.add(noteNumber);
+        synth.triggerAttack(toneNote(noteNumber), Tone.now());
+      }
+      // Note Off (0x80) or Note On with 0 velocity means released
+      else if (isNoteOffCommand || (isNoteOnCommand && velocity === 0)) {
+        if (!heldNotes.has(noteNumber)) return;
+        releaseNote(noteNumber);
+      }
+    }
+
+    function setupInputs(midiAccess: MIDIAccess) {
+      let connected = 0;
+      for (const input of midiAccess.inputs.values()) {
+        input.onmidimessage = handleMIDIMessage;
+
+        if (input.state === "connected") connected++;
+      }
+
+      setIsMidiActive(connected > 0);
+      //  A controller unplugged mid-press never sends its note-offs,
+      //  so release anything still sounding.
+      if (connected === 0) releaseAll();
+    }
+
+    navigator
+      .requestMIDIAccess()
+      .then((midiAccess) => {
+        if (cancelled) return;
+        midi = midiAccess;
+        setupInputs(midiAccess);
+        midiAccess.onstatechange = () => setupInputs(midiAccess);
+      })
+      .catch((err: unknown) => {
+        console.error("MIDI access denied:", err);
+      });
+
+    return () => {
+      cancelled = true;
+      if (midi) {
+        for (const input of midi.inputs.values()) {
+          input.onmidimessage = null;
+        }
+        midi.onstatechange = null;
+      }
+      // Stop held notes and clear the badge on unmount.
+      releaseAll();
+      setIsMidiActive(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

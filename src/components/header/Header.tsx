@@ -10,7 +10,7 @@ export function Header() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGameMode(e.target.value as GameMode);
   };
-
+  const isMidiActive = useEartrainerStore((s) => s.isMidiActive);
   return (
     <header className="sticky top-0 z-20 h-16 w-full border-b-2 border-foreground bg-background lg:bg-transparent">
       <div className="mx-auto flex h-full max-w-screen-2xl px-4 md:grid md:grid-cols-4 md:gap-4">
@@ -62,6 +62,11 @@ export function Header() {
           </h1>
         </div>
         <div className="flex grow items-center justify-end">
+          {isMidiActive && (
+            <div className="p-4">
+              <p>🎹 Midi Active</p>
+            </div>
+          )}
           <div className="mr-4">
             {/* <modal-toggle aria-controls="Instructions"> */}
             <button className="h-12 w-12 rounded-full bg-linear-to-r from-yellow-600 to-yellow-400 text-background md:w-auto md:rounded-lg md:px-4 md:font-bold">
