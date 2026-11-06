@@ -1,12 +1,19 @@
+import { useState } from "react";
+import { createPortal } from "react-dom";
+
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/hooks/useTheme";
 import { type GameMode, useEartrainerStore } from "@/store/store";
 
-// TODO: Everything for header
+import { InstructionsModal } from "../instructions/InstructionsModal";
+
 export function Header() {
   const { theme, toggleTheme } = useTheme();
   const gameMode = useEartrainerStore((s) => s.gameMode);
   const setGameMode = useEartrainerStore((s) => s.setGameMode);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGameMode(e.target.value as GameMode);
   };
@@ -68,8 +75,10 @@ export function Header() {
             </div>
           )}
           <div className="mr-4">
-            {/* <modal-toggle aria-controls="Instructions"> */}
-            <button className="h-12 w-12 rounded-full bg-linear-to-r from-yellow-600 to-yellow-400 text-background md:w-auto md:rounded-lg md:px-4 md:font-bold">
+            <button
+              className="h-12 w-12 rounded-full bg-linear-to-r from-yellow-600 to-yellow-400 text-background md:w-auto md:rounded-lg md:px-4 md:font-bold"
+              onClick={() => setIsModalOpen(true)}
+            >
               <span className="text-xl md:hidden">?</span>
               <span className="hidden md:block">Instructions</span>
             </button>
@@ -85,6 +94,11 @@ export function Header() {
           </div>
         </div>
       </div>
+      {isModalOpen &&
+        createPortal(
+          <InstructionsModal onClose={() => setIsModalOpen(false)} />,
+          document.body,
+        )}
     </header>
   );
 }

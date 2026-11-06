@@ -1,5 +1,6 @@
 import { useEartrainerStore } from "@/store/store";
 
+import { PayPal } from "../payPal/PayPal";
 import { CountDown } from "./components/Countdown";
 import { Countup } from "./components/Countup";
 import { GameControls } from "./components/GameControls";
@@ -34,6 +35,7 @@ export function Game() {
           ></div>
         </div>
       </div>
+      <PayPal />
     </>
   );
 }
