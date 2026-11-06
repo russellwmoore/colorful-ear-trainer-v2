@@ -20,7 +20,7 @@ import {
 import { getNoteSetPitches, type NoteSetId } from "@/utils/noteSets";
 import { playNotes } from "@/utils/playNotes";
 import { shuffleArray } from "@/utils/shuffleArray";
-import { minutesToMs, SECOND_MS, secondsToMs } from "@/utils/time";
+import { minutesToMs, secondsToMs, TENTH_SECOND_MS } from "@/utils/time";
 import { notesAsNumber, transpose } from "@/utils/transpose";
 
 import { confettiMilestone } from "./confetti";
@@ -525,10 +525,14 @@ export const useEartrainerStore = create<EarTrainerState>()(
           await Tone.start();
           const { notesToGuess, setIsAnsweringEnabled } = get();
 
+          // a user can click play notes when the game is running and when the game is paused
+
+          // when a user calls the playNotes to guess while the game is paused, it should
+          // automatically resume the game, and do nothing extra when the game is running
+
           await playNotes({
             notes: [{ sequence: notesToGuess, durationBeats: 2 }],
             cadenceTempo: 60,
-            isNotesToGuess: true,
             onNoteAttackFinish: () => {
               setIsAnsweringEnabled(true, "playNotesToGuess");
               countup.start();
@@ -631,11 +635,15 @@ export const selectCountUpLimitMs = (s: EarTrainerState) =>
 
 const countdown = new Countdown({
   initialDurationMs: useEartrainerStore.getState().totalInitialGameTimeMs,
-  // Floored to whole seconds, matching the display, so subscribers only
-  // re-render once a second instead of every frame
+  // onTick runs on every animation frame which varies depending on each devices
+  // refresh rate. Flooring to tenths of a second means the stored value changes
+  // only ~10 times a second instead of every frame. The MM:SS text on the countdown
+  // area only requires a change every second to accurately show the time remaining.
+  // Flooring to smaller numbers will only dictate how smooth the timer background transitions
+  // from green to red.
   onTick: (ms) =>
     useTimerStore.setState({
-      countdownRemainingMs: Math.floor(ms / SECOND_MS) * SECOND_MS,
+      countdownRemainingMs: Math.floor(ms / TENTH_SECOND_MS) * TENTH_SECOND_MS,
     }),
   onComplete: () => {
     // TODO: create a reset game function to pass here

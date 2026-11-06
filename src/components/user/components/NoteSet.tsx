@@ -17,7 +17,7 @@ export function NoteSet() {
 
   return (
     <>
-      <p>Note Set:</p>
+      <p className="text-sm">Note Set:</p>
       <NativeSelect
         name="set-select"
         id="NoteSet"

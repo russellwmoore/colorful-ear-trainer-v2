@@ -28,7 +28,7 @@ export function KeyCenter() {
 
   return (
     <div>
-      <p>Key:</p>
+      <p className="text-sm">Key:</p>
       <NativeSelect
         onChange={(e) => setKeyCenter(e.target.value as KeyCenterType)}
         value={keyCenter}

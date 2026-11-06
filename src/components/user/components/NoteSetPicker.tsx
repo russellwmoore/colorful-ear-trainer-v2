@@ -62,7 +62,7 @@ export function NoteSetPicker() {
   const checkableNotes = flatKeyCenters.includes(keyCenter) ? flats : sharps;
 
   return (
-    <div className="mt-3 grid grid-cols-14 grid-rows-2 items-center justify-center gap-2">
+    <div className="mt-2 grid grid-cols-14 grid-rows-2 items-center justify-center gap-2">
       {checkableNotes.map((note, index) => {
         const additionalStyles = pickerCss[note];
 

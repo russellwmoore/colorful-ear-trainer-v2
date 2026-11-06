@@ -23,7 +23,7 @@ export function Cadence() {
   const setCadence = useEartrainerStore((state) => state.setCadence);
   return (
     <>
-      <p>Cadence</p>
+      <p className="text-sm">Cadence</p>
       <NativeSelect
         name="tonality"
         id="Tonality"

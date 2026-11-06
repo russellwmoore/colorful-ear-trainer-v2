@@ -17,7 +17,7 @@ export function User() {
         <h2 className="-mt-4 -mr-4 -ml-4 bg-foreground px-4 py-2 text-lg font-bold text-background">
           Set Options:
         </h2>
-        <div className="mt-4 mb-4 grid grid-cols-6 gap-x-3 gap-y-4">
+        <div className="mt-4 mb-4 grid grid-cols-6 gap-x-3 gap-y-3">
           <div className="col-span-4 grid grid-cols-2 gap-2 rounded-lg border border-foreground p-2">
             <KeyCenter />
             <RandomizeBox />

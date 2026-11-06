@@ -1,5 +1,6 @@
 import { useEartrainerStore } from "@/store/store";
 
+import { CadenceTempoInput } from "../user/components/quantities/CadenceTempoInput";
 import { LevelInfoDetail } from "./LevelInfoDetail";
 import { gameLevels, type LevelType, type PlayLevelId } from "./LevelsMetaData";
 
@@ -54,7 +55,12 @@ export function Levels() {
                   htmlFor={id}
                   className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                 >
-                  {label} {isComplete && "⭐️"}
+                  {label}
+                  {isComplete && (
+                    <span className="ml-1" aria-label="completed">
+                      ⭐️
+                    </span>
+                  )}
                 </label>
               </div>
             );
@@ -85,7 +91,12 @@ export function Levels() {
                   htmlFor={id}
                   className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                 >
-                  {label} {isComplete && "⭐️"}
+                  {label}
+                  {isComplete && (
+                    <span className="ml-1" aria-label="completed">
+                      ⭐️
+                    </span>
+                  )}
                 </label>
               </div>
             );
@@ -119,7 +130,12 @@ export function Levels() {
                     htmlFor={id}
                     className="flex cursor-pointer justify-center p-2 text-center text-lg font-bold"
                   >
-                    {label} {isComplete && "⭐️"}
+                    {label}
+                    {isComplete && (
+                      <span className="ml-1" aria-label="completed">
+                        ⭐️
+                      </span>
+                    )}
                   </label>
                 </div>
               );
@@ -127,6 +143,9 @@ export function Levels() {
         </div>
       </div>
       <LevelInfoDetail levelId={playLevel} />
+      <div className="mt-4 -mr-4 -mb-4 -ml-4 border-t-2 border-foreground p-4">
+        <CadenceTempoInput />
+      </div>
     </div>
   );
 }

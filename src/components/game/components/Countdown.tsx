@@ -23,6 +23,11 @@ export function CountDown() {
     );
   }, [totalInitialGameTimeMs, totalGameTimeRemainingMs, isPlayingGame]);
 
+  const height = useMemo(() => {
+    if (totalGameTimeRemainingMs === 0) return "100%";
+    return `${(totalGameTimeRemainingMs / totalInitialGameTimeMs) * 100}%`;
+  }, [totalGameTimeRemainingMs, totalInitialGameTimeMs]);
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="relative z-10 aspect-square w-full overflow-hidden rounded-full bg-linear-to-b from-red-400 to-red-600">
@@ -35,8 +40,7 @@ export function CountDown() {
           <div
             className="absolute right-0 bottom-0 left-0 -z-1 h-full bg-linear-to-b from-green-500 to-green-600"
             style={{
-              maxHeight: `${isPlayingGame ? "0" : "100%"}`,
-              transition: `max-height ${isPlayingGame ? totalInitialGameTimeMs : 0}ms linear`,
+              height: height,
             }}
           ></div>
         </div>
