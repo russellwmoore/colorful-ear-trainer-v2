@@ -11,7 +11,7 @@ export function RandomizeBox() {
 
   return (
     <div className="col-span-1 flex flex-col items-center gap-1">
-      <label htmlFor="randomkey" className="text-s text-foreground">
+      <label htmlFor="randomkey" className="text-sm text-foreground">
         Randomize
       </label>
       <Switch

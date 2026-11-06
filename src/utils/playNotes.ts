@@ -12,7 +12,6 @@ type Notes = {
 type PlayNotesProps = {
   notes: Notes[];
   cadenceTempo: number;
-  isNotesToGuess?: boolean;
   onNoteAttackFinish?: () => void;
   onAllNotesOff?: () => void;
 };

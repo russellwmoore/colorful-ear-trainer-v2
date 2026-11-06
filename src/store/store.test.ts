@@ -121,9 +121,9 @@ describe("countdown display", () => {
     useEartrainerStore.setState(initialState, true);
   });
 
-  test("floors the remaining time to whole seconds", () => {
-    useEartrainerStore.getState().setTotalInitialGameTimeMs(90_500);
-    expect(useTimerStore.getState().countdownRemainingMs).toBe(90_000);
+  test("floors the remaining time to tents of a second", () => {
+    useEartrainerStore.getState().setTotalInitialGameTimeMs(90_590);
+    expect(useTimerStore.getState().countdownRemainingMs).toBe(90_500);
   });
 });
 

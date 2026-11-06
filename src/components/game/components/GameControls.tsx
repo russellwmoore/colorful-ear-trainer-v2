@@ -25,7 +25,9 @@ export function GameControls() {
         <Button
           id="PlayNotes"
           className="whitespace-nowrap"
-          disabled={isPlayingAudio || gameStatus === "idle"}
+          disabled={
+            isPlayingAudio || gameStatus === "idle" || gameStatus === "paused"
+          }
           onClick={() => void playNotesToGuess()}
         >
           Replay Notes

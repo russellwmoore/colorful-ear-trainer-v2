@@ -4,6 +4,7 @@
  * Tone.js, which schedules audio in seconds.
  */
 
+export const TENTH_SECOND_MS = 100;
 export const SECOND_MS = 1000;
 export const MINUTE_MS = 60 * SECOND_MS;
 

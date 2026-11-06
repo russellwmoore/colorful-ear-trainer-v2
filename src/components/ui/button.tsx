@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   // active:bg-none drops the gradient so the pressed state shows the solid foreground color
-  "rounded-lg bg-linear-to-r px-5 py-3 font-bold text-black active:bg-foreground active:bg-none active:text-background",
+  "rounded-lg bg-linear-to-r px-5 py-3 font-bold text-black active:bg-foreground active:bg-none active:text-background disabled:bg-linear-to-r disabled:opacity-50",
   {
     variants: {
       variant: {
