@@ -40,7 +40,7 @@ export function CountDown() {
           <div
             className="absolute right-0 bottom-0 left-0 -z-1 h-full bg-linear-to-b from-green-500 to-green-600"
             style={{
-              height: height,
+              height,
             }}
           ></div>
         </div>

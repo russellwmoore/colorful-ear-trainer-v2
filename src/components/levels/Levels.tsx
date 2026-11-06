@@ -1,6 +1,6 @@
+import { CadenceTempoInput } from "@/components/user/components/quantities/CadenceTempoInput";
 import { useEartrainerStore } from "@/store/store";
 
-import { CadenceTempoInput } from "../user/components/quantities/CadenceTempoInput";
 import { LevelInfoDetail } from "./LevelInfoDetail";
 import { gameLevels, type LevelType, type PlayLevelId } from "./LevelsMetaData";
 

@@ -525,11 +525,6 @@ export const useEartrainerStore = create<EarTrainerState>()(
           await Tone.start();
           const { notesToGuess, setIsAnsweringEnabled } = get();
 
-          // a user can click play notes when the game is running and when the game is paused
-
-          // when a user calls the playNotes to guess while the game is paused, it should
-          // automatically resume the game, and do nothing extra when the game is running
-
           await playNotes({
             notes: [{ sequence: notesToGuess, durationBeats: 2 }],
             cadenceTempo: 60,
