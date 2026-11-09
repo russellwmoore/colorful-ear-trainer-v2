@@ -9,9 +9,9 @@ export function Options() {
   const isPlaying = useEartrainerStore((s) => s.gameStatus) === "playing";
   const shouldDiableUserMenu = isUserDiabledWhilePlaying && isPlaying;
   return (
-    <div className="relative grid gap-4 overflow-y-auto md:flex md:max-h-app md:flex-col md:gap-0 md:space-y-4">
+    <div className="relative grid gap-4 overflow-y-auto rounded-lg md:flex md:max-h-app md:flex-col md:gap-0 md:space-y-4">
       {shouldDiableUserMenu && (
-        <div className="absolute z-50 flex h-full w-full bg-linear-to-b from-blue-950/70 to-blue-400/70">
+        <div className="absolute z-50 flex h-full w-full rounded-lg bg-linear-to-b from-blue-950/70 to-blue-400/70">
           <h3 className="m-auto mt-auto rotate-35 overflow-hidden text-center text-4xl font-bold text-white opacity-50 drop-shadow-lg select-none">
             pause game to edit
           </h3>
