@@ -11,12 +11,12 @@ export function GameControls() {
   return (
     <div className="flex flex-none flex-col">
       <Button onClick={togglePlay} id="Play" variant="play" className="text-xl">
-        {gameStatus === "playing" ? "PAUSE" : "PLAY"}
+        {gameStatus === "playing" ? "PAUSE" : "START"}
       </Button>
       <div className="mt-4 grid grid-cols-2 gap-4">
         <Button
           id="PlayCadence"
-          className="whitespace-nowrap"
+          className="px-2 leading-tight"
           disabled={isPlayingAudio}
           onClick={() => void playCadence()}
         >
@@ -24,7 +24,7 @@ export function GameControls() {
         </Button>
         <Button
           id="PlayNotes"
-          className="whitespace-nowrap"
+          className="px-2 leading-tight"
           disabled={
             isPlayingAudio || gameStatus === "idle" || gameStatus === "paused"
           }
