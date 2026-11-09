@@ -19,7 +19,7 @@ export function Header() {
   };
   const isMidiActive = useEartrainerStore((s) => s.isMidiActive);
   return (
-    <header className="sticky top-0 z-20 h-16 w-full border-b-2 border-foreground bg-background lg:bg-transparent">
+    <header className="sticky top-0 z-60 h-16 w-full border-b-2 border-foreground bg-background lg:bg-transparent">
       <div className="mx-auto flex h-full max-w-screen-2xl px-4 md:grid md:grid-cols-4 md:gap-4">
         <div className="flex items-center">
           <div
@@ -38,9 +38,9 @@ export function Header() {
               />
               <label
                 htmlFor="TogglePractice"
-                className="flex h-full cursor-pointer items-center justify-center text-sm whitespace-nowrap md:text-lg"
+                className="flex h-full cursor-pointer items-center justify-center px-1 text-center text-sm leading-tight xl:text-lg"
               >
-                Practice Mode
+                Practice
               </label>
             </div>
             <div className="z-10">
@@ -55,9 +55,9 @@ export function Header() {
               />
               <label
                 htmlFor="TogglePlay"
-                className="flex h-full cursor-pointer items-center justify-center text-sm whitespace-nowrap md:text-lg"
+                className="flex h-full cursor-pointer items-center justify-center px-1 text-center text-sm leading-tight xl:text-lg"
               >
-                Play Levels
+                Play
               </label>
             </div>
             <div className="absolute top-0 bottom-0 left-0 h-full w-1/2 bg-linear-to-r from-yellow-600 to-yellow-400 transition-transform group-has-[#TogglePlay:checked]:translate-x-full"></div>
