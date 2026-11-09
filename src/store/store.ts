@@ -352,6 +352,8 @@ export const useEartrainerStore = create<EarTrainerState>()(
           await get().playTheGame();
         },
         pauseGame: () => {
+          get().resetPianoKeys?.();
+
           countdown.pause();
           countup.pause();
           // Only silences notes already sounding; chords scheduled ahead by
@@ -367,6 +369,7 @@ export const useEartrainerStore = create<EarTrainerState>()(
         resumeGame: async () => {
           const { playNotesToGuess, setNotesToGuess } = get();
           setNotesToGuess();
+          get().resetPianoKeys?.();
           set({ gameStatus: "playing" }, undefined, "resumeGame");
           countdown.start();
           await playNotesToGuess();
